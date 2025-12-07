@@ -1,55 +1,76 @@
 [versions]
-activity = "1.10.1"
+# Build tools
 agp = "8.13.1"
+kotlin = "2.0.21"
+googleGmsGoogleServices = "4.4.2"
+
+# AndroidX
+activity = "1.10.1"
 annotation = "1.9.1"
 appcompat = "1.6.1"
-constraintlayout = "2.1.4"
 coreKtx = "1.10.1"
-credentials = "1.5.0"
-credentialsPlayServicesAuth = "1.5.0"
-espressoCore = "3.5.1"
-firebaseAuth = "23.2.1"
-firebaseBom = "33.15.0"
-firebaseFirestoreKtx = "24.4.5"
 fragmentKtx = "1.5.6"
-googleGmsGoogleServices = "4.4.2"
-googleid = "1.1.1"
-junit = "4.13.2"
-junitVersion = "1.1.5"
-legacySupportV4 = "1.0.0"
+constraintlayout = "2.1.4"
 lifecycleLivedataKtx = "2.6.1"
 lifecycleViewmodelKtx = "2.6.1"
-material = "1.10.0"
+legacySupportV4 = "1.0.0"
+credentials = "1.2.2"
+credentialsPlayServicesAuth = "1.2.2"
 navigationFragmentKtx = "2.6.0"
 navigationUiKtx = "2.6.0"
+
+# UI
+material = "1.10.0"
+
+# Testing
+espressoCore = "3.5.1"
+junit = "4.13.2"
+junitVersion = "1.1.5"
+
+# Firebase & Play Services
+firebaseBom = "33.15.0"
+firebaseAuth = "23.2.1"
+firebaseFirestoreKtx = "24.4.5"
 playServicesMaps = "18.1.0"
-kotlin = "2.0.21"
+playServicesAuth = "20.7.0"
+googleid = "1.1.1"
+
 
 [libraries]
+# AndroidX
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
-androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
+androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 
-firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-
-firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
-googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
+# UI
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuth" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+
+# Play Services & Google
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
+
+# Testing (external)
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

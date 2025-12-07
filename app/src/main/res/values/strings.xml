@@ -18,8 +18,8 @@
     <string name="estrella">Estrella</string>
     <string name="filtro">Filtro</string>
     <string name="title_activity_login">Torneos de Ajedrez</string>
-    <string name="prompt_email">Correo electrónico</string>
-    <string name="prompt_password">Contraseña</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
     <string name="action_sign_in">Ingresar o registrarse</string>
     <string name="action_sign_in_short">Ingresar</string>
     <string name="welcome">"¡Bienvenido!"</string>
@@ -31,9 +31,17 @@
     <string name="password_confirm">Confirmar contraseña</string>
     <string name="already_have_account">Ya tengo cuenta</string>
     <string name="action_register">Registrar</string>
+    <string name="create_account">Crear cuenta</string>
 
     <string name="invalid_full_name">Ingrese nombre completo</string>
     <string name="invalid_email">Correo inválido</string>
     <string name="passwords_not_match">Las contraseñas no coinciden</string>
+    <string name="login_with_google">Ingresar con Google </string>
 
+    <string name="google_sign_in">Ingresar con Google </string>
+    <string name="ingresar_con_google">Ingresar con Google</string>
+    <string name="sign_in">Iniciar sesión</string>
+
+<!--Acceso usando Google -->
+    <string name="default_web_client_id">1017845911463-0h4dsuc7ga13ss11oevk70715f65gn0u.apps.googleusercontent.com</string>
 </resources>

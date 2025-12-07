@@ -59,27 +59,36 @@ android {
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.legacy.support.v4)
-    implementation(libs.androidx.fragment.ktx)
-    implementation(libs.androidx.activity)
-    implementation(libs.firebase.firestore.ktx)
-    implementation(libs.firebase.auth)
-    implementation(libs.androidx.credentials)
-    implementation(libs.androidx.credentials.play.services.auth)
-    implementation(libs.googleid)
-    implementation(platform(libs.firebase.bom))
+implementation(platform(libs.firebase.bom))
 
-    implementation(libs.androidx.annotation)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.play.services.maps)
+implementation(libs.androidx.core.ktx)
+implementation(libs.androidx.appcompat)
+implementation(libs.androidx.activity)
+implementation(libs.androidx.fragment.ktx)
+implementation(libs.androidx.legacy.support.v4)
+implementation(libs.androidx.annotation)
+implementation(libs.material)
+implementation(libs.androidx.constraintlayout)
+
+implementation(libs.androidx.lifecycle.livedata.ktx)
+implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+implementation(libs.androidx.navigation.fragment.ktx)
+implementation(libs.androidx.navigation.ui.ktx)
+
+implementation(libs.firebase.firestore.ktx)
+implementation(libs.firebase.auth)
+implementation(libs.firebase.auth.ktx)
+
+implementation(libs.play.services.maps)
+implementation(libs.play.services.auth)
+
+implementation(libs.androidx.credentials)
+implementation(libs.androidx.credentials.play.services.auth)
+implementation(libs.googleid)
+
+testImplementation(libs.junit)
+androidTestImplementation(libs.androidx.junit)
+androidTestImplementation(libs.androidx.espresso.core)
+
 }

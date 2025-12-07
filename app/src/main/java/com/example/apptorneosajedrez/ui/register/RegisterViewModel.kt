@@ -1,24 +1,26 @@
 package com.example.apptorneosajedrez.ui.register
 
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.apptorneosajedrez.R
+import androidx.lifecycle.viewModelScope
 import com.example.apptorneosajedrez.data.AuthRepository
-import com.example.apptorneosajedrez.data.Result
-import com.example.apptorneosajedrez.model.RegisterFormState
-import com.example.apptorneosajedrez.model.RegisterResult
-import android.util.Patterns
+import com.example.apptorneosajedrez.model.Usuario
+import kotlinx.coroutines.launch
+
+data class RegisterUiState(
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
+    val registeredUser: Usuario? = null
+)
 
 class RegisterViewModel(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    private val _registerForm = MutableLiveData<RegisterFormState>()
-    val registerFormState: LiveData<RegisterFormState> = _registerForm
-
-    private val _registerResult = MutableLiveData<RegisterResult>()
-    val registerResult: LiveData<RegisterResult> = _registerResult
+    private val _uiState = MutableLiveData(RegisterUiState())
+    val uiState: LiveData<RegisterUiState> = _uiState
 
     fun register(
         fullName: String,
@@ -26,69 +28,54 @@ class RegisterViewModel(
         password: String,
         confirmPassword: String
     ) {
-        registerDataChanged(fullName, email, password, confirmPassword)
-        val form = _registerForm.value
-        if (form?.isDataValid != true) return
-
-        _registerResult.value = RegisterResult(loading = true)
-
-        val defaultUserType = "Aficionado"
-
-        authRepository.registerUser(
-            fullName = fullName,
-            email = email,
-            password = password,
-            userType = defaultUserType
-        ) { result ->
-            when (result) {
-                is Result.Success -> _registerResult.postValue(RegisterResult(success = result.data))
-                is Result.Error -> _registerResult.postValue(
-                    RegisterResult(error = result.exception.message ?: "Error al registrar")
-                )
-            }
-        }
-    }
-
-
-    fun registerDataChanged(
-        fullName: String,
-        email: String,
-        password: String,
-        confirmPassword: String
-    ) {
-        var fullNameError: Int? = null
-        var emailError: Int? = null
-        var passwordError: Int? = null
-        var confirmPasswordError: Int? = null
-
-        if (fullName.isBlank()) {
-            fullNameError = R.string.invalid_full_name
+        if (fullName.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+            _uiState.value = RegisterUiState(
+                errorMessage = "Todos los campos son obligatorios"
+            )
+            return
         }
 
         if (!isEmailValid(email)) {
-            emailError = R.string.invalid_email
+            _uiState.value = RegisterUiState(
+                errorMessage = "Formato de correo inválido"
+            )
+            return
         }
 
         if (!isPasswordValid(password)) {
-            passwordError = R.string.invalid_password
+            _uiState.value = RegisterUiState(
+                errorMessage = "Contraseña inválida. Debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número"
+            )
+            return
         }
 
-        if (confirmPassword != password) {
-            confirmPasswordError = R.string.passwords_not_match
+        if (password != confirmPassword) {
+            _uiState.value = RegisterUiState(
+                errorMessage = "Las contraseñas no coinciden"
+            )
+            return
         }
 
-        val isValid = fullNameError == null &&
-                emailError == null &&
-                passwordError == null &&
-                confirmPasswordError == null
+        _uiState.value = _uiState.value?.copy(isLoading = true, errorMessage = null)
 
-        _registerForm.value = RegisterFormState(
-            fullNameError = fullNameError,
-            emailError = emailError,
-            passwordError = passwordError,
-            confirmPasswordError = confirmPasswordError,
-            isDataValid = isValid
-        )
+        viewModelScope.launch {
+            try {
+                val user = authRepository.registerWithEmail(
+                    fullName = fullName,
+                    email = email,
+                    password = password
+                )
+                _uiState.value = RegisterUiState(
+                    isLoading = false,
+                    registeredUser = user
+                )
+            } catch (e: Exception) {
+                _uiState.value = RegisterUiState(
+                    isLoading = false,
+                    errorMessage = e.message ?: "Error al registrar usuario"
+                )
+            }
+        }
     }
 
     private fun isEmailValid(email: String): Boolean {
