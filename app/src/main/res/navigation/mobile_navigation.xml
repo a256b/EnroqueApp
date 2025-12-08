@@ -53,6 +53,11 @@
         android:name="com.example.apptorneosajedrez.ui.login.LoginActivity"
         android:label="activity_login"
         tools:layout="@layout/activity_login" />
+    <activity
+        android:id="@+id/registerActivity"
+        android:name="com.example.apptorneosajedrez.ui.register.RegisterActivity"
+        android:label="activity_register"
+        tools:layout="@layout/activity_register" />
 
 
 </navigation>

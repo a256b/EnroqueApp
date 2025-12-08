@@ -126,13 +126,13 @@ class LoginActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // Log.d("Auth", "Solicitando credencial...")
+                Log.d("Auth", "Solicitando credencial...")
                 val result = credentialManager.getCredential(
                     request = request,
                     context = this@LoginActivity
                 )
 
-                // Log.d("Auth", "Credencial obtenida, tipo: ${result.credential.type}")
+                Log.d("Auth", "Credencial obtenida, tipo: ${result.credential.type}")
 
                 val credential = result.credential
                 if (credential is CustomCredential &&
@@ -144,7 +144,7 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("Auth", "ID Token obtenido exitosamente")
                     loginViewModel.loginWithGoogle(idToken)
                 } else {
-                //    Log.e("Auth", "Tipo de credencial inesperado: ${credential.type}")
+                    Log.e("Auth", "Tipo de credencial inesperado: ${credential.type}")
                     Toast.makeText(
                         this@LoginActivity,
                         "Credencial de Google no válida",
@@ -172,8 +172,10 @@ class LoginActivity : AppCompatActivity() {
                 val errorMsg = when {
                     e.message?.contains("SIGN_IN_REQUIRED") == true ->
                         "Se requiere autenticación. Verifica tu configuración de OAuth."
+
                     e.message?.contains("DEVELOPER_ERROR") == true ->
                         "Error de configuración. Verifica SHA-1 y Client ID."
+
                     else -> "Error: ${e.message}"
                 }
 

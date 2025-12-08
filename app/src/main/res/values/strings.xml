@@ -41,6 +41,11 @@
     <string name="google_sign_in">Ingresar con Google </string>
     <string name="ingresar_con_google">Ingresar con Google</string>
     <string name="sign_in">Iniciar sesión</string>
+    <string name="logout_message">¿Seguro que quiere cerrar sesión?</string>
+    <string name="logout_confirm">Cerrar sesión</string>
+    <string name="cancel">Cancelar</string>
+    <string name="profile">Perfil</string>
+    <string name="logout">Cerrar sesión</string>
 
 <!--Acceso usando Google -->
     <string name="default_web_client_id">1017845911463-0h4dsuc7ga13ss11oevk70715f65gn0u.apps.googleusercontent.com</string>
