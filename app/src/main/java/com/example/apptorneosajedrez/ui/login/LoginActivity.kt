@@ -16,7 +16,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
-import com.example.apptorneosajedrez.MainActivity
+import com.example.apptorneosajedrez.ui.MainActivity
 import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.databinding.ActivityLoginBinding
 import com.example.apptorneosajedrez.ui.register.RegisterActivity

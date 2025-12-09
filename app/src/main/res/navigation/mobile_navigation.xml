@@ -7,12 +7,15 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.apptorneosajedrez.ui.home.HomeFragment"
+        android:name="com.example.apptorneosajedrez.ui.home.DestacadosFragment"
         android:label="@string/menu_inicio"
-        tools:layout="@layout/fragment_home">
+        tools:layout="@layout/fragment_destacados">
         <action
             android:id="@+id/action_nav_home_to_detalleTorneoFragment"
             app:destination="@id/detalleTorneoFragment" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_mapa"
+            app:destination="@id/nav_mapa" />
     </fragment>
 
     <fragment
@@ -47,7 +50,19 @@
         android:id="@+id/detalleTorneoFragment"
         android:name="com.example.apptorneosajedrez.ui.torneos.TorneoDetalleFragment"
         android:label="@string/detalle_torneo"
-        tools:layout="@layout/fragment_torneo_detalle" />
+        tools:layout="@layout/fragment_torneo_detalle" >
+        <action
+            android:id="@+id/action_detalleTorneoFragment_to_movimientosFragment"
+            app:destination="@id/movimientosFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/movimientosFragment"
+        android:name="com.example.apptorneosajedrez.ui.movimientos.MovesFragment"
+        android:label="Movimientos" />
+        tools:layout="@layout/fragment_movimientos" />
+
+
     <activity
         android:id="@+id/loginActivity"
         android:name="com.example.apptorneosajedrez.ui.login.LoginActivity"
@@ -58,6 +73,9 @@
         android:name="com.example.apptorneosajedrez.ui.register.RegisterActivity"
         android:label="activity_register"
         tools:layout="@layout/activity_register" />
+
+
+
 
 
 </navigation>

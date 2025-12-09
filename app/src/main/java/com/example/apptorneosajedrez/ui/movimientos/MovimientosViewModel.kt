@@ -3,13 +3,13 @@ package com.example.apptorneosajedrez.ui.movimientos
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.apptorneosajedrez.data.MoveRepository
-import com.example.apptorneosajedrez.model.Move
+import com.example.apptorneosajedrez.data.MovimientosRepository
+import com.example.apptorneosajedrez.model.Movimiento
 
-class MovesViewModel : ViewModel() {
-    private val repo = MoveRepository()
-    private val _moves = MutableLiveData<List<Move>>(emptyList())
-    val moves: LiveData<List<Move>> = _moves
+class MovimientosViewModel : ViewModel() {
+    private val repo = MovimientosRepository()
+    private val _moves = MutableLiveData<List<Movimiento>>(emptyList())
+    val moves: LiveData<List<Movimiento>> = _moves
 
     init {
         repo.listenMoves { list ->

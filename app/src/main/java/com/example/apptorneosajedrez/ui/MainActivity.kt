@@ -1,5 +1,4 @@
-package com.example.apptorneosajedrez
-
+package com.example.apptorneosajedrez.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,18 +15,18 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.databinding.ActivityMainBinding
 import com.example.apptorneosajedrez.ui.login.LoginActivity
 import com.google.android.material.navigation.NavigationView
-
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
-    private val authRepository: AuthRepository by lazy { AuthRepository.getInstance() }
+    private val authRepository: AuthRepository by lazy { AuthRepository.Companion.getInstance() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

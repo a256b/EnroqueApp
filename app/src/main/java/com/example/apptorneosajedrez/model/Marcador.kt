@@ -1,5 +1,9 @@
 package com.example.apptorneosajedrez.model
 
+enum class Categoria {
+    COMERCIO,
+    TORNEO
+}
 data class Marcador(
     val id: String = "",
     val nombre: String = "",

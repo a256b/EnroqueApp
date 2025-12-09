@@ -11,14 +11,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.data.TorneoRepository
-import com.example.apptorneosajedrez.databinding.FragmentHomeBinding
-import com.example.apptorneosajedrez.model.Torneo
+import com.example.apptorneosajedrez.databinding.FragmentDestacadosBinding
 import com.example.apptorneosajedrez.ui.torneos.KEY_TORNEO_DESTACADO
 import com.example.apptorneosajedrez.ui.torneos.PREF_NAME
 
-class HomeFragment : Fragment() {
+class DestacadosFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentDestacadosBinding? = null
     private val binding get() = _binding!!
     private val torneoRepo = TorneoRepository() // ✅ Instanciamos el repositorio
 
@@ -26,7 +25,7 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentDestacadosBinding.inflate(inflater, container, false)
         return binding.root
     }
 

@@ -1,13 +1,13 @@
 package com.example.apptorneosajedrez.ui.torneos
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.fragment.app.Fragment
+import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.databinding.FragmentTorneoDetalleBinding
-import com.example.apptorneosajedrez.ui.movimientos.MovesActivity
 import com.example.apptorneosajedrez.data.InscripcionRepository
 import com.example.apptorneosajedrez.model.Torneo
 
@@ -52,8 +52,7 @@ class TorneoDetalleFragment : Fragment() {
 
 
         binding.btnVerPartidas.setOnClickListener {
-            val intent = Intent(requireContext(), MovesActivity::class.java)
-            startActivity(intent)
+            findNavController().navigate(R.id.movimientosFragment)
         }
     }
 

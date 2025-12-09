@@ -18,9 +18,6 @@
         android:theme="@style/Theme.Material3.Light"
         tools:targetApi="31">
         <activity
-            android:name=".ui.movimientos.MovesActivity"
-            android:exported="true" />
-        <activity
             android:name=".ui.register.RegisterActivity"
             android:exported="false"
             android:label="@string/title_activity_login"
@@ -43,7 +40,7 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AppTorneosAjedrez.NoActionBar" />
     </application>
