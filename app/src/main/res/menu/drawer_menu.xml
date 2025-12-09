@@ -1,39 +1,65 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="navigation_view"
-    tools:ignore="ExtraText">
+    tools:ignore="ExtraText"
+    tools:showIn="navigation_view">
 
     <!-- Sección Principal -->
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home"
+            android:icon="@drawable/home_24px"
             android:title="@string/menu_inicio" />
-        <item
-            android:id="@+id/nav_torneos"
-            android:icon="@drawable/ic_trofeo"
-            android:title="@string/menu_torneos" />
-        <item
-            android:id="@+id/nav_jugadores"
-            android:icon="@drawable/ic_jugador"
-            android:title="@string/menu_jugadores" />
-        <item
-            android:id="@+id/nav_inscripciones"
-            android:icon="@drawable/ic_lapiz"
-            android:title="@string/menu_inscripciones" />
-        <item
-            android:id="@+id/nav_mapa"
-            android:icon="@drawable/ic_map"
-            android:title="@string/menu_mapa" />
     </group>
     <!-- Separador visual -->
-    <item android:title="@string/profile">
+    <item android:title="Vista general">
+        <menu>
+
+            <item
+                android:id="@+id/nav_torneos"
+                android:icon="@drawable/trophy_24px"
+                android:title="@string/menu_torneos" />
+            <item
+                android:id="@+id/nav_jugadores"
+                android:icon="@drawable/group_24px"
+                android:title="@string/menu_jugadores" />
+            <item
+                android:id="@+id/nav_mapa"
+                android:icon="@drawable/ic_map"
+                android:title="@string/menu_mapa" />
+        </menu>
+    </item>
+    <!-- Separador visual -->
+    <item android:title="Solicitudes" >
         <menu>
             <item
+                android:id="@+id/nav_quiero_ser_jugador"
+                android:icon="@drawable/group_add_24px"
+                android:title="@string/to_be_player" />       // Solo aficionados
+            <item
+                android:id="@+id/nav_solicitudes_jugadores"
+                android:icon="@drawable/group_add_24px"
+                android:title="@string/new_players" />         // Solo organizadores
+            <item
+                android:id="@+id/nav_inscripciones"
+                android:checkable="false"
+                android:icon="@drawable/add_ad_24px"
+                android:title="@string/tournament_registrations" />     // Solo organizadores
+        </menu>
+    </item>
+
+    <!-- Separador visual -->
+    <item android:title="@string/account">
+        <menu>
+            <item
+                android:id="@+id/nav_perfil"
+                android:checkable="false"
+                android:icon="@drawable/account_box_24px"
+                android:title="Perfil" />
+            <item
                 android:id="@+id/nav_logout"
+                android:checkable="false"
                 android:icon="@drawable/baseline_logout_24"
-                android:title="@string/logout"
-                android:checkable="false" />
+                android:title="@string/logout" />
         </menu>
     </item>
 </menu>
