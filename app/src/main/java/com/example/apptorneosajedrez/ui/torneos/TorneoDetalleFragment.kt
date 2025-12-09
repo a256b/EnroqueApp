@@ -43,17 +43,16 @@ class TorneoDetalleFragment : Fragment() {
             binding.tvUbicacion.text = "Lugar: ${t.ubicacion}"
             binding.tvDescripcion.text = t.descripcion
 
-            // Cargar cantidad de inscriptos
             repoInscripciones.escucharInscripciones { inscripciones ->
                 val cantidad = inscripciones.count { it.idTorneo == t.idTorneo.toString() }
                 binding.tvCantidadInscriptos.text = "Inscriptos: $cantidad"
             }
         }
 
-
         binding.btnVerPartidas.setOnClickListener {
-            findNavController().navigate(R.id.movimientosFragment)
+            findNavController().navigate(R.id.nav_fixtureFragment)
         }
+
     }
 
     override fun onDestroyView() {

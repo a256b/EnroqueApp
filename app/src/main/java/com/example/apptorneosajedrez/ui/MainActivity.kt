@@ -81,7 +81,9 @@ class MainActivity : AppCompatActivity() {
             R.id.nav_torneos,
             R.id.nav_jugadores,
             R.id.nav_inscripciones,
-            R.id.nav_mapa
+            R.id.nav_mapa,
+            R.id.nav_perfil,
+            R.id.nav_nuevosJugadoresFragment
         )
     }
 

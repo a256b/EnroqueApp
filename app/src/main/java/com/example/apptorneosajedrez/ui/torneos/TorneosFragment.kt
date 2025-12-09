@@ -18,6 +18,7 @@ import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.data.MarcadorRepository
 import com.example.apptorneosajedrez.data.TorneoRepository
 import com.example.apptorneosajedrez.databinding.FragmentTorneosBinding
+import com.example.apptorneosajedrez.model.EstadoTorneo
 import com.example.apptorneosajedrez.model.Torneo
 import java.util.Calendar
 
@@ -52,16 +53,41 @@ class TorneosFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        val adapter = TorneoAdapter(torneosList, requireContext()) { torneo ->
-            val bundle = Bundle().apply {
-                putSerializable("torneo", torneo)
-            }
-            findNavController().navigate(
-                R.id.action_nav_torneos_to_nuevoTorneoFragment,
-                bundle
-            )
+        val activos = torneosList.filter { it.estado == EstadoTorneo.ACTIVO }
+        val proximos = torneosList.filter { it.estado == EstadoTorneo.PROXIMO }
+        val finalizados = torneosList.filter { it.estado == EstadoTorneo.FINALIZADO }
+        val suspendidos = torneosList.filter { it.estado == EstadoTorneo.SUSPENDIDO }
+
+        val items = mutableListOf<TorneoItem>()
+
+        if (activos.isNotEmpty()) {
+            items.add(TorneoItem.Header("Torneos activos"))
+            activos.forEach { items.add(TorneoItem.TorneoData(it)) }
         }
-        binding.recyclerViewTorneos.adapter = adapter
+
+        if (proximos.isNotEmpty()) {
+            items.add(TorneoItem.Header("Próximos torneos"))
+            proximos.forEach { items.add(TorneoItem.TorneoData(it)) }
+        }
+
+        if (finalizados.isNotEmpty()) {
+            items.add(TorneoItem.Header("Torneos finalizados"))
+            finalizados.forEach { items.add(TorneoItem.TorneoData(it)) }
+        }
+
+        if (suspendidos.isNotEmpty()) {
+            items.add(TorneoItem.Header("Torneos suspendidos"))
+            suspendidos.forEach { items.add(TorneoItem.TorneoData(it)) }
+        }
+
+        binding.recyclerViewTorneos.adapter =
+            TorneoAdapter(items, requireContext()) { torneo ->
+                val bundle = Bundle().apply { putSerializable("torneo", torneo) }
+                findNavController().navigate(
+                    R.id.action_nav_torneos_to_detalleTorneoFragment,
+                    bundle
+                )
+            }
     }
 
     private fun mostrarDialogoAgregarTorneo() {

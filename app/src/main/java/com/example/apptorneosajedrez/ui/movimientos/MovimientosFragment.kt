@@ -17,7 +17,7 @@ import com.example.apptorneosajedrez.databinding.FragmentMovimientosBinding
 import com.example.apptorneosajedrez.ui.login.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 
-class MovesFragment : Fragment() {
+class MovimientosFragment : Fragment() {
 
     private var _binding: FragmentMovimientosBinding? = null
     private val binding get() = _binding!!
@@ -48,7 +48,7 @@ class MovesFragment : Fragment() {
         adapter = MovimientosAdapter(emptyList())
         binding.rvMoves.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = this@MovesFragment.adapter
+            adapter = this@MovimientosFragment.adapter
         }
 
         // 3) Observación del ViewModel (usar viewLifecycleOwner en Fragments)

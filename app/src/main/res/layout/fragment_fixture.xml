@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Guías de filas -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/row_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/row_mid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/row_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <!-- Guías de columnas (4) -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/c1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.11" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/c2"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.35" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/c3"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.65" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/c4"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.89" />
+
+    <!-- Guías de columnas (2) -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/cMid1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.225" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/cMid2"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.775" />
+
+    <!-- Guía de columna (1) -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/cCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.50" />
+
+    <!-- Tarjeta final -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/finalMatch"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        app:cardElevation="5dp"
+        app:layout_constraintTop_toTopOf="@id/row_top"
+        app:layout_constraintStart_toStartOf="@id/cCenter"
+        app:layout_constraintEnd_toEndOf="@id/cCenter">
+
+        <TextView
+            android:text="Final"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textStyle="bold"
+            android:textSize="18sp" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Tarjetas semi finales -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/semi1"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        app:cardElevation="5dp"
+        app:layout_constraintTop_toTopOf="@id/row_mid"
+        app:layout_constraintStart_toStartOf="@id/cMid1"
+        app:layout_constraintEnd_toEndOf="@id/cMid1">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Semifinal 1" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/semi2"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        app:cardElevation="5dp"
+        app:layout_constraintTop_toTopOf="@id/row_mid"
+        app:layout_constraintStart_toStartOf="@id/cMid2"
+        app:layout_constraintEnd_toEndOf="@id/cMid2">
+
+        <TextView
+            android:text="Semifinal 2"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Tarjetas cuartos -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/m1"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        app:cardElevation="5dp"
+        app:layout_constraintTop_toTopOf="@id/row_bottom"
+        app:layout_constraintStart_toStartOf="@id/c1"
+        app:layout_constraintEnd_toEndOf="@id/c1">
+
+        <TextView
+            android:text="Partida 1"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/m2"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        app:cardElevation="5dp"
+        app:layout_constraintTop_toTopOf="@id/row_bottom"
+        app:layout_constraintStart_toStartOf="@id/c2"
+        app:layout_constraintEnd_toEndOf="@id/c2">
+
+        <TextView
+            android:text="Partida 2"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/m3"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        app:cardElevation="5dp"
+        app:layout_constraintTop_toTopOf="@id/row_bottom"
+        app:layout_constraintStart_toStartOf="@id/c3"
+        app:layout_constraintEnd_toEndOf="@id/c3">
+
+        <TextView
+            android:text="Partida 3"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/m4"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        app:cardElevation="5dp"
+        app:layout_constraintTop_toTopOf="@id/row_bottom"
+        app:layout_constraintStart_toStartOf="@id/c4"
+        app:layout_constraintEnd_toEndOf="@id/c4">
+
+        <TextView
+            android:text="Partida 4"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <ImageView
+        android:id="@+id/line_semi1"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_bracket"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toBottomOf="@id/semi1"
+        app:layout_constraintStart_toStartOf="@id/semi1"
+        app:layout_constraintEnd_toEndOf="@id/semi1" />
+
+    <ImageView
+        android:id="@+id/line_semi2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_bracket"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toBottomOf="@id/semi2"
+        app:layout_constraintStart_toStartOf="@id/semi2"
+        app:layout_constraintEnd_toEndOf="@id/semi2" />
+
+    <ImageView
+        android:id="@+id/line_final"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_bracket"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toBottomOf="@id/finalMatch"
+        app:layout_constraintStart_toStartOf="@id/finalMatch"
+        app:layout_constraintEnd_toEndOf="@id/finalMatch" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

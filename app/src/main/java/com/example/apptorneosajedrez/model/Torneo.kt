@@ -8,5 +8,8 @@ data class Torneo(
     val fechaInicio: String = "",
     val fechaFin: String = "",
     val horaInicio: String = "",
-    val ubicacion: String = ""
+    val ubicacion: String = "",
+    val estado: EstadoTorneo = EstadoTorneo.PROXIMO,
+    val partidas: List<Partida> = emptyList(),
+    val jugadores: List<Usuario> = emptyList()
 ) : Serializable

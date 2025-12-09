@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.apptorneosajedrez.ui.home.DestacadosFragment"
+        android:label="@string/menu_inicio">
+        <action
+            android:id="@+id/action_nav_home_to_detalleTorneoFragment"
+            app:destination="@id/nav_detalleTorneoFragment" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_mapa"
+            app:destination="@id/nav_mapa" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_jugadores"
+            app:destination="@id/nav_jugadores" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_inscripciones"
+            app:destination="@id/nav_inscripciones" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_torneos"
+            app:destination="@id/nav_torneos" />
+        <action
+            android:id="@+id/action_nav_home_to_detalleJugadorFragment"
+            app:destination="@id/nav_detalleJugadorFragment" />
+        <action
+            android:id="@+id/action_nav_home_to_perfilFragment"
+            app:destination="@id/nav_perfilFragment" />
+        <action
+            android:id="@+id/action_nav_home_to_nuevosJugadoresFragment"
+            app:destination="@id/nav_nuevosJugadoresFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_torneos"
+        android:name="com.example.apptorneosajedrez.ui.torneos.TorneosFragment"
+        android:label="@string/menu_torneos"
+        tools:layout="@layout/fragment_torneos">
+        <action
+            android:id="@+id/action_nav_torneos_to_detalleTorneoFragment"
+            app:destination="@id/nav_detalleTorneoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_jugadores"
+        android:name="com.example.apptorneosajedrez.ui.jugadores.JugadoresFragment"
+        android:label="@string/menu_jugadores"
+        tools:layout="@layout/fragment_jugadores" >
+        <action
+            android:id="@+id/action_nav_jugadores_to_detalleJugadorFragment"
+            app:destination="@id/nav_detalleJugadorFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_inscripciones"
+        android:name="com.example.apptorneosajedrez.ui.inscripciones.InscripcionesFragment"
+        android:label="@string/menu_inscripciones"
+        tools:layout="@layout/fragment_inscripciones" />
+
+    <fragment
+        android:id="@+id/nav_mapa"
+        android:name="com.example.apptorneosajedrez.ui.mapa.MapaFragment"
+        android:label="@string/menu_mapa"
+        tools:layout="@layout/fragment_mapa" />
+
+    <fragment
+        android:id="@+id/nav_detalleTorneoFragment"
+        android:name="com.example.apptorneosajedrez.ui.torneos.TorneoDetalleFragment"
+        android:label="@string/detalle_torneo"
+        tools:layout="@layout/fragment_torneo_detalle" >
+        <action
+            android:id="@+id/action_detalleTorneoFragment_to_fixtureFragment"
+            app:destination="@id/nav_fixtureFragment" />
+    </fragment><![CDATA[
+
+    tools:layout="@layout/fragment_movimientos" />
+
+
+    ]]>
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.example.apptorneosajedrez.ui.login.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" />
+    <activity
+        android:id="@+id/registerActivity"
+        android:name="com.example.apptorneosajedrez.ui.register.RegisterActivity"
+        android:label="activity_register"
+        tools:layout="@layout/activity_register" />
+    <fragment
+        android:id="@+id/nav_detalleJugadorFragment"
+        android:name="com.example.apptorneosajedrez.ui.jugadores.DetalleJugadorFragment"
+        android:label="fragment_detalle_jugador"
+        tools:layout="@layout/fragment_detalle_jugador" />
+    <fragment
+        android:id="@+id/nav_fixtureFragment"
+        android:name="com.example.apptorneosajedrez.ui.fixture.FixtureFragment"
+        android:label="fragment_fixture"
+        tools:layout="@layout/fragment_fixture" >
+        <action
+            android:id="@+id/action_fixtureFragment_to_detallePartidaFragment"
+            app:destination="@id/nav_detallePartidaFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_nuevosJugadoresFragment"
+        android:name="com.example.apptorneosajedrez.ui.nuevos_jugadores.NuevosJugadoresFragment"
+        android:label="fragment_nuevos_jugadores"
+        tools:layout="@layout/fragment_nuevos_jugadores" />
+    <fragment
+        android:id="@+id/nav_perfilFragment"
+        android:name="com.example.apptorneosajedrez.ui.perfil.PerfilFragment"
+        android:label="fragment_perfil"
+        tools:layout="@layout/fragment_perfil" />
+    <fragment
+        android:id="@+id/nav_detallePartidaFragment"
+        android:name="com.example.apptorneosajedrez.ui.detallePartida.DetallePartidaFragment"
+        android:label="fragment_detalle_partida"
+        tools:layout="@layout/fragment_detalle_partida" /><![CDATA[
+    tools:layout="@layout/fragment_movimientos" />
+
+
+
+
+]]>
+</navigation>
