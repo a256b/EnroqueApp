@@ -28,11 +28,12 @@
             android:id="@+id/action_nav_home_to_detalleJugadorFragment"
             app:destination="@id/nav_detalleJugadorFragment" />
         <action
-            android:id="@+id/action_nav_home_to_perfilFragment"
-            app:destination="@id/nav_perfilFragment" />
-        <action
             android:id="@+id/action_nav_home_to_nuevosJugadoresFragment"
             app:destination="@id/nav_nuevosJugadoresFragment" />
+
+        <action
+            android:id="@+id/action_nav_home_to_nav_perfil"
+            app:destination="@id/nav_perfil" />
     </fragment>
 
     <fragment
@@ -75,12 +76,7 @@
         <action
             android:id="@+id/action_detalleTorneoFragment_to_fixtureFragment"
             app:destination="@id/nav_fixtureFragment" />
-    </fragment><![CDATA[
-
-    tools:layout="@layout/fragment_movimientos" />
-
-
-    ]]>
+    </fragment>
     <activity
         android:id="@+id/loginActivity"
         android:name="com.example.apptorneosajedrez.ui.login.LoginActivity"
@@ -111,7 +107,7 @@
         android:label="fragment_nuevos_jugadores"
         tools:layout="@layout/fragment_nuevos_jugadores" />
     <fragment
-        android:id="@+id/nav_perfilFragment"
+        android:id="@+id/nav_perfil"
         android:name="com.example.apptorneosajedrez.ui.perfil.PerfilFragment"
         android:label="fragment_perfil"
         tools:layout="@layout/fragment_perfil" />
@@ -119,11 +115,7 @@
         android:id="@+id/nav_detallePartidaFragment"
         android:name="com.example.apptorneosajedrez.ui.detallePartida.DetallePartidaFragment"
         android:label="fragment_detalle_partida"
-        tools:layout="@layout/fragment_detalle_partida" /><![CDATA[
-    tools:layout="@layout/fragment_movimientos" />
+        tools:layout="@layout/fragment_detalle_partida" />
 
 
-
-
-]]>
 </navigation>

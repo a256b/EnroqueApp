@@ -1,4 +1,4 @@
-<!-- res/layout/item_inscripcion.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,7 +9,9 @@
     android:elevation="4dp"
     android:padding="16dp"
     android:foreground="?android:attr/selectableItemBackground"
-    android:clickable="true">
+    android:clickable="true"
+    android:focusable="true">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,7 +21,7 @@
             android:id="@+id/imgTarjetaInscripcion"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            app:srcCompat="@drawable/ic_lapiz"
+            app:srcCompat="@drawable/add_ad_24px"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
