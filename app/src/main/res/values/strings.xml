@@ -1,4 +1,8 @@
 <resources>
+    <!--Acceso usando Google -->
+    <string name="web_client_id"></string>
+    <string name="google_maps_key"></string>
+
     <string name="app_name">Torneos de Ajedrez</string>
     <string name="navigation_drawer_open">Abrir navigation drawer</string>
     <string name="navigation_drawer_close">Cerrar navigation drawer</string>
@@ -47,10 +51,9 @@
     <string name="profile">Perfil</string>
     <string name="logout">Cerrar sesión</string>
 
-    <!--Acceso usando Google -->
-    <string name="default_web_client_id">1017845911463-0h4dsuc7ga13ss11oevk70715f65gn0u.apps.googleusercontent.com</string>
     <string name="account">Cuenta</string>
     <string name="to_be_player">Quiero ser jugador</string>
     <string name="new_players">Nuevos jugadores</string>
     <string name="tournament_registrations">Inscripciones a torneos</string>
+    <string name="title_activity_register">Registro de nuevo usuario</string>
 </resources>

@@ -5,6 +5,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.tasks.await
 
 class AuthRepository(
@@ -15,44 +18,87 @@ class AuthRepository(
     companion object {
         private const val USERS_COLLECTION = "usuarios"
 
-        // Método de conveniencia para usar desde las ViewModelFactory
+        // Singleton
+        @Volatile private var INSTANCE: AuthRepository? = null
+
         fun getInstance(): AuthRepository {
-            val auth = FirebaseAuth.getInstance()
-            val firestore = FirebaseFirestore.getInstance()
-            return AuthRepository(auth, firestore)
+            return INSTANCE ?: synchronized(this) {
+                val instance = AuthRepository(
+                    FirebaseAuth.getInstance(),
+                    FirebaseFirestore.getInstance()
+                )
+                INSTANCE = instance
+                instance
+            }
         }
     }
 
+    // ----------------------------
+    // Sesión en memoria (StateFlow)
+    // ----------------------------
+    private val _currentUser = MutableStateFlow<Usuario?>(null)
+    val currentUser: StateFlow<Usuario?> = _currentUser.asStateFlow()
+
+    // Firebase user (solo auth)
     fun getCurrentFirebaseUser(): FirebaseUser? = auth.currentUser
 
+    /**
+     * Inicializa la sesión al arrancar la app.
+     * - Si NO hay usuario autenticado: limpia sesión en memoria.
+     * - Si hay: carga/asegura documento en Firestore y lo guarda en memoria.
+     *
+     * Llamar una vez al inicio (por ejemplo en MainActivity/Splash).
+     */
+    suspend fun initSession(): Usuario? {
+        val firebaseUser = auth.currentUser
+        if (firebaseUser == null) {
+            _currentUser.value = null
+            return null
+        }
+
+        val appUser = ensureUserDocument(firebaseUser)
+        _currentUser.value = appUser
+        return appUser
+    }
+
+    /**
+     * Limpia sesión (Firebase + memoria).
+     */
     fun logout() {
         auth.signOut()
+        _currentUser.value = null
     }
 
     /**
      * Login con email y contraseña.
-     * Lanza excepción si falla.
+     * Actualiza sesión en memoria.
      */
     suspend fun loginWithEmail(email: String, password: String): Usuario {
         val result = auth.signInWithEmailAndPassword(email, password).await()
         val user = result.user ?: throw IllegalStateException("Usuario no disponible")
-        return ensureUserDocument(user)
+
+        val appUser = ensureUserDocument(user)
+        _currentUser.value = appUser
+        return appUser
     }
 
     /**
      * Login con Google usando el idToken obtenido con Credential Manager.
-     * Lanza excepción si falla.
+     * Actualiza sesión en memoria.
      */
     suspend fun loginWithGoogle(idToken: String): Usuario {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         val result = auth.signInWithCredential(credential).await()
         val user = result.user ?: throw IllegalStateException("Usuario no disponible")
-        return ensureUserDocument(user)
+
+        val appUser = ensureUserDocument(user)
+        _currentUser.value = appUser
+        return appUser
     }
 
     /**
-     * Registro con email y contraseña + creación de documento en Firestore.
-     * userType podría ser "admin", "player", etc.
+     * Registro con email + creación de documento en Firestore.
+     * Actualiza sesión en memoria.
      */
     suspend fun registerWithEmail(
         fullName: String,
@@ -66,6 +112,7 @@ class AuthRepository(
             uid = user.uid,
             email = email,
             nombreCompleto = fullName
+            // Si tu modelo tiene defaults para tipo/estado, no hace falta setearlos acá
         )
 
         firestore.collection(USERS_COLLECTION)
@@ -73,28 +120,47 @@ class AuthRepository(
             .set(appUser)
             .await()
 
+        _currentUser.value = appUser
         return appUser
     }
 
     /**
-     * Carga el documento de usuario desde Firestore, si existe.
+     * Devuelve el usuario de sesión actual en memoria (puede ser null).
+     * Útil si estás en un lugar donde no querés coleccionar Flow.
      */
-    suspend fun loadCurrentUserProfile(): Usuario? {
-        val firebaseUser = auth.currentUser ?: return null
+    fun getCurrentUserInMemory(): Usuario? = _currentUser.value
+
+    /**
+     * Refresca manualmente desde Firestore (por ejemplo desde "Perfil" → botón "Actualizar").
+     * Actualiza la sesión en memoria.
+     */
+    suspend fun refreshCurrentUser(): Usuario? {
+        val firebaseUser = auth.currentUser ?: run {
+            _currentUser.value = null
+            return null
+        }
+
         val snapshot = firestore.collection(USERS_COLLECTION)
             .document(firebaseUser.uid)
             .get()
             .await()
 
-        return if (snapshot.exists()) {
+        val user = if (snapshot.exists()) {
             snapshot.toObject(Usuario::class.java)?.copy(uid = firebaseUser.uid)
         } else {
             null
         }
+
+        // Si no existe, lo creamos (misma política que ensureUserDocument)
+        val finalUser = user ?: ensureUserDocument(firebaseUser)
+
+        _currentUser.value = finalUser
+        return finalUser
     }
 
     /**
      * Si el documento no existe, lo crea usando los datos del FirebaseUser.
+     * Si existe, lo devuelve.
      */
     private suspend fun ensureUserDocument(firebaseUser: FirebaseUser): Usuario {
         val docRef = firestore.collection(USERS_COLLECTION).document(firebaseUser.uid)
@@ -102,9 +168,7 @@ class AuthRepository(
 
         return if (snapshot.exists()) {
             snapshot.toObject(Usuario::class.java)?.copy(uid = firebaseUser.uid)
-                ?: defaultFromFirebaseUser(firebaseUser).also {
-                    docRef.set(it).await()
-                }
+                ?: defaultFromFirebaseUser(firebaseUser).also { docRef.set(it).await() }
         } else {
             val appUser = defaultFromFirebaseUser(firebaseUser)
             docRef.set(appUser).await()
@@ -116,6 +180,6 @@ class AuthRepository(
         Usuario(
             uid = user.uid,
             email = user.email ?: "",
-            nombreCompleto = user.displayName,
+            nombreCompleto = user.displayName
         )
 }

@@ -35,7 +35,11 @@ android {
 
         // MAPS_API_KEY desde local.properties
         val mapsApiKey = getLocalProperty("MAPS_API_KEY") ?: ""
-        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
+        resValue("string", "google_maps_key", mapsApiKey)
+
+        val webClientId = getLocalProperty("WEB_CLIENT_ID") ?: ""
+        resValue("string", "default_web_client_id", webClientId)
+
     }
 
     buildTypes {
@@ -135,6 +139,10 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+
+    implementation(libs.kotlinx.coroutines.android)
+
+
 
     // --- Tests ---
     testImplementation(libs.junit)

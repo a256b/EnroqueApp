@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -20,6 +21,7 @@ import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.databinding.ActivityMainBinding
 import com.example.apptorneosajedrez.ui.login.LoginActivity
 import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,8 +33,31 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializeViewBinding()
-        configureToolbar()
-        setupNavigationSystem()
+
+        lifecycleScope.launch {
+            val hasSession = ensureSessionOrRedirect()
+            if (!hasSession) return@launch
+
+            if (isFinishing || isDestroyed) return@launch
+
+            configureToolbar()
+            setupNavigationSystem()
+        }
+    }
+
+    private suspend fun ensureSessionOrRedirect(): Boolean {
+        val user = authRepository.initSession()
+        if (user != null) return true
+
+        navigateToLoginAndFinish()
+        return false
+    }
+
+    private fun navigateToLoginAndFinish() {
+        startActivity(Intent(this, LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        })
+        finish()
     }
 
     private fun initializeViewBinding() {
@@ -77,13 +102,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getTopLevelDestinations(): Set<Int> {
         return setOf(
-            R.id.nav_home,
-            R.id.nav_torneos,
-            R.id.nav_jugadores,
-            R.id.nav_inscripciones,
-            R.id.nav_mapa,
-            R.id.nav_perfil,
-            R.id.nav_nuevosJugadoresFragment
+            R.id.nav_home
         )
     }
 
