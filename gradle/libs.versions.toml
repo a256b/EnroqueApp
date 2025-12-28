@@ -35,6 +35,7 @@ firebaseFirestoreKtx = "25.1.1"
 playServicesMaps = "19.0.0"
 playServicesAuth = "21.2.0"
 googleid = "1.1.1"
+roomKtx = "2.8.4"
 
 
 [libraries]
@@ -89,6 +90,7 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 
 # Testing (external)
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.tasks.await
 
 class AuthRepository(
-    private val auth: FirebaseAuth,
-    private val firestore: FirebaseFirestore
+    private val firebaseAuth: FirebaseAuth,
+    private val firebaseFirestore: FirebaseFirestore
 ) {
 
     companion object {
@@ -40,7 +40,7 @@ class AuthRepository(
     val currentUser: StateFlow<Usuario?> = _currentUser.asStateFlow()
 
     // Firebase user (solo auth)
-    fun getCurrentFirebaseUser(): FirebaseUser? = auth.currentUser
+    fun getCurrentFirebaseUser(): FirebaseUser? = firebaseAuth.currentUser
 
     /**
      * Inicializa la sesión al arrancar la app.
@@ -50,7 +50,7 @@ class AuthRepository(
      * Llamar una vez al inicio (por ejemplo en MainActivity/Splash).
      */
     suspend fun initSession(): Usuario? {
-        val firebaseUser = auth.currentUser
+        val firebaseUser = firebaseAuth.currentUser
         if (firebaseUser == null) {
             _currentUser.value = null
             return null
@@ -65,7 +65,7 @@ class AuthRepository(
      * Limpia sesión (Firebase + memoria).
      */
     fun logout() {
-        auth.signOut()
+        firebaseAuth.signOut()
         _currentUser.value = null
     }
 
@@ -74,7 +74,7 @@ class AuthRepository(
      * Actualiza sesión en memoria.
      */
     suspend fun loginWithEmail(email: String, password: String): Usuario {
-        val result = auth.signInWithEmailAndPassword(email, password).await()
+        val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
         val user = result.user ?: throw IllegalStateException("Usuario no disponible")
 
         val appUser = ensureUserDocument(user)
@@ -88,7 +88,7 @@ class AuthRepository(
      */
     suspend fun loginWithGoogle(idToken: String): Usuario {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        val result = auth.signInWithCredential(credential).await()
+        val result = firebaseAuth.signInWithCredential(credential).await()
         val user = result.user ?: throw IllegalStateException("Usuario no disponible")
 
         val appUser = ensureUserDocument(user)
@@ -105,7 +105,7 @@ class AuthRepository(
         email: String,
         password: String
     ): Usuario {
-        val result = auth.createUserWithEmailAndPassword(email, password).await()
+        val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
         val user = result.user ?: throw IllegalStateException("Usuario no disponible")
 
         val appUser = Usuario(
@@ -115,7 +115,7 @@ class AuthRepository(
             // Si tu modelo tiene defaults para tipo/estado, no hace falta setearlos acá
         )
 
-        firestore.collection(USERS_COLLECTION)
+        firebaseFirestore.collection(USERS_COLLECTION)
             .document(user.uid)
             .set(appUser)
             .await()
@@ -135,12 +135,12 @@ class AuthRepository(
      * Actualiza la sesión en memoria.
      */
     suspend fun refreshCurrentUser(): Usuario? {
-        val firebaseUser = auth.currentUser ?: run {
+        val firebaseUser = firebaseAuth.currentUser ?: run {
             _currentUser.value = null
             return null
         }
 
-        val snapshot = firestore.collection(USERS_COLLECTION)
+        val snapshot = firebaseFirestore.collection(USERS_COLLECTION)
             .document(firebaseUser.uid)
             .get()
             .await()
@@ -163,7 +163,7 @@ class AuthRepository(
      * Si existe, lo devuelve.
      */
     private suspend fun ensureUserDocument(firebaseUser: FirebaseUser): Usuario {
-        val docRef = firestore.collection(USERS_COLLECTION).document(firebaseUser.uid)
+        val docRef = firebaseFirestore.collection(USERS_COLLECTION).document(firebaseUser.uid)
         val snapshot = docRef.get().await()
 
         return if (snapshot.exists()) {

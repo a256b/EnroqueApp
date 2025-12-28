@@ -109,7 +109,7 @@
     <fragment
         android:id="@+id/nav_perfil"
         android:name="com.example.apptorneosajedrez.ui.perfil.PerfilFragment"
-        android:label="fragment_perfil"
+        android:label="Perfil de usuario"
         tools:layout="@layout/fragment_perfil" />
     <fragment
         android:id="@+id/nav_detallePartidaFragment"

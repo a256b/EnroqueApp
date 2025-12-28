@@ -95,16 +95,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupAppBarConfiguration(drawerLayout: DrawerLayout) {
         appBarConfiguration = AppBarConfiguration(
-            getTopLevelDestinations(),
+            setOf(R.id.nav_home),
             drawerLayout
         )
     }
 
-    private fun getTopLevelDestinations(): Set<Int> {
-        return setOf(
-            R.id.nav_home
-        )
-    }
 
     private fun connectActionBarWithNavigation(navController: NavController) {
         setupActionBarWithNavController(navController, appBarConfiguration)
