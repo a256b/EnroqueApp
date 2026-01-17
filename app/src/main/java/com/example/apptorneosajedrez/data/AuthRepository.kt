@@ -176,6 +176,32 @@ class AuthRepository(
         }
     }
 
+    /**
+     * Obtiene todos los usuarios de Firebase
+     */
+    suspend fun obtenerTodosLosUsuarios(): List<Usuario> {
+        val snapshot = firebaseFirestore.collection(USERS_COLLECTION)
+            .get()
+            .await()
+
+        return snapshot.documents.mapNotNull { doc ->
+            doc.toObject(Usuario::class.java)?.copy(uid = doc.id)
+        }
+    }
+
+    /**
+     * Actualiza el estadoComoJugador de un Usuario dado
+     */
+    suspend fun actualizarEstadoUsuario(
+        uid: String,
+        nuevoEstado: com.example.apptorneosajedrez.model.EstadoComoJugador
+    ) {
+        firebaseFirestore.collection(USERS_COLLECTION)
+            .document(uid)
+            .update("estadoComoJugador", nuevoEstado.name)
+            .await()
+    }
+
     private fun defaultFromFirebaseUser(user: FirebaseUser): Usuario =
         Usuario(
             uid = user.uid,

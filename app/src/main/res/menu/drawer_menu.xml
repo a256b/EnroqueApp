@@ -36,7 +36,7 @@
                 android:icon="@drawable/group_add_24px"
                 android:title="@string/to_be_player" />       // Solo aficionados
             <item
-                android:id="@+id/nav_solicitudes_jugadores"
+                android:id="@+id/nav_nuevosJugadoresFragment"
                 android:icon="@drawable/group_add_24px"
                 android:title="@string/new_players" />         // Solo organizadores
             <item

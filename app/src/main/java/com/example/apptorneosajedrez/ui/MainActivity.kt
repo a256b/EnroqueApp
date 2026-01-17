@@ -3,6 +3,7 @@ package com.example.apptorneosajedrez.ui
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -88,6 +89,22 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout = binding.drawerLayout
         val navigationView = binding.navigationView
 
+        // Primer llamado al crear la activity
+        checkEstadoComoJugadorVisibilidad(navigationView)
+
+        // Listener para actualizar cada vez que se abre el drawer
+        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+
+            override fun onDrawerOpened(drawerView: View) {
+                checkEstadoComoJugadorVisibilidad(navigationView)
+            }
+
+            override fun onDrawerClosed(drawerView: View) {}
+
+            override fun onDrawerStateChanged(newState: Int) {}
+        })
+
         setupAppBarConfiguration(drawerLayout)
         connectActionBarWithNavigation(navController)
         connectDrawerWithNavigation(navigationView, navController)
@@ -113,6 +130,14 @@ class MainActivity : AppCompatActivity() {
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
+
+                // Captura de la opción Quiero ser jugador
+                R.id.nav_quiero_ser_jugador ->{
+                    showAltaJugadorDialog()
+                    binding.drawerLayout.closeDrawers()
+                    true
+                }
+
                 // Captura de la opción Logout
                 R.id.nav_logout -> {
                     showLogoutConfirmationDialog()
@@ -142,6 +167,52 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    private fun showAltaJugadorDialog(){
+        AlertDialog.Builder(this)
+            .setTitle("Solicitar alta como jugador")
+            .setMessage("¿Desea solicitar el alta como jugador?")
+            .setPositiveButton("Aceptar"){_, _ ->
+                actualizarEstadoJugadorPendiente()
+            }
+            .setNegativeButton(getString(R.string.cancel)){ dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun actualizarEstadoJugadorPendiente(){
+        val currentUser = authRepository.getCurrentFirebaseUser() ?: return
+        val uid = currentUser.uid
+        val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+
+        db.collection("usuarios")
+            .document(uid)
+            .update("estadoComoJugador", "PENDIENTE")
+            .addOnSuccessListener {
+                android.widget.Toast.makeText(
+                    this,
+                    "Solicitud enviada",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            }
+            .addOnFailureListener {
+                android.widget.Toast.makeText(
+                    this,
+                    "Error al enviar la solicitud",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+
+    private fun performLogout() {
+        authRepository.logout()
+
+        val intent = Intent(this, LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        finish()
+    }
 
     private fun showLogoutConfirmationDialog() {
         AlertDialog.Builder(this)
@@ -156,13 +227,24 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun performLogout() {
-        authRepository.logout()
+    // TODO: mejorar en una sola consulta a la bd por sesión para guardar en caché la info
+    private fun checkEstadoComoJugadorVisibilidad(navigationView: NavigationView){
+        val currentUser = authRepository.getCurrentFirebaseUser() ?: return
+        val uid = currentUser.uid
+        val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
 
-        val intent = Intent(this, LoginActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        startActivity(intent)
-        finish()
+        db.collection("usuarios")
+            .document(uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if(!document.exists()) return@addOnSuccessListener
+                val estado = document.getString("estadoComoJugador") ?: "NINGUNO"
+                val menu = navigationView.menu
+                val item = menu.findItem(R.id.nav_quiero_ser_jugador)
+                when (estado){
+                    "NINGUNO", "RECHAZADO" -> item.isVisible = true
+                    "PENDIENTE", "ACEPTADO" -> item.isVisible = false
+                }
+            }
     }
 }
