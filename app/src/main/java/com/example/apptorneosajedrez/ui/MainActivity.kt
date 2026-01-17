@@ -181,7 +181,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun actualizarEstadoJugadorPendiente(){
-        val currentUser = authRepository.getCurrentFirebaseUser() ?: return
+        val currentUser = authRepository.getCurrentUserInMemory() ?: return
         val uid = currentUser.uid
         val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
 
@@ -229,7 +229,7 @@ class MainActivity : AppCompatActivity() {
 
     // TODO: mejorar en una sola consulta a la bd por sesión para guardar en caché la info
     private fun checkEstadoComoJugadorVisibilidad(navigationView: NavigationView){
-        val currentUser = authRepository.getCurrentFirebaseUser() ?: return
+        val currentUser = authRepository.getCurrentUserInMemory() ?: return
         val uid = currentUser.uid
         val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
 

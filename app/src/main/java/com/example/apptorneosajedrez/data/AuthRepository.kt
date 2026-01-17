@@ -5,9 +5,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class AuthRepository(
@@ -39,39 +44,52 @@ class AuthRepository(
     private val _currentUser = MutableStateFlow<Usuario?>(null)
     val currentUser: StateFlow<Usuario?> = _currentUser.asStateFlow()
 
-    // Firebase user (solo auth)
-    fun getCurrentFirebaseUser(): FirebaseUser? = firebaseAuth.currentUser
+    // ----------------------------
+    // Sincronización automática (listener)
+    // ----------------------------
+    private var userListenerRegistration: ListenerRegistration? = null
+    private var listeningUid: String? = null
+
+    // Scope interno para tareas desde callbacks no-suspend (listener)
+    private val repoScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**
      * Inicializa la sesión al arrancar la app.
-     * - Si NO hay usuario autenticado: limpia sesión en memoria.
-     * - Si hay: carga/asegura documento en Firestore y lo guarda en memoria.
+     * - Si NO hay usuario autenticado: limpia sesión en memoria y detiene el listener.
+     * - Si hay: asegura documento en Firestore, lo guarda en memoria y deja un listener
+     *   activo sobre usuarios/{uid} para mantener sincronizado el StateFlow.
      *
      * Llamar una vez al inicio (por ejemplo en MainActivity/Splash).
      */
     suspend fun initSession(): Usuario? {
         val firebaseUser = firebaseAuth.currentUser
         if (firebaseUser == null) {
+            stopUserListener()
             _currentUser.value = null
             return null
         }
 
         val appUser = ensureUserDocument(firebaseUser)
         _currentUser.value = appUser
+
+        // Mantener sincronizado en segundo plano
+        startUserListener(firebaseUser.uid)
+
         return appUser
     }
 
     /**
-     * Limpia sesión (Firebase + memoria).
+     * Limpia sesión (Firebase + memoria) y detiene el listener.
      */
     fun logout() {
+        stopUserListener()
         firebaseAuth.signOut()
         _currentUser.value = null
     }
 
     /**
      * Login con email y contraseña.
-     * Actualiza sesión en memoria.
+     * Actualiza sesión en memoria y arranca listener.
      */
     suspend fun loginWithEmail(email: String, password: String): Usuario {
         val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
@@ -79,12 +97,14 @@ class AuthRepository(
 
         val appUser = ensureUserDocument(user)
         _currentUser.value = appUser
+        startUserListener(user.uid)
+
         return appUser
     }
 
     /**
      * Login con Google usando el idToken obtenido con Credential Manager.
-     * Actualiza sesión en memoria.
+     * Actualiza sesión en memoria y arranca listener.
      */
     suspend fun loginWithGoogle(idToken: String): Usuario {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
@@ -93,12 +113,14 @@ class AuthRepository(
 
         val appUser = ensureUserDocument(user)
         _currentUser.value = appUser
+        startUserListener(user.uid)
+
         return appUser
     }
 
     /**
      * Registro con email + creación de documento en Firestore.
-     * Actualiza sesión en memoria.
+     * Actualiza sesión en memoria y arranca listener.
      */
     suspend fun registerWithEmail(
         fullName: String,
@@ -112,7 +134,6 @@ class AuthRepository(
             uid = user.uid,
             email = email,
             nombreCompleto = fullName
-            // Si tu modelo tiene defaults para tipo/estado, no hace falta setearlos acá
         )
 
         firebaseFirestore.collection(USERS_COLLECTION)
@@ -121,42 +142,16 @@ class AuthRepository(
             .await()
 
         _currentUser.value = appUser
+        startUserListener(user.uid)
+
         return appUser
     }
 
     /**
      * Devuelve el usuario de sesión actual en memoria (puede ser null).
-     * Útil si estás en un lugar donde no querés coleccionar Flow.
      */
     fun getCurrentUserInMemory(): Usuario? = _currentUser.value
 
-    /**
-     * Refresca manualmente desde Firestore (por ejemplo desde "Perfil" → botón "Actualizar").
-     * Actualiza la sesión en memoria.
-     */
-    suspend fun refreshCurrentUser(): Usuario? {
-        val firebaseUser = firebaseAuth.currentUser ?: run {
-            _currentUser.value = null
-            return null
-        }
-
-        val snapshot = firebaseFirestore.collection(USERS_COLLECTION)
-            .document(firebaseUser.uid)
-            .get()
-            .await()
-
-        val user = if (snapshot.exists()) {
-            snapshot.toObject(Usuario::class.java)?.copy(uid = firebaseUser.uid)
-        } else {
-            null
-        }
-
-        // Si no existe, lo creamos (misma política que ensureUserDocument)
-        val finalUser = user ?: ensureUserDocument(firebaseUser)
-
-        _currentUser.value = finalUser
-        return finalUser
-    }
 
     /**
      * Si el documento no existe, lo crea usando los datos del FirebaseUser.
@@ -177,7 +172,54 @@ class AuthRepository(
     }
 
     /**
-     * Obtiene todos los usuarios de Firebase
+     * Mantiene _currentUser sincronizado con el documento usuarios/{uid}.
+     * - No duplica listeners.
+     * - Si cambia el uid (otro login), reemplaza el listener anterior.
+     */
+    private fun startUserListener(uid: String) {
+        if (listeningUid == uid && userListenerRegistration != null) return
+
+        // Si había un listener de otro usuario, lo reemplazamos
+        stopUserListener()
+
+        listeningUid = uid
+        userListenerRegistration = firebaseFirestore.collection(USERS_COLLECTION)
+            .document(uid)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    // No cortamos sesión por un error transitorio. Mantenemos el último valor en memoria.
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    val updated = snapshot.toObject(Usuario::class.java)?.copy(uid = uid)
+                    if (updated != null) {
+                        _currentUser.value = updated
+                    }
+                    return@addSnapshotListener
+                }
+
+                // Si el doc no existe por algún motivo, intentamos recrearlo (política actual del repo)
+                val firebaseUser = firebaseAuth.currentUser
+                if (firebaseUser != null && firebaseUser.uid == uid) {
+                    repoScope.launch {
+                        val recreated = ensureUserDocument(firebaseUser)
+                        _currentUser.value = recreated
+                    }
+                } else {
+                    _currentUser.value = null
+                }
+            }
+    }
+
+    private fun stopUserListener() {
+        userListenerRegistration?.remove()
+        userListenerRegistration = null
+        listeningUid = null
+    }
+
+    /**
+     * Obtiene todos los usuarios.
      */
     suspend fun obtenerTodosLosUsuarios(): List<Usuario> {
         val snapshot = firebaseFirestore.collection(USERS_COLLECTION)
@@ -190,7 +232,7 @@ class AuthRepository(
     }
 
     /**
-     * Actualiza el estadoComoJugador de un Usuario dado
+     * Actualiza el estadoComoJugador de un Usuario dado.
      */
     suspend fun actualizarEstadoUsuario(
         uid: String,

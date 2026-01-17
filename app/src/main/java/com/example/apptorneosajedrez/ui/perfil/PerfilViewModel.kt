@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.model.TipoUsuario
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
 
 class PerfilViewModel(
     private val authRepository: AuthRepository
@@ -16,12 +17,12 @@ class PerfilViewModel(
     val uiState: LiveData<PerfilUiState> = _uiState
 
     init {
-        loadUserData()
+        observeUserInMemory()
     }
 
     /**
      * Convierte el tipo de usuario desde el formato de base de datos
-     * al formato legible para mostrar en la UI
+     * al formato legible para mostrar en la UI.
      */
     private fun formatUserType(tipo: String?): String {
         return when (tipo?.uppercase()) {
@@ -31,29 +32,37 @@ class PerfilViewModel(
         }
     }
 
-    private fun loadUserData() {
+    /**
+     * Observa el usuario en memoria expuesto por AuthRepository.currentUser.
+     * No hace ninguna llamada a Firebase. El repositorio se encarga de
+     * mantener sincronizado ese flujo con Firestore.
+     */
+    private fun observeUserInMemory() {
         viewModelScope.launch {
-            try {
-                _uiState.value = _uiState.value?.copy(isLoading = true)
+            // Estado inicial: cargando
+            _uiState.value = _uiState.value?.copy(
+                isLoading = true,
+                error = null
+            )
 
-                // Observar cambios en el usuario actual
-                authRepository.currentUser.collect { usuario ->
+            try {
+                authRepository.currentUser.collectLatest { usuario ->
                     if (usuario != null) {
                         _uiState.value = PerfilUiState(
                             isLoading = false,
                             userName = usuario.nombreCompleto ?: "Usuario sin nombre",
-                            userEmail = usuario.email ?: "",
-                            userType = formatUserType((usuario.tipoUsuario ?: TipoUsuario.AFICIONADO).toString()),
+                            userEmail = usuario.email,
+                            userType = formatUserType(
+                                usuario.tipoUsuario.toString()
+                            ),
                             error = null
-
-
                         )
                     } else {
                         _uiState.value = PerfilUiState(
                             isLoading = false,
                             userName = "",
                             userEmail = "",
-                            userType = formatUserType(( TipoUsuario.AFICIONADO).toString()),
+                            userType = formatUserType(TipoUsuario.AFICIONADO.toString()),
                             error = "No hay usuario autenticado"
                         )
                     }
@@ -62,21 +71,6 @@ class PerfilViewModel(
                 _uiState.value = _uiState.value?.copy(
                     isLoading = false,
                     error = "Error al cargar datos: ${e.message}"
-                )
-            }
-        }
-    }
-
-    fun refreshUserData() {
-        viewModelScope.launch {
-            try {
-                _uiState.value = _uiState.value?.copy(isLoading = true)
-                authRepository.refreshCurrentUser()
-                // El collect en loadUserData actualizará automáticamente el estado
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value?.copy(
-                    isLoading = false,
-                    error = "Error al actualizar datos: ${e.message}"
                 )
             }
         }
