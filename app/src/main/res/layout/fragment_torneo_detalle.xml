@@ -30,6 +30,17 @@
             android:src="@drawable/logo_caballo_negro" />
 
         <TextView
+            android:id="@+id/tv_estado_torneo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            tools:text="ACTIVO" />
+
+        <TextView
             android:id="@+id/tv_fecha_inicio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

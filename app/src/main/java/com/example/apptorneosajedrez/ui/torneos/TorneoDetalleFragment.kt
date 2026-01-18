@@ -37,6 +37,7 @@ class TorneoDetalleFragment : Fragment() {
 
         torneo?.let { t ->
             binding.nombreTorneo.text = t.nombre
+            binding.tvEstadoTorneo.text = t.estado.name
             binding.tvFechaInicio.text = "Fecha de inicio: ${t.fechaInicio}"
             binding.tvFechaFin.text = "Fecha de fin: ${t.fechaFin}"
             binding.tvHoraInicio.text = "Hora de inicio: ${t.horaInicio}"
