@@ -275,12 +275,7 @@ class MapaFragment : Fragment(), OnMapReadyCallback {
         val inputNombre = dialogView.findViewById<EditText>(R.id.editTextNombreFiltro)
         val inputDescripcion = dialogView.findViewById<EditText>(R.id.editTextDescripcionFiltro)
         val inputDescuento = dialogView.findViewById<EditText>(R.id.editTextDescuentoFiltro)
-
         val btnLimpiar = dialogView.findViewById<Button>(R.id.btnLimpiarFiltros)
-        val spnCat = dialogView.findViewById<Spinner>(R.id.spinnerCategoriaFiltro)
-        val etNombre = dialogView.findViewById<EditText>(R.id.editTextNombreFiltro)
-        val etDescripcion = dialogView.findViewById<EditText>(R.id.editTextDescripcionFiltro)
-        val etDescuento = dialogView.findViewById<EditText>(R.id.editTextDescuentoFiltro)
 
         val categorias = listOf("Ambas categorías") + Categoria.values().map {
             it.name.lowercase().replaceFirstChar(Char::titlecase)
@@ -297,6 +292,18 @@ class MapaFragment : Fragment(), OnMapReadyCallback {
         val indexCategoria = categorias.indexOf(filtroCategoria)
         if (indexCategoria >= 0) spinnerCategoria.setSelection(indexCategoria)
 
+        spinnerCategoria.setOnItemSelectedListener(object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val seleccion = categorias[position]
+                val esTorneo = seleccion.equals("Torneo", ignoreCase = true)
+                inputDescuento.isEnabled = !esTorneo
+                if (esTorneo) {
+                    inputDescuento.setText("")
+                }
+            }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
+        })
+
         AlertDialog.Builder(requireContext())
             .setTitle("Filtrar marcadores")
             .setView(dialogView)
@@ -307,16 +314,15 @@ class MapaFragment : Fragment(), OnMapReadyCallback {
                 filtroDescuento = inputDescuento.text.toString().toIntOrNull()
 
                 aplicarFiltro(filtroNombre, filtroCategoria, filtroDescripcion, filtroDescuento)
-
             }
             .setNegativeButton("Cancelar", null)
             .show()
 
         btnLimpiar.setOnClickListener {
-            spnCat.setSelection(0)
-            etNombre.setText("")
-            etDescripcion.setText("")
-            etDescuento.setText("")
+            spinnerCategoria.setSelection(0)
+            inputNombre.setText("")
+            inputDescripcion.setText("")
+            inputDescuento.setText("")
         }
     }
 
