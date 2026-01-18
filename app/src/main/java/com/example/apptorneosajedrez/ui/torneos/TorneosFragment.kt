@@ -2,12 +2,12 @@ package com.example.apptorneosajedrez.ui.torneos
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
@@ -30,6 +30,13 @@ class TorneosFragment : Fragment() {
     private val viewModel: TorneoViewModel by viewModels()
     private var torneosList: List<Torneo> = emptyList()
 
+    // Variables para mantener los filtros aplicados
+    private var filtroNombre = ""
+    private var filtroUbicacion = "Todas las ubicaciones"
+    private var filtroEstado = "Todos los estados"
+    private var filtroDescripcion = ""
+    private var filtroFecha = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -43,20 +50,36 @@ class TorneosFragment : Fragment() {
         binding.fabAgregarTorneo.setOnClickListener {
             mostrarDialogoAgregarTorneo()
         }
+        binding.fabFiltrarTorneo.setOnClickListener {
+            mostrarDialogoFiltro()
+        }
     }
 
     private fun observarTorneos() {
         viewModel.torneos.observe(viewLifecycleOwner) { lista ->
             torneosList = lista
-            setupRecyclerView()
+            aplicarFiltros()
         }
     }
 
-    private fun setupRecyclerView() {
-        val activos = torneosList.filter { it.estado == EstadoTorneo.ACTIVO }
-        val proximos = torneosList.filter { it.estado == EstadoTorneo.PROXIMO }
-        val finalizados = torneosList.filter { it.estado == EstadoTorneo.FINALIZADO }
-        val suspendidos = torneosList.filter { it.estado == EstadoTorneo.SUSPENDIDO }
+    private fun aplicarFiltros() {
+        val filtrados = torneosList.filter { torneo ->
+            val coincideNombre = filtroNombre.isEmpty() || torneo.nombre.contains(filtroNombre, ignoreCase = true)
+            val coincideUbicacion = filtroUbicacion == "Todas las ubicaciones" || torneo.ubicacion == filtroUbicacion
+            val coincideEstado = filtroEstado == "Todos los estados" || torneo.estado.name.equals(filtroEstado, ignoreCase = true)
+            val coincideDescripcion = filtroDescripcion.isEmpty() || torneo.descripcion.contains(filtroDescripcion, ignoreCase = true)
+            val coincideFecha = filtroFecha.isEmpty() || torneo.fechaInicio == filtroFecha
+
+            coincideNombre && coincideUbicacion && coincideEstado && coincideDescripcion && coincideFecha
+        }
+        setupRecyclerView(filtrados)
+    }
+
+    private fun setupRecyclerView(listaMostrar: List<Torneo>) {
+        val activos = listaMostrar.filter { it.estado == EstadoTorneo.ACTIVO }
+        val proximos = listaMostrar.filter { it.estado == EstadoTorneo.PROXIMO }
+        val finalizados = listaMostrar.filter { it.estado == EstadoTorneo.FINALIZADO }
+        val suspendidos = listaMostrar.filter { it.estado == EstadoTorneo.SUSPENDIDO }
 
         val items = mutableListOf<TorneoItem>()
 
@@ -90,6 +113,72 @@ class TorneosFragment : Fragment() {
             }
     }
 
+    private fun mostrarDialogoFiltro() {
+        val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filtro_torneo, null)
+
+        val etNombre = view.findViewById<EditText>(R.id.etNombreFiltro)
+        val spinnerUbicacion = view.findViewById<Spinner>(R.id.spinnerUbicacionFiltro)
+        val spinnerEstado = view.findViewById<Spinner>(R.id.spinnerEstadoFiltro)
+        val etDescripcion = view.findViewById<EditText>(R.id.etDescripcionFiltro)
+        val etFechaInicio = view.findViewById<EditText>(R.id.etFechaInicioFiltro)
+        val btnLimpiar = view.findViewById<Button>(R.id.btnLimpiarFiltro)
+
+        // Configurar Spinner Ubicación
+        MarcadorRepository().escucharMarcadores { lista ->
+            val ubicaciones = listOf("Todas las ubicaciones") + lista.filter { it.categoria.name == "TORNEO" }.map { it.nombre }
+            val adapterUbi = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, ubicaciones)
+            adapterUbi.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerUbicacion.adapter = adapterUbi
+            
+            val indexUbi = ubicaciones.indexOf(filtroUbicacion)
+            if (indexUbi >= 0) spinnerUbicacion.setSelection(indexUbi)
+        }
+
+        // Configurar Spinner Estado
+        val estados = listOf("Todos los estados") + EstadoTorneo.values().map { it.name.lowercase().replaceFirstChar(Char::titlecase) }
+        val adapterEst = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, estados)
+        adapterEst.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerEstado.adapter = adapterEst
+        
+        val indexEst = estados.indexOf(filtroEstado)
+        if (indexEst >= 0) spinnerEstado.setSelection(indexEst)
+
+        // Setear valores actuales
+        etNombre.setText(filtroNombre)
+        etDescripcion.setText(filtroDescripcion)
+        etFechaInicio.setText(filtroFecha)
+
+        etFechaInicio.setOnClickListener {
+            val calendario = Calendar.getInstance()
+            DatePickerDialog(requireContext(), { _, y, m, d ->
+                etFechaInicio.setText("%04d-%02d-%02d".format(y, m + 1, d))
+            }, calendario[Calendar.YEAR], calendario[Calendar.MONTH], calendario[Calendar.DAY_OF_MONTH]).show()
+        }
+
+        btnLimpiar.setOnClickListener {
+            etNombre.setText("")
+            spinnerUbicacion.setSelection(0)
+            spinnerEstado.setSelection(0)
+            etDescripcion.setText("")
+            etFechaInicio.setText("")
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Filtrar torneos")
+            .setView(view)
+            .setPositiveButton("Filtrar") { _, _ ->
+                filtroNombre = etNombre.text.toString().trim()
+                filtroUbicacion = spinnerUbicacion.selectedItem.toString()
+                filtroEstado = spinnerEstado.selectedItem.toString()
+                filtroDescripcion = etDescripcion.text.toString().trim()
+                filtroFecha = etFechaInicio.text.toString()
+                
+                aplicarFiltros()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
     private fun mostrarDialogoAgregarTorneo() {
         val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_agregar_torneo, null)
 
@@ -115,9 +204,11 @@ class TorneosFragment : Fragment() {
         }
 
         etHoraInicio.setOnClickListener {
-            TimePickerDialog(requireContext(), { _, h, m ->
-                etHoraInicio.setText("%02d:%02d".format(h, m))
-            }, calendario[Calendar.HOUR_OF_DAY], calendario[Calendar.MINUTE], true).show()
+            val h = calendario[Calendar.HOUR_OF_DAY]
+            val min = calendario[Calendar.MINUTE]
+            android.app.TimePickerDialog(requireContext(), { _, hSeleccionada, mSeleccionada ->
+                etHoraInicio.setText("%02d:%02d".format(hSeleccionada, mSeleccionada))
+            }, h, min, true).show()
         }
 
         MarcadorRepository().escucharMarcadores { lista ->
