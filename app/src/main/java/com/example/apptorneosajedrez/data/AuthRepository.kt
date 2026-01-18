@@ -1,5 +1,6 @@
 package com.example.apptorneosajedrez.data
 
+import com.example.apptorneosajedrez.model.EstadoComoJugador
 import com.example.apptorneosajedrez.model.Usuario
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -236,12 +237,18 @@ class AuthRepository(
      */
     suspend fun actualizarEstadoUsuario(
         uid: String,
-        nuevoEstado: com.example.apptorneosajedrez.model.EstadoComoJugador
+        nuevoEstado: EstadoComoJugador
     ) {
         firebaseFirestore.collection(USERS_COLLECTION)
             .document(uid)
             .update("estadoComoJugador", nuevoEstado.name)
             .await()
+
+        if(nuevoEstado == EstadoComoJugador.ACEPTADO){
+            val userSnapshot = firebaseFirestore.collection(USERS_COLLECTION).document(uid).get().await()
+            val usuario = userSnapshot.toObject(Usuario::class.java) ?: return
+            JugadorRepository().crearJugador(uid = usuario.uid, nombreCompleto = usuario.nombreCompleto ?: "", email = usuario.email)
+        }
     }
 
     private fun defaultFromFirebaseUser(user: FirebaseUser): Usuario =

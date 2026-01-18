@@ -16,8 +16,8 @@ class JugadoresFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val repo = JugadorRepository()
-    private lateinit var adapter: JugadorAdapter
-    private var listaJugadores: List<Jugador> = emptyList()
+    //private lateinit var adapter: JugadorAdapter
+    //private var listaJugadores: List<Jugador> = emptyList()
     private var listenerRegistration: ListenerRegistration? = null
 
     override fun onCreateView(
@@ -31,27 +31,29 @@ class JugadoresFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         listenerRegistration = repo.escucharJugadores { jugadores ->
+            val items = jugadores.map { JugadorItem.JugadorData(it) }
+            binding.recyclerViewJugadores.adapter = JugadorAdapter(items)
 
-            val pendientes = jugadores.filter { it.estado == "pendiente" }
-            val aceptados = jugadores.filter { it.estado == "aceptado" }
+            //val pendientes = jugadores.filter { it.estado == "pendiente" }
+            //val aceptados = jugadores.filter { it.estado == "aceptado" }
 
-            val items = mutableListOf<JugadorItem>()
-            if (pendientes.isNotEmpty()) {
-                items.add(JugadorItem.Header("Jugadores pendientes (${pendientes.size})"))
-                items.addAll(pendientes.map { JugadorItem.JugadorData(it) })
-            }
+           //val items = mutableListOf<JugadorItem>()
+            //if (pendientes.isNotEmpty()) {
+            //    items.add(JugadorItem.Header("Jugadores pendientes (${pendientes.size})"))
+            //    items.addAll(pendientes.map { JugadorItem.JugadorData(it) })
+            //}
 
-            if (aceptados.isNotEmpty()) {
-                items.add(JugadorItem.Header("Jugadores aceptados (${aceptados.size})"))
-                items.addAll(aceptados.map { JugadorItem.JugadorData(it) })
-            }
+            //if (aceptados.isNotEmpty()) {
+            //    items.add(JugadorItem.Header("Jugadores aceptados (${aceptados.size})"))
+            //    items.addAll(aceptados.map { JugadorItem.JugadorData(it) })
+            //}
 
-            adapter = JugadorAdapter(
-                items,
-                onAceptarClick = { jugador -> repo.actualizarEstadoJugador(jugador.id, "aceptado") },
-                onRechazarClick = { jugador -> repo.eliminarJugador(jugador.id) }
-            )
-            binding.recyclerViewJugadores.adapter = adapter
+            //adapter = JugadorAdapter(
+            //    items,
+            //    onAceptarClick = { jugador -> repo.actualizarEstadoJugador(jugador.id, "aceptado") },
+            //    onRechazarClick = { jugador -> repo.eliminarJugador(jugador.id) }
+            //)
+            //binding.recyclerViewJugadores.adapter = adapter
         }
     }
 
