@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.data.TorneoRepository
 import com.example.apptorneosajedrez.databinding.FragmentDestacadosBinding
+import com.example.apptorneosajedrez.model.EstadoTorneo
 import com.example.apptorneosajedrez.ui.torneos.KEY_TORNEO_DESTACADO
 import com.example.apptorneosajedrez.ui.torneos.PREF_NAME
 
@@ -19,7 +20,7 @@ class DestacadosFragment : Fragment() {
 
     private var _binding: FragmentDestacadosBinding? = null
     private val binding get() = _binding!!
-    private val torneoRepo = TorneoRepository() // ✅ Instanciamos el repositorio
+    private val torneoRepo = TorneoRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,8 +42,34 @@ class DestacadosFragment : Fragment() {
         torneoRepo.escucharTorneos { listaTorneos ->
             val torneosFavoritos = listaTorneos.filter { favoritos.contains(it.nombre) }
 
+            val items = mutableListOf<DestacadoItem>()
+            val grupos = torneosFavoritos.groupBy { it.estado }
+
+            val titulos = mapOf(
+                EstadoTorneo.ACTIVO to "Torneos activos",
+                EstadoTorneo.PROXIMO to "Próximos torneos",
+                EstadoTorneo.FINALIZADO to "Torneos finalizados",
+                EstadoTorneo.SUSPENDIDO to "Torneos suspendidos"
+            )
+
+            val estadosOrdenados = listOf(
+                EstadoTorneo.ACTIVO,
+                EstadoTorneo.PROXIMO,
+                EstadoTorneo.FINALIZADO,
+                EstadoTorneo.SUSPENDIDO
+            )
+
+            estadosOrdenados.forEach { estado ->
+                grupos[estado]?.let { lista ->
+                    if (lista.isNotEmpty()) {
+                        items.add(DestacadoItem.Header(titulos[estado] ?: estado.name))
+                        items.addAll(lista.map { DestacadoItem.TorneoData(it) })
+                    }
+                }
+            }
+
             val adapter = DestacadosAdapter(
-                torneos = torneosFavoritos,
+                items = items,
                 onEliminarFavorito = { torneo ->
                     favoritos.remove(torneo.nombre)
                     prefs.edit().putStringSet(KEY_TORNEO_DESTACADO, favoritos).apply()
