@@ -26,7 +26,8 @@ class PerfilViewModel(
      */
     private fun formatUserType(tipo: String?): String {
         return when (tipo?.uppercase()) {
-            "ADMINISTRADOR" -> "Administrador/a"
+            //TODO: Organizador es el nombre que ya tiene en model Usuario.kt
+            "ORGANIZADOR" -> "Administrador/a"
             "JUGADOR" -> "Jugador/a"
             else -> "Aficionado/a"
         }

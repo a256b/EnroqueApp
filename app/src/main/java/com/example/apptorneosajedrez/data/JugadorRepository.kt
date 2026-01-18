@@ -26,6 +26,8 @@ class JugadorRepository {
     fun crearJugador(uid: String, nombreCompleto: String, email: String){
         val jugador = Jugador(id=uid, nombre=nombreCompleto, email=email)
         db.collection("jugadores").document(uid).set(jugador)
+        //TODO: ver si conviene pasar a actualizarEstadoJugador
+        db.collection("usuarios").document(uid).update("tipoUsuario", "JUGADOR")
     }
 
     fun actualizarEstadoJugador(id: String, nuevoEstado: String) {
