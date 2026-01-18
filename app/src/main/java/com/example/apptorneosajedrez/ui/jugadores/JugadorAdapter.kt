@@ -16,8 +16,6 @@ sealed class JugadorItem {
 
 class JugadorAdapter(
     private val items: List<JugadorItem>,
-    //private val onAceptarClick: (Jugador) -> Unit,
-    //private val onRechazarClick: (Jugador) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -62,22 +60,11 @@ class JugadorAdapter(
 
     inner class JugadorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val nombreTextView: TextView = view.findViewById(R.id.textNombreJugador)
-        //private val btnAceptar: Button = view.findViewById(R.id.btnAceptar)
-        //private val btnRechazar: Button = view.findViewById(R.id.btnRechazar)
+        private val emailTextView: TextView = view.findViewById(R.id.txtEmail)
 
         fun bind(jugador: Jugador) {
             nombreTextView.text = jugador.nombre
-            //btnAceptar.setOnClickListener { onAceptarClick(jugador) }
-            //btnRechazar.setOnClickListener { onRechazarClick(jugador) }
-
-            // Ocultamos botón si ya está aceptado
-            //if (jugador.estado == "aceptado") {
-            //    btnAceptar.visibility = View.GONE
-            //    btnRechazar.visibility = View.GONE
-            //} else {
-            //    btnAceptar.visibility = View.VISIBLE
-            //    btnRechazar.visibility = View.VISIBLE
-            //}
+            emailTextView.text = jugador.email
         }
     }
 }

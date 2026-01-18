@@ -17,15 +17,7 @@ class JugadorRepository {
                 }
 
                 val jugadores = snapshot.documents.mapNotNull { doc ->
-                    //val jugador = doc.toObject<Jugador>()
                     doc.toObject<Jugador>()
-
-                    // Usar el campo 'id' cargado manualmente, no el document.id
-                    //if (jugador != null && jugador.id.isNotBlank()) {
-                    //    jugador
-                    //} else {
-                    //    null
-                    //}
                 }
                 onChange(jugadores)
             }
@@ -35,10 +27,6 @@ class JugadorRepository {
         val jugador = Jugador(id=uid, nombre=nombreCompleto, email=email)
         db.collection("jugadores").document(uid).set(jugador)
     }
-
-    //fun eliminarJugador(uid: String){
-    //    db.collection("jugadores").document(uid).delete()
-    //}
 
     fun actualizarEstadoJugador(id: String, nuevoEstado: String) {
         db.collection("jugadores")
