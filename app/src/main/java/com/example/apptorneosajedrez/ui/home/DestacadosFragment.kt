@@ -84,8 +84,8 @@ class DestacadosFragment : Fragment() {
                 }
             )
 
-            binding.recyclerViewDestacados.layoutManager = LinearLayoutManager(requireContext())
-            binding.recyclerViewDestacados.adapter = adapter
+            _binding?.recyclerViewDestacados?.layoutManager = LinearLayoutManager(requireContext())
+            _binding?.recyclerViewDestacados?.adapter = adapter
         }
     }
 
