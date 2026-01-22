@@ -1,7 +1,6 @@
 package com.example.apptorneosajedrez.ui.inscripciones
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +9,6 @@ import com.example.apptorneosajedrez.data.InscripcionRepository
 import com.example.apptorneosajedrez.data.JugadorRepository
 import com.example.apptorneosajedrez.data.TorneoRepository
 import com.example.apptorneosajedrez.databinding.FragmentInscripcionesBinding
-import com.example.apptorneosajedrez.model.Jugador
-import com.example.apptorneosajedrez.model.Torneo
 
 class InscripcionesFragment : Fragment() {
 
@@ -35,8 +32,7 @@ class InscripcionesFragment : Fragment() {
             val jugadoresMap = listaJugadores.associateBy { it.id }
 
             repoTorneos.escucharTorneos { listaTorneos ->
-                // Fix applied here:
-                val torneosMap = listaTorneos.associateBy<String, Torneo> { it.idTorneo }
+                val torneosMap = listaTorneos.associateBy { it.idTorneo }
 
                 repoInscripciones.escucharInscripciones { listaInscripciones ->
                     val inscripcionesInfo = listaInscripciones.map { inscripcion ->

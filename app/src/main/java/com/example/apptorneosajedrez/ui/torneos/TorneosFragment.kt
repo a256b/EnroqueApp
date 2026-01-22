@@ -231,7 +231,7 @@ class TorneosFragment : Fragment() {
                     horaInicio = etHoraInicio.text.toString(),
                     ubicacion = spinnerUbicacion.selectedItem?.toString() ?: ""
                 )
-                TorneoRepository().agregarTorneo(torneo) { exito, id ->
+                TorneoRepository().agregarTorneo(torneo) { exito, _ ->
                     Toast.makeText(
                         requireContext(),
                         if (exito) "Guardado" else "Error al guardar",
@@ -242,6 +242,7 @@ class TorneosFragment : Fragment() {
             .setNegativeButton("Cancelar", null)
             .show()
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
