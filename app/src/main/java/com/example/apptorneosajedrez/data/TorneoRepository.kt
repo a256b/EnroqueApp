@@ -20,10 +20,17 @@ class TorneoRepository {
         }
     }
 
-    fun agregarTorneo(torneo: Torneo, onComplete: (Boolean) -> Unit) {
-        db.collection("torneos")
-            .add(torneo)
-            .addOnSuccessListener { onComplete(true) }
-            .addOnFailureListener { onComplete(false) }
+    fun agregarTorneo(torneo: Torneo, onComplete: (Boolean, String?) -> Unit) {
+        // Genero doc con ID automático
+        val docRef = db.collection("torneos").document()
+        val idGenerado = docRef.id
+
+        // Inserto el ID dentro del objeto
+        val torneoConId = torneo.copy(idTorneo = idGenerado)
+
+        // Guardo
+        docRef.set(torneoConId)
+            .addOnSuccessListener { onComplete(true, idGenerado) }
+            .addOnFailureListener { onComplete(false, null) }
     }
 }

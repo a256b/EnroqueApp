@@ -35,14 +35,15 @@ class InscripcionesFragment : Fragment() {
             val jugadoresMap = listaJugadores.associateBy { it.id }
 
             repoTorneos.escucharTorneos { listaTorneos ->
-                val torneosMap = listaTorneos.associateBy { it.idTorneo }
+                // Fix applied here:
+                val torneosMap = listaTorneos.associateBy<String, Torneo> { it.idTorneo }
 
                 repoInscripciones.escucharInscripciones { listaInscripciones ->
                     val inscripcionesInfo = listaInscripciones.map { inscripcion ->
                         val jugadorNombre = jugadoresMap[inscripcion.idJugador]?.nombre
                             ?: "Jugador eliminado (id: ${inscripcion.idJugador})"
 
-                        val torneoNombre = torneosMap[inscripcion.idTorneo.toIntOrNull()]?.nombre
+                        val torneoNombre = torneosMap[inscripcion.idTorneo]?.nombre
                             ?: "Torneo eliminado (id: ${inscripcion.idTorneo})"
 
                         InscripcionInfo(jugadorNombre, torneoNombre)

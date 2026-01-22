@@ -223,7 +223,7 @@ class TorneosFragment : Fragment() {
             .setView(view)
             .setPositiveButton("Guardar") { _, _ ->
                 val torneo = Torneo(
-                    idTorneo = (0..99999).random(),
+                    idTorneo = "",
                     nombre = etNombre.text.toString(),
                     descripcion = etDescripcion.text.toString(),
                     fechaInicio = etFechaInicio.text.toString(),
@@ -231,8 +231,12 @@ class TorneosFragment : Fragment() {
                     horaInicio = etHoraInicio.text.toString(),
                     ubicacion = spinnerUbicacion.selectedItem?.toString() ?: ""
                 )
-                TorneoRepository().agregarTorneo(torneo) { exito ->
-                    Toast.makeText(requireContext(), if (exito) "Guardado" else "Error al guardar", Toast.LENGTH_SHORT).show()
+                TorneoRepository().agregarTorneo(torneo) { exito, id ->
+                    Toast.makeText(
+                        requireContext(),
+                        if (exito) "Guardado" else "Error al guardar",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
             .setNegativeButton("Cancelar", null)
