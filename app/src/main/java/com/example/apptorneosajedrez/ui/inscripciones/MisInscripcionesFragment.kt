@@ -6,21 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.data.InscripcionRepository
 import com.example.apptorneosajedrez.data.JugadorRepository
 import com.example.apptorneosajedrez.data.TorneoRepository
-import com.example.apptorneosajedrez.databinding.FragmentInscripcionesBinding
+import com.example.apptorneosajedrez.databinding.FragmentMisInscripcionesBinding
 import com.example.apptorneosajedrez.model.EstadoInscripcion
 import com.google.firebase.firestore.ListenerRegistration
 
-class InscripcionesFragment : Fragment() {
+class MisInscripcionesFragment : Fragment() {
 
-    private var _binding: FragmentInscripcionesBinding? = null
+    private var _binding: FragmentMisInscripcionesBinding? = null
     private val binding get() = _binding!!
     
     private val repoInscripciones = InscripcionRepository()
     private val repoJugadores = JugadorRepository()
     private val repoTorneos = TorneoRepository()
+    private val authRepository = AuthRepository.getInstance()
 
     private var listenerJugadores: ListenerRegistration? = null
     private var listenerTorneos: ListenerRegistration? = null
@@ -29,40 +31,46 @@ class InscripcionesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentInscripcionesBinding.inflate(inflater, container, false)
+        _binding = FragmentMisInscripcionesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.recyclerViewInscripciones.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewMisInscripciones.layoutManager = LinearLayoutManager(requireContext())
+
+        val currentUser = authRepository.getCurrentUserInMemory()
+        val currentUserId = currentUser?.uid ?: return
 
         listenerJugadores = repoJugadores.escucharJugadores { listaJugadores ->
-            val b = _binding ?: return@escucharJugadores
+            if (_binding == null) return@escucharJugadores
             val jugadoresMap = listaJugadores.associateBy { it.id }
 
             listenerTorneos = repoTorneos.escucharTorneos { listaTorneos ->
+                if (_binding == null) return@escucharTorneos
                 val torneosMap = listaTorneos.associateBy { it.idTorneo }
 
                 listenerInscripciones = repoInscripciones.escucharInscripciones { listaInscripciones ->
                     if (_binding == null) return@escucharInscripciones
 
-                    val inscripcionesInfo = listaInscripciones.map { inscripcion ->
+                    // Filtra por currentUser
+                    val misInscripciones = listaInscripciones.filter { it.idJugador == currentUserId }
+
+                    val inscripcionesInfo = misInscripciones.map { inscripcion ->
                         val jugadorNombre = jugadoresMap[inscripcion.idJugador]?.nombre
-                            ?: "Jugador eliminado (id: ${inscripcion.idJugador})"
+                            ?: "Jugador eliminado"
 
                         val torneoNombre = torneosMap[inscripcion.idTorneo]?.nombre
-                            ?: "Torneo eliminado (id: ${inscripcion.idTorneo})"
+                            ?: "Torneo eliminado"
 
                         InscripcionInfo(jugadorNombre, torneoNombre, inscripcion)
                     }
 
-                    // Crea headers y agrupa los items
                     val items = mutableListOf<InscripcionItem>()
                     val grupos = inscripcionesInfo.groupBy { it.inscripcion.estado }
 
-                    // Inscripciones pendientes
+                    // Headers + inscripciones
                     grupos[EstadoInscripcion.PENDIENTE]?.let { lista ->
                         if (lista.isNotEmpty()) {
                             items.add(InscripcionItem.Header("Inscripciones pendientes"))
@@ -70,7 +78,6 @@ class InscripcionesFragment : Fragment() {
                         }
                     }
 
-                    // Inscripciones aceptadas
                     grupos[EstadoInscripcion.ACEPTADA]?.let { lista ->
                         if (lista.isNotEmpty()) {
                             items.add(InscripcionItem.Header("Inscripciones aceptadas"))
@@ -78,7 +85,6 @@ class InscripcionesFragment : Fragment() {
                         }
                     }
 
-                    // Inscripciones rechazadas
                     grupos[EstadoInscripcion.RECHAZADA]?.let { lista ->
                         if (lista.isNotEmpty()) {
                             items.add(InscripcionItem.Header("Inscripciones rechazadas"))
@@ -86,16 +92,8 @@ class InscripcionesFragment : Fragment() {
                         }
                     }
 
-                    val adapter = InscripcionAdapter(items, object : InscripcionAdapter.OnInscripcionDecisionListener {
-                        override fun onAceptar(info: InscripcionInfo) {
-                            repoInscripciones.actualizarEstadoInscripcion(info.inscripcion.id, EstadoInscripcion.ACEPTADA)
-                        }
-
-                        override fun onRechazar(info: InscripcionInfo) {
-                            repoInscripciones.actualizarEstadoInscripcion(info.inscripcion.id, EstadoInscripcion.RECHAZADA)
-                        }
-                    })
-                    binding.recyclerViewInscripciones.adapter = adapter
+                    val adapter = MisInscripcionesAdapter(items)
+                    binding.recyclerViewMisInscripciones.adapter = adapter
                 }
             }
         }

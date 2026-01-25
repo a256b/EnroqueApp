@@ -51,6 +51,11 @@
     <item android:title="@string/account">
         <menu>
             <item
+                android:id="@+id/nav_mis_inscripciones"
+                android:checkable="false"
+                android:icon="@drawable/add_ad_24px"
+                android:title="@string/menu_mis_inscripciones" />
+            <item
                 android:id="@+id/nav_perfil"
                 android:checkable="false"
                 android:icon="@drawable/account_box_24px"

@@ -3,36 +3,16 @@ package com.example.apptorneosajedrez.ui.inscripciones
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.apptorneosajedrez.R
-import com.example.apptorneosajedrez.model.EstadoInscripcion
-import com.example.apptorneosajedrez.model.Inscripcion
 
-data class InscripcionInfo(
-    val nombreJugador: String,
-    val nombreTorneo: String,
-    val inscripcion: Inscripcion
-)
-
-sealed class InscripcionItem {
-    data class Header(val titulo: String) : InscripcionItem()
-    data class Data(val info: InscripcionInfo) : InscripcionItem()
-}
-
-class InscripcionAdapter(
-    private val items: List<InscripcionItem>,
-    private val listener: OnInscripcionDecisionListener
+class MisInscripcionesAdapter(
+    private val items: List<InscripcionItem>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val VIEW_HEADER = 0
     private val VIEW_ITEM = 1
-
-    interface OnInscripcionDecisionListener {
-        fun onAceptar(info: InscripcionInfo)
-        fun onRechazar(info: InscripcionInfo)
-    }
 
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val headerText: TextView = itemView.findViewById(R.id.textHeader)
@@ -41,24 +21,13 @@ class InscripcionAdapter(
         }
     }
 
-    class InscripcionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class MisInscripcionesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val nombreJugadorTextView: TextView = itemView.findViewById(R.id.textNombreInscripto)
         private val nombreTorneoTextView: TextView = itemView.findViewById(R.id.textNombreTorneo)
-        private val btnAceptar: Button = itemView.findViewById(R.id.btnAceptarInscripcion)
-        private val btnRechazar: Button = itemView.findViewById(R.id.btnRechazarInscripcion)
-        private val layoutAcciones: View = itemView.findViewById(R.id.layoutAcciones)
 
-        fun bind(info: InscripcionInfo, listener: OnInscripcionDecisionListener) {
+        fun bind(info: InscripcionInfo) {
             nombreJugadorTextView.text = info.nombreJugador
             nombreTorneoTextView.text = info.nombreTorneo
-
-            if (info.inscripcion.estado == EstadoInscripcion.PENDIENTE) {
-                layoutAcciones.visibility = View.VISIBLE
-                btnAceptar.setOnClickListener { listener.onAceptar(info) }
-                btnRechazar.setOnClickListener { listener.onRechazar(info) }
-            } else {
-                layoutAcciones.visibility = View.GONE
-            }
         }
     }
 
@@ -78,8 +47,8 @@ class InscripcionAdapter(
             }
             else -> {
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_inscripcion, parent, false)
-                InscripcionViewHolder(view)
+                    .inflate(R.layout.item_mis_inscripciones, parent, false)
+                MisInscripcionesViewHolder(view)
             }
         }
     }
@@ -87,7 +56,7 @@ class InscripcionAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = items[position]) {
             is InscripcionItem.Header -> (holder as HeaderViewHolder).bind(item.titulo)
-            is InscripcionItem.Data -> (holder as InscripcionViewHolder).bind(item.info, listener)
+            is InscripcionItem.Data -> (holder as MisInscripcionesViewHolder).bind(item.info)
         }
     }
 

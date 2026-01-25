@@ -117,5 +117,10 @@
         android:label="fragment_detalle_partida"
         tools:layout="@layout/fragment_detalle_partida" />
 
+    <fragment
+        android:id="@+id/nav_mis_inscripciones"
+        android:name="com.example.apptorneosajedrez.ui.inscripciones.MisInscripcionesFragment"
+        android:label="@string/menu_mis_inscripciones"
+        tools:layout="@layout/fragment_mis_inscripciones" />
 
 </navigation>

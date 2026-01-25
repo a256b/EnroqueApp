@@ -56,4 +56,5 @@
     <string name="new_players">Nuevos jugadores</string>
     <string name="tournament_registrations">Inscripciones a torneos</string>
     <string name="title_activity_register">Registro de nuevo usuario</string>
+    <string name="menu_mis_inscripciones">Mis inscripciones</string>
 </resources>
