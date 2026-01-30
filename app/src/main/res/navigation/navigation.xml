@@ -119,7 +119,7 @@
         tools:layout="@layout/fragment_mis_inscripciones" />
     <fragment
         android:id="@+id/detalleJugadorFragment"
-        android:name="com.example.apptorneosajedrez.ui.detallejugador.DetalleJugadorFragment"
+        android:name="com.example.apptorneosajedrez.ui.detalleJugador.DetalleJugadorFragment"
         android:label="DetalleJugadorFragment" />
 
 </navigation>

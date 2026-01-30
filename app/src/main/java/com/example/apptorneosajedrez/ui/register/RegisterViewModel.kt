@@ -70,9 +70,11 @@ class RegisterViewModel(
                     registeredUser = user
                 )
             } catch (e: Exception) {
+                val mensajeErrorTraducido = traducirMensajeErrorRegistro(e)
+
                 _uiState.value = RegisterUiState(
                     isLoading = false,
-                    errorMessage = e.message ?: "Error al registrar usuario"
+                    errorMessage = mensajeErrorTraducido
                 )
             }
         }
@@ -88,4 +90,36 @@ class RegisterViewModel(
         )
         return passwordRegex.matches(password)
     }
+
+    private fun traducirMensajeErrorRegistro(e: Exception): String {
+        val msg = e.message ?: return "No se pudo crear la cuenta"
+
+        return when {
+            msg.contains("The email address is badly formatted", ignoreCase = true) ->
+                "El correo ingresado no tiene un formato válido"
+
+            msg.contains("email address is already in use", ignoreCase = true) ||
+                    msg.contains("ERROR_EMAIL_ALREADY_IN_USE", ignoreCase = true) ->
+                "Este correo ya está registrado"
+
+            msg.contains("Password should be at least", ignoreCase = true) ||
+                    msg.contains("WEAK_PASSWORD", ignoreCase = true) ->
+                "La contraseña debe tener al menos 6 caracteres"
+
+            msg.contains("network error", ignoreCase = true) ||
+                    msg.contains("ERROR_NETWORK_REQUEST_FAILED", ignoreCase = true) ->
+                "Error de conexión. Verifica tu internet"
+
+            msg.contains("ERROR_TOO_MANY_REQUESTS", ignoreCase = true) ||
+                    msg.contains("too many attempts", ignoreCase = true) ->
+                "Demasiados intentos. Intenta nuevamente más tarde"
+
+            msg.contains("ERROR_USER_DISABLED", ignoreCase = true) ->
+                "Esta cuenta ha sido deshabilitada"
+
+            else ->
+                "No se pudo crear la cuenta. Intenta nuevamente"
+        }
+    }
+
 }

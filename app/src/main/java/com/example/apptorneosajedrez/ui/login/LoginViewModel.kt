@@ -25,7 +25,7 @@ class LoginViewModel(
         if (email.isBlank() || password.isBlank()) {
             _uiState.value = LoginUiState(
                 isLoading = false,
-                errorMessage = "Correo y contraseña son obligatorios"
+                errorMessage = "El correo electrónico y la contraseña son obligatorios"
             )
             return
         }
@@ -41,9 +41,11 @@ class LoginViewModel(
                     loggedInUser = user
                 )
             } catch (e: Exception) {
+                val mensajeErrorTraducido = traducirMensajeError(e)
+
                 _uiState.value = LoginUiState(
                     isLoading = false,
-                    errorMessage = e.message ?: "Error al iniciar sesión"
+                    errorMessage = mensajeErrorTraducido
 
                 )
             }
@@ -69,4 +71,20 @@ class LoginViewModel(
             }
         }
     }
+
+    private fun traducirMensajeError(e: Exception): String {
+        val msg = e.message ?: return "Error al iniciar sesión"
+
+        return when {
+            msg.contains("The email address is badly formatted", ignoreCase = true) ||
+                    msg.contains("There is no user record", ignoreCase = true) ||
+                    msg.contains("The password is invalid", ignoreCase = true) ->
+                "El correo electrónico y/o la contraseña son incorrectos"
+            msg.contains("blocked all requests", ignoreCase = true) ->
+                "Demasiados intentos fallidos. Intenta nuevamente más tarde."
+
+            else -> "Error al iniciar sesión: ${e.message}"
+        }
+    }
+
 }

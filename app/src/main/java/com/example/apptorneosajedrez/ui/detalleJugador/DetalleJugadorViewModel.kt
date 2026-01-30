@@ -37,8 +37,8 @@ class DetalleJugadorViewModel(
                 if (jugador != null) {
                     _uiState.value = DetalleJugadorUiState(
                         isLoading = false,
-                        nombre = jugador.nombre ?: "Jugador sin nombre",
-                        email = jugador.email ?: "",
+                        nombre = jugador.nombre,
+                        email = jugador.email,
                         error = null
                     )
                 } else {

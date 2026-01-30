@@ -7,7 +7,7 @@ import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.tasks.await
 
 class JugadorRepository(
-    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    db: FirebaseFirestore = FirebaseFirestore.getInstance()
 ) {
 
     private val jugadoresRef = db.collection("jugadores")
@@ -72,10 +72,10 @@ class JugadorRepository(
 
         return snapshot.toObject<Jugador>()
     }
-
-    /**
+/*
+    *//**
      * Guarda (crea/actualiza) un jugador completo.
-     */
+     *//*
     suspend fun guardarJugador(jugador: Jugador) {
         jugadoresRef
             .document(jugador.id)
@@ -83,9 +83,9 @@ class JugadorRepository(
             .await()
     }
 
-    /**
+    *//**
      * Actualiza sólo el nombre del jugador.
-     */
+     *//*
     suspend fun actualizarNombreJugador(
         idJugador: String,
         nombreCompleto: String
@@ -96,23 +96,21 @@ class JugadorRepository(
             .await()
     }
 
-    /**
+    *//**
      * Actualiza el estado de un jugador.
-     * Mantengo la firma original pero simplifico la query:
-     * como el docId = id, no hace falta hacer un whereEqualTo.
-     */
+     *//*
     fun actualizarEstadoJugador(id: String, nuevoEstado: String) {
         jugadoresRef
             .document(id)
             .update("estado", nuevoEstado)
     }
 
-    /**
+    *//**
      * Elimina un jugador por id.
-     */
+     *//*
     fun eliminarJugador(id: String) {
         jugadoresRef
             .document(id)
             .delete()
-    }
+    }*/
 }

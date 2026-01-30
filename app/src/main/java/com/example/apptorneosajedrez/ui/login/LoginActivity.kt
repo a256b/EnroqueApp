@@ -7,7 +7,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.credentials.CredentialManager
@@ -19,6 +18,7 @@ import androidx.credentials.exceptions.NoCredentialException
 import com.example.apptorneosajedrez.ui.MainActivity
 import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.databinding.ActivityLoginBinding
+import com.example.apptorneosajedrez.model.Usuario
 import com.example.apptorneosajedrez.ui.register.RegisterActivity
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
@@ -59,21 +59,46 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        loginViewModel.uiState.observe(this, Observer { state ->
-            binding.loading.visibility = if (state.isLoading) View.VISIBLE else View.GONE
-
-            state.errorMessage?.let { msg ->
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-            }
-
-            state.loggedInUser?.let {
-                // Navegar a la pantalla principal
-                val intent = Intent(this, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-            }
-        })
+        loginViewModel.uiState.observe(this) { state ->
+            renderLoading(state.isLoading)
+            renderError(state.errorMessage)
+            handleLoginSuccess(state.loggedInUser)
+        }
     }
+
+    private fun renderLoading(isLoading: Boolean) {
+        binding.loading.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun renderError(errorMessage: String?) {
+        if (errorMessage.isNullOrBlank()) return
+
+        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun handleLoginSuccess(usuario: Usuario?) {
+        if (usuario == null) return
+
+        val nombreParaSaludo = buildNombreParaSaludo(usuario)
+        navigateToMain(nombreParaSaludo)
+    }
+
+    private fun buildNombreParaSaludo(usuario: Usuario): String {
+        return when {
+            !usuario.nombreCompleto.isNullOrBlank() -> usuario.nombreCompleto
+            usuario.email.isNotBlank() -> usuario.email
+            else -> "usuario"
+        }
+    }
+
+    private fun navigateToMain(nombreParaSaludo: String) {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            putExtra(MainActivity.EXTRA_NOMBRE_USUARIO, nombreParaSaludo)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+    }
+
 
     private fun setupListeners() = with(binding) {
         btnLogin.setOnClickListener {

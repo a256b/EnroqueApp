@@ -5,18 +5,7 @@
     android:id="@+id/nav_detalle_jugador"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ui.detalleJugador.detalleJugadorFragment">
-
-<!--    TODO: BORRAR este TextView, es de prueba-->
-    <TextView
-        android:id="@+id/textJugadorId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Id del jugador"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".ui.detalleJugador.DetalleJugadorFragment">
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/composeView"

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -31,6 +32,10 @@ class MainActivity : AppCompatActivity() {
 
     private val authRepository: AuthRepository by lazy { AuthRepository.Companion.getInstance() }
 
+    companion object {
+        const val EXTRA_NOMBRE_USUARIO = "EXTRA_NOMBRE_USUARIO"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializeViewBinding()
@@ -41,8 +46,26 @@ class MainActivity : AppCompatActivity() {
 
             if (isFinishing || isDestroyed) return@launch
 
+            // 👇 Mostrar el saludo solo si viene el nombre
+            mostrarToastBienvenidaSiCorresponde()
+
             configureToolbar()
             setupNavigationSystem()
+        }
+    }
+
+    private fun mostrarToastBienvenidaSiCorresponde() {
+        val nombreUsuario = intent.getStringExtra(EXTRA_NOMBRE_USUARIO)
+
+        if (!nombreUsuario.isNullOrBlank()) {
+            Toast.makeText(
+                this,
+                "Bienvenido $nombreUsuario",
+                Toast.LENGTH_LONG
+            ).show()
+
+            // Opcional: para que no se vuelva a mostrar si se recrea la Activity
+            intent.removeExtra(EXTRA_NOMBRE_USUARIO)
         }
     }
 
@@ -189,17 +212,17 @@ class MainActivity : AppCompatActivity() {
             .document(uid)
             .update("estadoComoJugador", "PENDIENTE")
             .addOnSuccessListener {
-                android.widget.Toast.makeText(
+                Toast.makeText(
                     this,
                     "Solicitud enviada",
-                    android.widget.Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT
                 ).show()
             }
             .addOnFailureListener {
-                android.widget.Toast.makeText(
+                Toast.makeText(
                     this,
                     "Error al enviar la solicitud",
-                    android.widget.Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT
                 ).show()
             }
     }
