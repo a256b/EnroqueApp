@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -146,12 +147,25 @@ class TorneoDetalleFragment : Fragment() {
                     }
                 }
             }
+            
+            binding.btnEditarTorneo.setOnClickListener {
+                mostrarDialogEditar()
+            }
         }
 
         binding.btnVerPartidas.setOnClickListener {
             findNavController().navigate(R.id.nav_fixtureFragment)
         }
 
+    }
+
+    private fun mostrarDialogEditar() {
+        val builder = AlertDialog.Builder(requireContext())
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_editar_torneo, null)
+        builder.setView(dialogView)
+        builder.setPositiveButton("Cerrar") { dialog, _ -> dialog.dismiss() }
+        builder.create().show()
     }
 
     override fun onDestroyView() {
