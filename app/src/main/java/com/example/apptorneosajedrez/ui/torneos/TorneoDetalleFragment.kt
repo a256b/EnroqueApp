@@ -17,6 +17,7 @@ import com.example.apptorneosajedrez.model.EstadoTorneo
 import com.example.apptorneosajedrez.model.EstadoComoJugador
 import com.example.apptorneosajedrez.model.Inscripcion
 import com.example.apptorneosajedrez.model.EstadoInscripcion
+import com.example.apptorneosajedrez.model.TipoUsuario
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.launch
 
@@ -90,6 +91,13 @@ class TorneoDetalleFragment : Fragment() {
                     esJugadorAceptado = user?.estadoComoJugador == EstadoComoJugador.ACEPTADO
                     esJugadorSinAlta = user?.estadoComoJugador == EstadoComoJugador.NINGUNO || 
                                        user?.estadoComoJugador == EstadoComoJugador.RECHAZADO
+                    
+                    binding.btnEditarTorneo.visibility = if (user?.tipoUsuario == TipoUsuario.ORGANIZADOR) {
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
+                    
                     actualizarInterfazFiltros()
                 }
             }
