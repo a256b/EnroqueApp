@@ -3,7 +3,6 @@ package com.example.apptorneosajedrez.ui.jugadores
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.apptorneosajedrez.R
@@ -16,6 +15,7 @@ sealed class JugadorItem {
 
 class JugadorAdapter(
     private val items: List<JugadorItem>,
+    private val onJugadorClick: (Jugador) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -46,13 +46,17 @@ class JugadorAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = items[position]) {
-            is JugadorItem.Header -> (holder as HeaderViewHolder).bind(item.titulo)
-            is JugadorItem.JugadorData -> (holder as JugadorViewHolder).bind(item.jugador)
+            is JugadorItem.Header ->
+                (holder as HeaderViewHolder).bind(item.titulo)
+
+            is JugadorItem.JugadorData ->
+                (holder as JugadorViewHolder).bind(item.jugador, onJugadorClick)
         }
     }
 
     inner class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val txtHeader: TextView = view.findViewById(R.id.textHeader)
+
         fun bind(titulo: String) {
             txtHeader.text = titulo
         }
@@ -62,9 +66,13 @@ class JugadorAdapter(
         private val nombreTextView: TextView = view.findViewById(R.id.textNombreJugador)
         private val emailTextView: TextView = view.findViewById(R.id.txtEmail)
 
-        fun bind(jugador: Jugador) {
+        fun bind(jugador: Jugador, onClick: (Jugador) -> Unit) {
             nombreTextView.text = jugador.nombre
             emailTextView.text = jugador.email
+
+            itemView.setOnClickListener {
+                onClick(jugador)
+            }
         }
     }
 }

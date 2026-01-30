@@ -25,15 +25,15 @@
             android:id="@+id/action_nav_home_to_nav_torneos"
             app:destination="@id/nav_torneos" />
         <action
-            android:id="@+id/action_nav_home_to_detalleJugadorFragment"
-            app:destination="@id/nav_detalleJugadorFragment" />
-        <action
             android:id="@+id/action_nav_home_to_nuevosJugadoresFragment"
             app:destination="@id/nav_nuevosJugadoresFragment" />
 
         <action
             android:id="@+id/action_nav_home_to_nav_perfil"
             app:destination="@id/nav_perfil" />
+        <action
+            android:id="@+id/action_nav_home_to_detalleJugadorFragment"
+            app:destination="@id/detalleJugadorFragment" />
     </fragment>
 
     <fragment
@@ -53,7 +53,7 @@
         tools:layout="@layout/fragment_jugadores" >
         <action
             android:id="@+id/action_nav_jugadores_to_detalleJugadorFragment"
-            app:destination="@id/nav_detalleJugadorFragment" />
+            app:destination="@id/detalleJugadorFragment" />
     </fragment>
 
     <fragment
@@ -88,11 +88,6 @@
         android:label="activity_register"
         tools:layout="@layout/activity_register" />
     <fragment
-        android:id="@+id/nav_detalleJugadorFragment"
-        android:name="com.example.apptorneosajedrez.ui.jugadores.DetalleJugadorFragment"
-        android:label="fragment_detalle_jugador"
-        tools:layout="@layout/fragment_detalle_jugador" />
-    <fragment
         android:id="@+id/nav_fixtureFragment"
         android:name="com.example.apptorneosajedrez.ui.fixture.FixtureFragment"
         android:label="fragment_fixture"
@@ -122,5 +117,9 @@
         android:name="com.example.apptorneosajedrez.ui.inscripciones.MisInscripcionesFragment"
         android:label="@string/menu_mis_inscripciones"
         tools:layout="@layout/fragment_mis_inscripciones" />
+    <fragment
+        android:id="@+id/detalleJugadorFragment"
+        android:name="com.example.apptorneosajedrez.ui.detallejugador.DetalleJugadorFragment"
+        android:label="DetalleJugadorFragment" />
 
 </navigation>

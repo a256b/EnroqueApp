@@ -1,4 +1,4 @@
-package com.example.apptorneosajedrez.ui.perfil
+package com.example.apptorneosajedrez.ui.detallejugador
 
 import android.os.Bundle
 import android.view.View
@@ -8,10 +8,16 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.ui._theme.AppTorneosTheme
 
-class PerfilFragment : Fragment(R.layout.fragment_perfil) {
+class DetalleJugadorFragment : Fragment(R.layout.fragment_detalle_jugador) {
 
-    private val viewModel: PerfilViewModel by lazy {
-        ViewModelProvider(this, PerfilViewModelFactory())[PerfilViewModel::class.java]
+    private val viewModel: DetalleJugadorViewModel by lazy {
+        val jugadorId = requireArguments().getString("jugadorId")
+            ?: throw IllegalStateException("jugadorId no encontrado en argumentos")
+
+        ViewModelProvider(
+            this,
+            DetalleJugadorViewModelFactory(jugadorId = jugadorId)
+        ).get(DetalleJugadorViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -20,7 +26,7 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
         val composeView = view.findViewById<ComposeView>(R.id.composeView)
         composeView.setContent {
             AppTorneosTheme {
-                ProfileScreen(viewModel = viewModel)
+                DetalleJugadorScreen(viewModel = viewModel)
             }
         }
     }

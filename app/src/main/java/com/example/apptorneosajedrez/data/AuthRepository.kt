@@ -18,14 +18,16 @@ import kotlinx.coroutines.tasks.await
 
 class AuthRepository(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseFirestore: FirebaseFirestore
+    private val firebaseFirestore: FirebaseFirestore,
+    private val jugadorRepository: JugadorRepository = JugadorRepository()
 ) {
 
     companion object {
         private const val USERS_COLLECTION = "usuarios"
 
         // Singleton
-        @Volatile private var INSTANCE: AuthRepository? = null
+        @Volatile
+        private var INSTANCE: AuthRepository? = null
 
         fun getInstance(): AuthRepository {
             return INSTANCE ?: synchronized(this) {
@@ -234,20 +236,31 @@ class AuthRepository(
 
     /**
      * Actualiza el estadoComoJugador de un Usuario dado.
+     * Si el nuevo estado es ACEPTADO, crea el documento correspondiente en "jugadores"
+     * y actualiza el tipoUsuario a JUGADOR (lógica en JugadorRepository).
      */
     suspend fun actualizarEstadoUsuario(
         uid: String,
         nuevoEstado: EstadoComoJugador
     ) {
-        firebaseFirestore.collection(USERS_COLLECTION)
-            .document(uid)
+        val usuariosRef = firebaseFirestore.collection(USERS_COLLECTION)
+        val userDocRef = usuariosRef.document(uid)
+
+        // 1) Actualizar el estado en el documento de usuario
+        userDocRef
             .update("estadoComoJugador", nuevoEstado.name)
             .await()
 
-        if(nuevoEstado == EstadoComoJugador.ACEPTADO){
-            val userSnapshot = firebaseFirestore.collection(USERS_COLLECTION).document(uid).get().await()
-            val usuario = userSnapshot.toObject(Usuario::class.java) ?: return
-            JugadorRepository().crearJugador(uid = usuario.uid, nombreCompleto = usuario.nombreCompleto ?: "", email = usuario.email)
+        // 2) Si pasó a ACEPTADO, crear el jugador correspondiente
+        if (nuevoEstado == EstadoComoJugador.ACEPTADO) {
+            val userSnapshot = userDocRef.get().await()
+            val usuario = userSnapshot.toObject(Usuario::class.java)?.copy(uid = uid) ?: return
+
+            jugadorRepository.crearJugador(
+                uid = usuario.uid,
+                nombreCompleto = usuario.nombreCompleto.orEmpty(),
+                email = usuario.email
+            )
         }
     }
 

@@ -4,12 +4,20 @@ import com.example.apptorneosajedrez.model.Jugador
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
+import kotlinx.coroutines.tasks.await
 
-class JugadorRepository {
-    private val db = FirebaseFirestore.getInstance()
+class JugadorRepository(
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+) {
 
+    private val jugadoresRef = db.collection("jugadores")
+    private val usuariosRef = db.collection("usuarios")
+
+    /**
+     * Escucha en tiempo real la colección de jugadores.
+     */
     fun escucharJugadores(onChange: (List<Jugador>) -> Unit): ListenerRegistration {
-        return db.collection("jugadores")
+        return jugadoresRef
             .addSnapshotListener { snapshot, error ->
                 if (error != null || snapshot == null) {
                     onChange(emptyList())
@@ -23,32 +31,88 @@ class JugadorRepository {
             }
     }
 
-    fun crearJugador(uid: String, nombreCompleto: String, email: String){
-        val jugador = Jugador(id=uid, nombre=nombreCompleto, email=email)
-        db.collection("jugadores").document(uid).set(jugador)
-        //TODO: ver si conviene pasar a actualizarEstadoJugador
-        db.collection("usuarios").document(uid).update("tipoUsuario", "JUGADOR")
+    /**
+     * Crea el documento del jugador en la colección "jugadores"
+     * y actualiza el campo "tipoUsuario" en la colección "usuarios".
+     *
+     * IMPORTANTE: es suspend, se debe llamar desde una corrutina.
+     */
+    suspend fun crearJugador(
+        uid: String,
+        nombreCompleto: String,
+        email: String
+    ) {
+        val jugador = Jugador(
+            id = uid,
+            nombre = nombreCompleto,
+            email = email
+        )
+
+        // Crea/actualiza el documento del jugador
+        jugadoresRef
+            .document(uid)
+            .set(jugador)
+            .await()
+
+        // Actualiza el tipoUsuario del documento en "usuarios"
+        usuariosRef
+            .document(uid)
+            .update("tipoUsuario", "JUGADOR")
+            .await()
     }
 
+    /**
+     * Obtiene un jugador por id (lectura única).
+     */
+    suspend fun obtenerJugadorPorId(idJugador: String): Jugador? {
+        val snapshot = jugadoresRef
+            .document(idJugador)
+            .get()
+            .await()
+
+        return snapshot.toObject<Jugador>()
+    }
+
+    /**
+     * Guarda (crea/actualiza) un jugador completo.
+     */
+    suspend fun guardarJugador(jugador: Jugador) {
+        jugadoresRef
+            .document(jugador.id)
+            .set(jugador)
+            .await()
+    }
+
+    /**
+     * Actualiza sólo el nombre del jugador.
+     */
+    suspend fun actualizarNombreJugador(
+        idJugador: String,
+        nombreCompleto: String
+    ) {
+        jugadoresRef
+            .document(idJugador)
+            .update("nombre", nombreCompleto)
+            .await()
+    }
+
+    /**
+     * Actualiza el estado de un jugador.
+     * Mantengo la firma original pero simplifico la query:
+     * como el docId = id, no hace falta hacer un whereEqualTo.
+     */
     fun actualizarEstadoJugador(id: String, nuevoEstado: String) {
-        db.collection("jugadores")
-            .whereEqualTo("id", id)
-            .get()
-            .addOnSuccessListener { result ->
-                for (doc in result) {
-                    doc.reference.update("estado", nuevoEstado)
-                }
-            }
+        jugadoresRef
+            .document(id)
+            .update("estado", nuevoEstado)
     }
 
+    /**
+     * Elimina un jugador por id.
+     */
     fun eliminarJugador(id: String) {
-        db.collection("jugadores")
-            .whereEqualTo("id", id)
-            .get()
-            .addOnSuccessListener { result ->
-                for (doc in result) {
-                    doc.reference.delete()
-                }
-            }
+        jugadoresRef
+            .document(id)
+            .delete()
     }
 }
