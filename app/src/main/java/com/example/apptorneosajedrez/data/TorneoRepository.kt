@@ -5,6 +5,7 @@ import com.example.apptorneosajedrez.model.Torneo
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.FieldValue
 
 class TorneoRepository {
 
@@ -44,6 +45,20 @@ class TorneoRepository {
         }
         db.collection("torneos").document(idTorneo)
             .update("estado", nuevoEstado.name)
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
+    }
+
+    /**
+     * Agrega el ID de un jugador a la lista de participantes del torneo.
+     */
+    fun agregarJugadorATorneo(idTorneo: String, idJugador: String, onComplete: (Boolean) -> Unit) {
+        if (idTorneo.isEmpty() || idJugador.isEmpty()) {
+            onComplete(false)
+            return
+        }
+        db.collection("torneos").document(idTorneo)
+            .update("jugadores", FieldValue.arrayUnion(idJugador))
             .addOnSuccessListener { onComplete(true) }
             .addOnFailureListener { onComplete(false) }
     }

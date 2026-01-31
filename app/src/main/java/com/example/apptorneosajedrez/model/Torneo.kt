@@ -2,7 +2,7 @@ package com.example.apptorneosajedrez.model
 import java.io.Serializable
 
 data class Torneo(
-    val idTorneo: String ="",
+    val idTorneo: String = "",
     val nombre: String = "",
     val descripcion: String = "",
     val fechaInicio: String = "",
@@ -11,5 +11,5 @@ data class Torneo(
     val ubicacion: String = "",
     val estado: EstadoTorneo = EstadoTorneo.PROXIMO,
     val partidas: List<Partida> = emptyList(),
-    val jugadores: List<Usuario> = emptyList()
+    val jugadores: List<String> = emptyList() // Solo IDs
 ) : Serializable
