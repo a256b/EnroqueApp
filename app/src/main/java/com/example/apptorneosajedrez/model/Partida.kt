@@ -1,13 +1,18 @@
 package com.example.apptorneosajedrez.model
 import java.io.Serializable
 
-class Partida {
-    // TODO: Implementar model de Partida
-    // Jugador 1 vs. Jugador 2
-    // Fichas blancas - Fichas negras
-    // Quién ganó
-    // Fecha y hora
-    // Mesa???
-    // Historial de movimientos
-    // val movimientos: List<Move> = emptyList()
+enum class EstadoPartida {
+    PENDIENTE,
+    EN_CURSO,
+    FINALIZADA
 }
+
+data class Partida(
+    val id: String = "",
+    val idJugador1: String? = "", // Blancas
+    val idJugador2: String? = "", // Negras
+    val estado: EstadoPartida = EstadoPartida.PENDIENTE,
+    val ganador: String? = "",    // ID del jugador ganador
+    val fecha: String? = "",
+    val hora: String? = ""
+) : Serializable
