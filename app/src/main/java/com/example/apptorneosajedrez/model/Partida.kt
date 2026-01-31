@@ -14,7 +14,7 @@ enum class Fase{
 }
 
 data class Partida(
-    val id: String = "",
+    val idPartida: String = "",
     val idJugador1: String? = "", // Blancas
     val idJugador2: String? = "", // Negras
     val estado: EstadoPartida = EstadoPartida.PENDIENTE,
