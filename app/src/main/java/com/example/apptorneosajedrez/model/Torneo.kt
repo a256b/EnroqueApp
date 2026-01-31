@@ -10,6 +10,5 @@ data class Torneo(
     val horaInicio: String = "",
     val ubicacion: String = "",
     val estado: EstadoTorneo = EstadoTorneo.PROXIMO,
-    val partidas: List<Partida> = emptyList(),
     val jugadores: List<String> = emptyList() // Solo IDs
 ) : Serializable
