@@ -50,10 +50,14 @@ class FixtureFragment : Fragment() {
         }
 
         binding.btnIniciarTorneo.setOnClickListener {
-            // TODO: llamado a función para ocultar botón "Iniciar torneo"
+            ocultarBotonIniciarTorneo()
             // TODO: llamado a función para ocultar botón "Editar"
             // TODO: llamado a función para auto generar partidas
         }
+    }
+
+    private fun ocultarBotonIniciarTorneo() {
+        binding.btnIniciarTorneo.visibility = View.GONE
     }
 
     override fun onDestroyView() {
