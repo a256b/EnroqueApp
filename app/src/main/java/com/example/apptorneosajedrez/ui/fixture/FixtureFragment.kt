@@ -12,6 +12,7 @@ import com.example.apptorneosajedrez.databinding.FragmentFixtureBinding
 import com.example.apptorneosajedrez.model.EstadoTorneo
 import com.example.apptorneosajedrez.model.TipoUsuario
 import com.example.apptorneosajedrez.model.Torneo
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class FixtureFragment : Fragment() {
@@ -39,15 +40,16 @@ class FixtureFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewLifecycleOwner.lifecycleScope.launch {
-            authRepository.currentUser.collect { user ->
+            combine(
+                authRepository.currentUser,
+                fixtureViewModel.debeOcultarIniciarTorneo
+            ) { user, ocultar ->
                 val esOrganizador = user?.tipoUsuario == TipoUsuario.ORGANIZADOR
                 val esTorneoActivo = torneo?.estado == EstadoTorneo.ACTIVO
-
-                if (esOrganizador && esTorneoActivo) {
-                    binding.btnIniciarTorneo.visibility = View.VISIBLE
-                } else {
-                    binding.btnIniciarTorneo.visibility = View.GONE
-                }
+                
+                esOrganizador && esTorneoActivo && !ocultar
+            }.collect { visible ->
+                binding.btnIniciarTorneo.visibility = if (visible) View.VISIBLE else View.GONE
             }
         }
 
@@ -59,7 +61,7 @@ class FixtureFragment : Fragment() {
     }
 
     private fun ocultarBotonIniciarTorneo() {
-        binding.btnIniciarTorneo.visibility = View.GONE
+        fixtureViewModel.ocultarBotonIniciarTorneo()
     }
 
     private fun ocultarBotonEditarDetalle() {
