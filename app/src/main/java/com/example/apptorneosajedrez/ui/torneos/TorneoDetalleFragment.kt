@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.databinding.FragmentTorneoDetalleBinding
@@ -22,6 +23,7 @@ import com.example.apptorneosajedrez.model.EstadoComoJugador
 import com.example.apptorneosajedrez.model.Inscripcion
 import com.example.apptorneosajedrez.model.EstadoInscripcion
 import com.example.apptorneosajedrez.model.TipoUsuario
+import com.example.apptorneosajedrez.ui.fixture.FixtureViewModel
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.launch
 
@@ -32,6 +34,7 @@ class TorneoDetalleFragment : Fragment() {
     private val repoInscripciones = InscripcionRepository()
     private val repoTorneos = TorneoRepository()
     private val authRepository = AuthRepository.getInstance()
+    private val fixtureViewModel: FixtureViewModel by activityViewModels()
 
     private var torneo: Torneo? = null
     private var currentUserId: String? = null
@@ -98,6 +101,15 @@ class TorneoDetalleFragment : Fragment() {
                     }
                     
                     actualizarInterfazFiltros()
+                }
+            }
+
+            // Observar estado del fixture para ocultar el botón de editar
+            viewLifecycleOwner.lifecycleScope.launch {
+                fixtureViewModel.debeOcultarEditar.collect { ocultar ->
+                    if (ocultar) {
+                        binding.btnEditarTorneo.visibility = View.GONE
+                    }
                 }
             }
 
