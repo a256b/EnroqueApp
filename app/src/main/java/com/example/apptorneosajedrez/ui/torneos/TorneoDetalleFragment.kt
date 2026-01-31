@@ -149,12 +149,14 @@ class TorneoDetalleFragment : Fragment() {
             binding.btnEditarTorneo.setOnClickListener {
                 mostrarDialogEditar(t)
             }
-        }
 
-        binding.btnVerPartidas.setOnClickListener {
-            findNavController().navigate(R.id.nav_fixtureFragment)
+            binding.btnVerPartidas.setOnClickListener {
+                val bundle = Bundle().apply {
+                    putSerializable("torneo", t)
+                }
+                findNavController().navigate(R.id.nav_fixtureFragment, bundle)
+            }
         }
-
     }
 
     private fun actualizarVista(t: Torneo) {
