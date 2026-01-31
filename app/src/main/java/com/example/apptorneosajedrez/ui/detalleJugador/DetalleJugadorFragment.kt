@@ -7,9 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.ui._theme.AppTorneosTheme
-import com.example.apptorneosajedrez.ui.detallejugador.DetalleJugadorScreen
-import com.example.apptorneosajedrez.ui.detallejugador.DetalleJugadorViewModel
-import com.example.apptorneosajedrez.ui.detallejugador.DetalleJugadorViewModelFactory
 
 class DetalleJugadorFragment : Fragment(R.layout.fragment_detalle_jugador) {
 
@@ -20,7 +17,7 @@ class DetalleJugadorFragment : Fragment(R.layout.fragment_detalle_jugador) {
         ViewModelProvider(
             this,
             DetalleJugadorViewModelFactory(jugadorId = jugadorId)
-        ).get(DetalleJugadorViewModel::class.java)
+        )[DetalleJugadorViewModel::class.java]
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

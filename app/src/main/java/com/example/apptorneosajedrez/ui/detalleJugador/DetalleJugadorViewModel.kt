@@ -1,11 +1,10 @@
-package com.example.apptorneosajedrez.ui.detallejugador
+package com.example.apptorneosajedrez.ui.detalleJugador
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apptorneosajedrez.data.JugadorRepository
-import com.example.apptorneosajedrez.ui.detalleJugador.DetalleJugadorUiState
 import kotlinx.coroutines.launch
 
 class DetalleJugadorViewModel(

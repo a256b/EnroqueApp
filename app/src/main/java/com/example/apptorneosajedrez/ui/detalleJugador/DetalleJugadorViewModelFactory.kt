@@ -1,4 +1,4 @@
-package com.example.apptorneosajedrez.ui.detallejugador
+package com.example.apptorneosajedrez.ui.detalleJugador
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
