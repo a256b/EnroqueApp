@@ -8,10 +8,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.data.TorneoRepository
 import com.example.apptorneosajedrez.databinding.FragmentFixtureBinding
 import com.example.apptorneosajedrez.model.EstadoTorneo
+import com.example.apptorneosajedrez.model.Fase
+import com.example.apptorneosajedrez.model.Partida
 import com.example.apptorneosajedrez.model.TipoUsuario
 import com.example.apptorneosajedrez.model.Torneo
 import kotlinx.coroutines.flow.combine
@@ -25,6 +29,7 @@ class FixtureFragment : Fragment() {
     private val torneoRepository = TorneoRepository()
     private val fixtureViewModel: FixtureViewModel by activityViewModels()
     private var torneo: Torneo? = null
+    private var partidasGeneradas: List<Partida> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,14 +49,8 @@ class FixtureFragment : Fragment() {
 
         val idTorneoActual = torneo?.idTorneo ?: ""
 
-        // Verificamos si ya existen partidas en la base de datos para este torneo
         if (idTorneoActual.isNotEmpty()) {
-            torneoRepository.tienePartidasGeneradas(idTorneoActual) { tiene ->
-                if (tiene) {
-                    fixtureViewModel.ocultarBotonIniciarTorneo(idTorneoActual)
-                    fixtureViewModel.ocultarBotonEditar(idTorneoActual)
-                }
-            }
+            cargarPartidas(idTorneoActual)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -72,6 +71,43 @@ class FixtureFragment : Fragment() {
         binding.btnIniciarTorneo.setOnClickListener {
             iniciarTorneoConValidacion()
         }
+
+        configurarClickCards()
+    }
+
+    private fun cargarPartidas(idTorneo: String) {
+        torneoRepository.obtenerPartidas(idTorneo) { partidas ->
+            partidasGeneradas = partidas
+            if (partidas.isNotEmpty()) {
+                fixtureViewModel.ocultarBotonIniciarTorneo(idTorneo)
+                fixtureViewModel.ocultarBotonEditar(idTorneo)
+            }
+        }
+    }
+
+    private fun configurarClickCards() {
+        binding.finalMatch.setOnClickListener { navegarADetallePartida(Fase.FINAL, 0) }
+        binding.semi1.setOnClickListener { navegarADetallePartida(Fase.SEMI, 0) }
+        binding.semi2.setOnClickListener { navegarADetallePartida(Fase.SEMI, 1) }
+        binding.m1.setOnClickListener { navegarADetallePartida(Fase.CUARTOS, 0) }
+        binding.m2.setOnClickListener { navegarADetallePartida(Fase.CUARTOS, 1) }
+        binding.m3.setOnClickListener { navegarADetallePartida(Fase.CUARTOS, 2) }
+        binding.m4.setOnClickListener { navegarADetallePartida(Fase.CUARTOS, 3) }
+    }
+
+    private fun navegarADetallePartida(fase: Fase, indiceEnFase: Int) {
+        val partidasDeFase = partidasGeneradas.filter { it.fase == fase }
+
+        // Check si existe la partida solicitada
+        if (indiceEnFase < partidasDeFase.size) {
+            val partida = partidasDeFase[indiceEnFase]
+            val bundle = Bundle().apply {
+                putSerializable("partida", partida)
+            }
+            findNavController().navigate(R.id.action_fixtureFragment_to_detallePartidaFragment, bundle)
+        } else {
+            //TODO: Si no existe ocultar la CardView...
+        }
     }
 
     private fun iniciarTorneoConValidacion() {
@@ -81,6 +117,7 @@ class FixtureFragment : Fragment() {
                 if (exito) {
                     ocultarBotonIniciarTorneo(idTorneo)
                     ocultarBotonEditarDetalle(idTorneo)
+                    cargarPartidas(idTorneo) // Test: recarga las partidas y habilita clicks
                     Toast.makeText(requireContext(), "Torneo iniciado: Partidas generadas", Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(requireContext(), "Error: El torneo debe tener entre 2 y 8 jugadores.", Toast.LENGTH_LONG).show()

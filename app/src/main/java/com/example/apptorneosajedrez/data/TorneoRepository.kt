@@ -179,6 +179,20 @@ class TorneoRepository {
     }
 
     /**
+     * Obtiene todas las partidas de un torneo.
+     */
+    fun obtenerPartidas(idTorneo: String, onComplete: (List<Partida>) -> Unit) {
+        db.collection("torneos").document(idTorneo).collection("partidas").get()
+            .addOnSuccessListener { snapshot ->
+                val partidas = snapshot.documents.mapNotNull { it.toObject<Partida>()?.copy(idPartida = it.id) }
+                onComplete(partidas)
+            }
+            .addOnFailureListener {
+                onComplete(emptyList())
+            }
+    }
+
+    /**
      * Función para asignar jugadores a las partidas creadas.
      * Obtiene el idTorneo, comprueba la cantidad de jugadores que tiene y los asigna a las partidas creadas.
      * La asignación de jugadores NO SE PUEDE REPETIR, cada jugador se asigna una sola vez a una partida.
