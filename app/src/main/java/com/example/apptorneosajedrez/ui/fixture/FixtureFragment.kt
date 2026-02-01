@@ -42,46 +42,49 @@ class FixtureFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val idTorneoActual = torneo?.idTorneo ?: ""
+
         viewLifecycleOwner.lifecycleScope.launch {
             combine(
                 authRepository.currentUser,
-                fixtureViewModel.debeOcultarIniciarTorneo
-            ) { user, ocultar ->
+                fixtureViewModel.torneosConIniciarOculto
+            ) { user, setOcultos ->
                 val esOrganizador = user?.tipoUsuario == TipoUsuario.ORGANIZADOR
                 val esTorneoActivo = torneo?.estado == EstadoTorneo.ACTIVO
+                val estaOcultoParaEsteTorneo = setOcultos.contains(idTorneoActual)
                 
-                esOrganizador && esTorneoActivo && !ocultar
+                esOrganizador && esTorneoActivo && !estaOcultoParaEsteTorneo
             }.collect { visible ->
                 binding.btnIniciarTorneo.visibility = if (visible) View.VISIBLE else View.GONE
             }
         }
 
         binding.btnIniciarTorneo.setOnClickListener {
-            iniciarTorneo()
+            iniciarTorneoConValidacion()
         }
     }
 
-    private fun iniciarTorneo() {
+    private fun iniciarTorneoConValidacion() {
         val idTorneo = torneo?.idTorneo
         if (idTorneo != null) {
             torneoRepository.autoGenerarPartidas(idTorneo) { exito ->
                 if (exito) {
-                    ocultarBotonIniciarTorneo()
-                    ocultarBotonEditarDetalle()
+                    ocultarBotonIniciarTorneo(idTorneo)
+                    ocultarBotonEditarDetalle(idTorneo)
                     Toast.makeText(requireContext(), "Torneo iniciado: Partidas generadas", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(requireContext(), "Error: El torneo debe tener entre 2 y 8 jugadores", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Error: El torneo debe tener entre 2 y 8 jugadores.", Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
 
-    private fun ocultarBotonIniciarTorneo() {
-        fixtureViewModel.ocultarBotonIniciarTorneo()
+    private fun ocultarBotonIniciarTorneo(idTorneo: String) {
+        fixtureViewModel.ocultarBotonIniciarTorneo(idTorneo)
     }
 
-    private fun ocultarBotonEditarDetalle() {
-        fixtureViewModel.ocultarBotonEditar()
+    private fun ocultarBotonEditarDetalle(idTorneo: String) {
+        fixtureViewModel.ocultarBotonEditar(idTorneo)
     }
 
     override fun onDestroyView() {

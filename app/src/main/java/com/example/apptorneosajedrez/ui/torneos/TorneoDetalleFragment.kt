@@ -94,22 +94,18 @@ class TorneoDetalleFragment : Fragment() {
                     esJugadorSinAlta = user?.estadoComoJugador == EstadoComoJugador.NINGUNO || 
                                        user?.estadoComoJugador == EstadoComoJugador.RECHAZADO
                     
-                    binding.btnEditarTorneo.visibility = if (user?.tipoUsuario == TipoUsuario.ORGANIZADOR) {
-                        View.VISIBLE
-                    } else {
-                        View.GONE
+                    val idTorneoActual = t.idTorneo
+                    fixtureViewModel.torneosConEditarOculto.collect { setOcultos ->
+                        val estaOcultoParaEsteTorneo = setOcultos.contains(idTorneoActual)
+                        
+                        binding.btnEditarTorneo.visibility = if (user?.tipoUsuario == TipoUsuario.ORGANIZADOR && !estaOcultoParaEsteTorneo) {
+                            View.VISIBLE
+                        } else {
+                            View.GONE
+                        }
                     }
                     
                     actualizarInterfazFiltros()
-                }
-            }
-
-            // Observar estado del fixture para ocultar el botón de editar
-            viewLifecycleOwner.lifecycleScope.launch {
-                fixtureViewModel.debeOcultarEditar.collect { ocultar ->
-                    if (ocultar) {
-                        binding.btnEditarTorneo.visibility = View.GONE
-                    }
                 }
             }
 
