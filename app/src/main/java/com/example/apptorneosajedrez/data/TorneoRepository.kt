@@ -186,6 +186,7 @@ class TorneoRepository {
         db.collection("torneos").document(idTorneo).collection("partidas").get()
             .addOnSuccessListener { snapshot ->
                 val partidas = snapshot.documents.mapNotNull { it.toObject<Partida>()?.copy(idPartida = it.id) }
+                    .sortedBy { it.idPartida } // Orden estable por ID para el flujo de fases
                 onComplete(partidas)
             }
             .addOnFailureListener {
@@ -205,6 +206,84 @@ class TorneoRepository {
                 "estado", EstadoPartida.EN_CURSO.name
             )
             .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
+    }
+
+    /**
+     * Finaliza una partida, registra al ganador y avanza al jugador a la siguiente fase si corresponde.
+     */
+    fun finalizarPartida(idTorneo: String, partida: Partida, idGanador: String, onComplete: (Boolean) -> Unit) {
+        if (idTorneo.isEmpty() || partida.idPartida.isEmpty()) {
+            onComplete(false)
+            return
+        }
+
+        val partidasCol = db.collection("torneos").document(idTorneo).collection("partidas")
+        
+        // 1. Actualizar la partida actual a FINALIZADA y registrar el ganador
+        partidasCol.document(partida.idPartida)
+            .update("estado", EstadoPartida.FINALIZADA.name, "ganador", idGanador)
+            .addOnSuccessListener {
+                // 2. Si es la FINAL, solo terminamos. Si no, avanzamos al ganador.
+                if (partida.fase == Fase.FINAL) {
+                    onComplete(true)
+                } else {
+                    avanzarGanador(idTorneo, partida.fase, idGanador, onComplete)
+                }
+            }
+            .addOnFailureListener { onComplete(false) }
+    }
+
+    /**
+     * Busca la siguiente fase y asigna al ganador en el primer lugar disponible.
+     */
+    private fun avanzarGanador(idTorneo: String, faseActual: Fase?, idGanador: String, onComplete: (Boolean) -> Unit) {
+        val siguienteFase = when (faseActual) {
+            Fase.CUARTOS -> Fase.SEMI
+            Fase.SEMI -> Fase.FINAL
+            else -> {
+                onComplete(true)
+                return
+            }
+        }
+
+        val partidasCol = db.collection("torneos").document(idTorneo).collection("partidas")
+        
+        // Obtenemos todas las partidas de la siguiente fase
+        partidasCol.whereEqualTo("fase", siguienteFase.name).get()
+            .addOnSuccessListener { snapshot ->
+                // Ordenamos por idPartida para mantener consistencia en "el lugar de arriba"
+                val partidasSiguiente = snapshot.documents.mapNotNull { doc ->
+                    doc.toObject<Partida>()?.copy(idPartida = doc.id)
+                }.sortedBy { it.idPartida }
+
+                var partidaDestinoId: String? = null
+                var esJugador1 = true
+
+                // Buscamos el primer hueco disponible siguiendo la preferencia idJugador1 -> idJugador2
+                // recorriendo las partidas de la fase siguiente.
+                for (p in partidasSiguiente) {
+                    if (p.idJugador1.isNullOrEmpty()) {
+                        partidaDestinoId = p.idPartida
+                        esJugador1 = true
+                        break
+                    } else if (p.idJugador2.isNullOrEmpty()) {
+                        partidaDestinoId = p.idPartida
+                        esJugador1 = false
+                        break
+                    }
+                }
+
+                if (partidaDestinoId != null) {
+                    val campo = if (esJugador1) "idJugador1" else "idJugador2"
+                    partidasCol.document(partidaDestinoId)
+                        .update(campo, idGanador)
+                        .addOnSuccessListener { onComplete(true) }
+                        .addOnFailureListener { onComplete(false) }
+                } else {
+                    onComplete(true)
+                }
+            }
             .addOnFailureListener { onComplete(false) }
     }
 
@@ -233,7 +312,7 @@ class TorneoRepository {
      * Primer y segundo jugador se los asigna a CUARTOS C1. El tercer y cuarto jugador se los asigna a otra de CUARTOS C2. El quinto y sexto jugador se los asigna a la última de CUARTOS C3. El séptimo jugador se lo asigna a idJugador2 en negras de la SEMI S2.
      *
      * 8 JUGADORES - 4 CUARTOS, 2 SEMI Y 1 FINAL
-     * Primer y segundo jugador van en CUARTOS C1. El tercero y cuarto jugador van en CUARTOS C2. El quinto y sexto van en CUARTOS C3. El séptimo y octavo van en CUARTOS C4.
+     * Primer y segundo van en CUARTOS C1. El tercero y cuarto jugador van en CUARTOS C2. El quinto y sexto van en CUARTOS C3. El séptimo y octavo van en CUARTOS C4.
      *
      * fun asignarJugadores(idTorneo: String){}
      */

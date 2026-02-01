@@ -1,5 +1,6 @@
 package com.example.apptorneosajedrez.ui.detallePartida
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -55,13 +56,26 @@ class DetallePartidaFragment : Fragment() {
         binding.btnIniciarPartida.setOnClickListener {
             iniciarPartida()
         }
+
+        binding.btnFinalizarPartida.setOnClickListener {
+            mostrarDialogGanador()
+        }
     }
 
     private fun actualizarUI() {
         partida?.let { p ->
             binding.tvFase.text = p.fase?.name ?: "---"
             binding.tvEstado.text = p.estado.name
-            binding.tvGanador.text = "Ganador: ${if (p.ganador.isNullOrEmpty()) "---" else p.ganador}"
+            
+            // Cargar nombre del ganador si existe
+            if (!p.ganador.isNullOrEmpty()) {
+                jugadorRepository.obtenerJugador(p.ganador) { ganadorObj ->
+                    binding.tvGanador.text = "Ganador: ${ganadorObj?.nombre ?: p.ganador}"
+                }
+            } else {
+                binding.tvGanador.text = "Ganador: ---"
+            }
+            
             binding.tvFecha.text = "Fecha: ${if (p.fecha.isNullOrEmpty()) "---" else p.fecha}"
             binding.tvHora.text = "Hora: ${if (p.hora.isNullOrEmpty()) "---" else p.hora}"
 
@@ -81,12 +95,16 @@ class DetallePartidaFragment : Fragment() {
             viewLifecycleOwner.lifecycleScope.launch {
                 authRepository.currentUser.collect { user ->
                     val esAdmin = user?.tipoUsuario == TipoUsuario.ORGANIZADOR
-                    binding.btnIniciarPartida.visibility = if (esAdmin) View.VISIBLE else View.GONE
                     
-                    val jugadoresCargados = !p.idJugador1.isNullOrEmpty() && !p.idJugador2.isNullOrEmpty()
+                    // Lógica de visibilidad de botones
                     val esPendiente = p.estado == EstadoPartida.PENDIENTE
-                    
-                    binding.btnIniciarPartida.isEnabled = esAdmin && jugadoresCargados && esPendiente
+                    val esEnCurso = p.estado == EstadoPartida.EN_CURSO
+                    val jugadoresCargados = !p.idJugador1.isNullOrEmpty() && !p.idJugador2.isNullOrEmpty()
+
+                    binding.btnIniciarPartida.visibility = if (esAdmin && esPendiente) View.VISIBLE else View.GONE
+                    binding.btnIniciarPartida.isEnabled = jugadoresCargados
+
+                    binding.btnFinalizarPartida.visibility = if (esAdmin && esEnCurso) View.VISIBLE else View.GONE
                 }
             }
         }
@@ -117,6 +135,53 @@ class DetallePartidaFragment : Fragment() {
             } else {
                 binding.btnIniciarPartida.isEnabled = true
                 Toast.makeText(requireContext(), "Error al iniciar partida", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun mostrarDialogGanador() {
+        val p = partida ?: return
+        val idJ1 = p.idJugador1 ?: return
+        val idJ2 = p.idJugador2 ?: return
+
+        // Obtener nombres para el dialog
+        jugadorRepository.obtenerJugador(idJ1) { j1 ->
+            jugadorRepository.obtenerJugador(idJ2) { j2 ->
+                val nombres = arrayOf(j1?.nombre ?: "Jugador 1", j2?.nombre ?: "Jugador 2")
+                val ids = arrayOf(idJ1, idJ2)
+                var seleccionado = 0
+
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Seleccionar Ganador")
+                    .setSingleChoiceItems(nombres, 0) { _, which ->
+                        seleccionado = which
+                    }
+                    .setPositiveButton("GUARDAR") { _, _ ->
+                        finalizarPartida(ids[seleccionado])
+                    }
+                    .setNegativeButton("CANCELAR", null)
+                    .show()
+            }
+        }
+    }
+
+    private fun finalizarPartida(idGanador: String) {
+        val p = partida ?: return
+        val idT = idTorneo ?: return
+
+        binding.btnFinalizarPartida.isEnabled = false
+
+        torneoRepository.finalizarPartida(idT, p, idGanador) { exito ->
+            if (exito) {
+                Toast.makeText(requireContext(), "Partida finalizada", Toast.LENGTH_SHORT).show()
+                partida = p.copy(
+                    estado = EstadoPartida.FINALIZADA,
+                    ganador = idGanador
+                )
+                actualizarUI()
+            } else {
+                binding.btnFinalizarPartida.isEnabled = true
+                Toast.makeText(requireContext(), "Error al finalizar partida", Toast.LENGTH_SHORT).show()
             }
         }
     }
