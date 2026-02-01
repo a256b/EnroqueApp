@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.apptorneosajedrez.data.AuthRepository
+import com.example.apptorneosajedrez.data.TorneoRepository
 import com.example.apptorneosajedrez.databinding.FragmentFixtureBinding
 import com.example.apptorneosajedrez.model.EstadoTorneo
 import com.example.apptorneosajedrez.model.TipoUsuario
@@ -20,6 +22,7 @@ class FixtureFragment : Fragment() {
     private var _binding: FragmentFixtureBinding? = null
     private val binding get() = _binding!!
     private val authRepository = AuthRepository.getInstance()
+    private val torneoRepository = TorneoRepository()
     private val fixtureViewModel: FixtureViewModel by activityViewModels()
     private var torneo: Torneo? = null
 
@@ -56,7 +59,7 @@ class FixtureFragment : Fragment() {
         binding.btnIniciarTorneo.setOnClickListener {
             ocultarBotonIniciarTorneo()
             ocultarBotonEditarDetalle()
-            // TODO: llamado a función para auto generar partidas
+            crearPartidas()
         }
     }
 
@@ -66,6 +69,19 @@ class FixtureFragment : Fragment() {
 
     private fun ocultarBotonEditarDetalle() {
         fixtureViewModel.ocultarBotonEditar()
+    }
+
+    private fun crearPartidas() {
+        val idTorneo = torneo?.idTorneo
+        if (idTorneo != null) {
+            torneoRepository.autoGenerarPartidas(idTorneo) { exito ->
+                if (exito) {
+                    Toast.makeText(requireContext(), "Partidas generadas correctamente", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Error al generar partidas", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
