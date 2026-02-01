@@ -166,6 +166,19 @@ class TorneoRepository {
     }
 
     /**
+     * Función para obtener si un torneo ya tiene partidas creadas.
+     */
+    fun tienePartidasGeneradas(idTorneo: String, onResult: (Boolean) -> Unit) {
+        db.collection("torneos").document(idTorneo).collection("partidas").limit(1).get()
+            .addOnSuccessListener { snapshot ->
+                onResult(!snapshot.isEmpty)
+            }
+            .addOnFailureListener {
+                onResult(false)
+            }
+    }
+
+    /**
      * Función para asignar jugadores a las partidas creadas.
      * Obtiene el idTorneo, comprueba la cantidad de jugadores que tiene y los asigna a las partidas creadas.
      * La asignación de jugadores NO SE PUEDE REPETIR, cada jugador se asigna una sola vez a una partida.

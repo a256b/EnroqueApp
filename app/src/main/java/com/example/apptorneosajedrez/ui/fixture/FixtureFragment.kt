@@ -44,6 +44,16 @@ class FixtureFragment : Fragment() {
 
         val idTorneoActual = torneo?.idTorneo ?: ""
 
+        // Verificamos si ya existen partidas en la base de datos para este torneo
+        if (idTorneoActual.isNotEmpty()) {
+            torneoRepository.tienePartidasGeneradas(idTorneoActual) { tiene ->
+                if (tiene) {
+                    fixtureViewModel.ocultarBotonIniciarTorneo(idTorneoActual)
+                    fixtureViewModel.ocultarBotonEditar(idTorneoActual)
+                }
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             combine(
                 authRepository.currentUser,
