@@ -23,6 +23,20 @@ class JugadorRepository {
             }
     }
 
+    fun obtenerJugador(id: String, onComplete: (Jugador?) -> Unit) {
+        if (id.isEmpty()) {
+            onComplete(null)
+            return
+        }
+        db.collection("jugadores").document(id).get()
+            .addOnSuccessListener { document ->
+                onComplete(document.toObject<Jugador>())
+            }
+            .addOnFailureListener {
+                onComplete(null)
+            }
+    }
+
     fun crearJugador(uid: String, nombreCompleto: String, email: String){
         val jugador = Jugador(id=uid, nombre=nombreCompleto, email=email)
         db.collection("jugadores").document(uid).set(jugador)

@@ -1,60 +1,65 @@
 package com.example.apptorneosajedrez.ui.detallePartida
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.apptorneosajedrez.R
+import androidx.fragment.app.Fragment
+import com.example.apptorneosajedrez.data.JugadorRepository
+import com.example.apptorneosajedrez.databinding.FragmentDetallePartidaBinding
+import com.example.apptorneosajedrez.model.Partida
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [DetallePartidaFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class DetallePartidaFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var _binding: FragmentDetallePartidaBinding? = null
+    private val binding get() = _binding!!
+    private val jugadorRepository = JugadorRepository()
+    private var partida: Partida? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        partida = arguments?.getSerializable("partida") as? Partida
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detalle_partida, container, false)
+    ): View {
+        _binding = FragmentDetallePartidaBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment DetallePartidaFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DetallePartidaFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        partida?.let { p ->
+            binding.tvFase.text = p.fase?.name ?: "---"
+            binding.tvEstado.text = p.estado.name
+            binding.tvGanador.text = "Ganador: ${if (p.ganador.isNullOrEmpty()) "---" else p.ganador}"
+            binding.tvFecha.text = "Fecha: ${if (p.fecha.isNullOrEmpty()) "---" else p.fecha}"
+            binding.tvHora.text = "Hora: ${if (p.hora.isNullOrEmpty()) "---" else p.hora}"
+
+            // Cargar nombres de jugadores
+            p.idJugador1?.let { id ->
+                jugadorRepository.obtenerJugador(id) { jugador ->
+                    binding.tvJugador1.text = "${jugador?.nombre ?: "Sin nombre"} - Blancas"
                 }
-            }
+            } ?: run { binding.tvJugador1.text = "Pendiente - Blancas" }
+
+            p.idJugador2?.let { id ->
+                jugadorRepository.obtenerJugador(id) { jugador ->
+                    binding.tvJugador2.text = "${jugador?.nombre ?: "Sin nombre"} - Negras"
+                }
+            } ?: run { binding.tvJugador2.text = "Pendiente - Negras" }
+        }
+
+        binding.btnVerPartida.setOnClickListener {
+            // TODO: btn para ir a movimientos de partidas
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
