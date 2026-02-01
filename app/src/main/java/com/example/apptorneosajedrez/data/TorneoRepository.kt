@@ -224,9 +224,9 @@ class TorneoRepository {
         partidasCol.document(partida.idPartida)
             .update("estado", EstadoPartida.FINALIZADA.name, "ganador", idGanador)
             .addOnSuccessListener {
-                // 2. Si es la FINAL, solo terminamos. Si no, avanzamos al ganador.
+                // 2. Si es la FINAL, cambiamos el estado del TORNEO a FINALIZADO. Si no, avanzamos al ganador.
                 if (partida.fase == Fase.FINAL) {
-                    onComplete(true)
+                    actualizarEstadoTorneo(idTorneo, EstadoTorneo.FINALIZADO, onComplete)
                 } else {
                     avanzarGanador(idTorneo, partida.fase, idGanador, onComplete)
                 }
