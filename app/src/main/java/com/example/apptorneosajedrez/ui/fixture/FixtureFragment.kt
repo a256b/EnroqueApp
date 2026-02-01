@@ -103,6 +103,7 @@ class FixtureFragment : Fragment() {
             val partida = partidasDeFase[indiceEnFase]
             val bundle = Bundle().apply {
                 putSerializable("partida", partida)
+                putString("idTorneo", torneo?.idTorneo)
             }
             findNavController().navigate(R.id.action_fixtureFragment_to_detallePartidaFragment, bundle)
         } else {

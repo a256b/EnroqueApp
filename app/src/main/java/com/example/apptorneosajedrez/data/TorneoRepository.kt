@@ -4,6 +4,7 @@ import com.example.apptorneosajedrez.model.EstadoTorneo
 import com.example.apptorneosajedrez.model.Torneo
 import com.example.apptorneosajedrez.model.Partida
 import com.example.apptorneosajedrez.model.Fase
+import com.example.apptorneosajedrez.model.EstadoPartida
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ListenerRegistration
@@ -190,6 +191,21 @@ class TorneoRepository {
             .addOnFailureListener {
                 onComplete(emptyList())
             }
+    }
+
+    fun iniciarPartida(idTorneo: String, idPartida: String, fecha: String, hora: String, onComplete: (Boolean) -> Unit) {
+        if (idTorneo.isEmpty() || idPartida.isEmpty()) {
+            onComplete(false)
+            return
+        }
+        db.collection("torneos").document(idTorneo).collection("partidas").document(idPartida)
+            .update(
+                "fecha", fecha,
+                "hora", hora,
+                "estado", EstadoPartida.EN_CURSO.name
+            )
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
     }
 
     /**
