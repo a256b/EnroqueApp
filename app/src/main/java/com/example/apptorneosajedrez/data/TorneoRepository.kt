@@ -83,7 +83,7 @@ class TorneoRepository {
                 val partidas = mutableListOf<Partida>()
 
                 when (numJugadores) {
-                    1, 2 -> {
+                    2 -> {
                         partidas.add(Partida(fase = Fase.FINAL))
                     }
                     3 -> {
@@ -128,7 +128,7 @@ class TorneoRepository {
                 }
 
                 if (partidas.isEmpty()) {
-                    onComplete(true)
+                    onComplete(false)
                     return@addOnSuccessListener
                 }
 

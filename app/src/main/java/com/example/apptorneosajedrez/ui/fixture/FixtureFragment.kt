@@ -57,9 +57,22 @@ class FixtureFragment : Fragment() {
         }
 
         binding.btnIniciarTorneo.setOnClickListener {
-            ocultarBotonIniciarTorneo()
-            ocultarBotonEditarDetalle()
-            crearPartidas()
+            iniciarTorneo()
+        }
+    }
+
+    private fun iniciarTorneo() {
+        val idTorneo = torneo?.idTorneo
+        if (idTorneo != null) {
+            torneoRepository.autoGenerarPartidas(idTorneo) { exito ->
+                if (exito) {
+                    ocultarBotonIniciarTorneo()
+                    ocultarBotonEditarDetalle()
+                    Toast.makeText(requireContext(), "Torneo iniciado: Partidas generadas", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Error: El torneo debe tener entre 2 y 8 jugadores", Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 
@@ -69,19 +82,6 @@ class FixtureFragment : Fragment() {
 
     private fun ocultarBotonEditarDetalle() {
         fixtureViewModel.ocultarBotonEditar()
-    }
-
-    private fun crearPartidas() {
-        val idTorneo = torneo?.idTorneo
-        if (idTorneo != null) {
-            torneoRepository.autoGenerarPartidas(idTorneo) { exito ->
-                if (exito) {
-                    Toast.makeText(requireContext(), "Partidas generadas correctamente", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(requireContext(), "Error al generar partidas", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
     }
 
     override fun onDestroyView() {
