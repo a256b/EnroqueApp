@@ -143,7 +143,7 @@
         app:layout_constraintEnd_toEndOf="@id/c1">
 
         <TextView
-            android:text="Partida 1"
+            android:text="Cuarto 1"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -159,7 +159,7 @@
         app:layout_constraintEnd_toEndOf="@id/c2">
 
         <TextView
-            android:text="Partida 2"
+            android:text="Cuarto 2"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -175,7 +175,7 @@
         app:layout_constraintEnd_toEndOf="@id/c3">
 
         <TextView
-            android:text="Partida 3"
+            android:text="Cuarto 3"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -191,7 +191,7 @@
         app:layout_constraintEnd_toEndOf="@id/c4">
 
         <TextView
-            android:text="Partida 4"
+            android:text="Cuarto 4"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
