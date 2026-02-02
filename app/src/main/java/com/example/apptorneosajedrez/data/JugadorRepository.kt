@@ -6,9 +6,8 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.tasks.await
 
-class JugadorRepository(
-    db: FirebaseFirestore = FirebaseFirestore.getInstance()
-) {
+class JugadorRepository {
+    private val db = FirebaseFirestore.getInstance()
 
     private val jugadoresRef = db.collection("jugadores")
     private val usuariosRef = db.collection("usuarios")
@@ -31,6 +30,25 @@ class JugadorRepository(
             }
     }
 
+    fun obtenerJugador(id: String, onComplete: (Jugador?) -> Unit) {
+        if (id.isEmpty()) {
+            onComplete(null)
+            return
+        }
+        db.collection("jugadores").document(id).get()
+            .addOnSuccessListener { document ->
+                onComplete(document.toObject<Jugador>())
+            }
+            .addOnFailureListener {
+                onComplete(null)
+            }
+    }
+
+    fun crearJugador(uid: String, nombreCompleto: String, email: String){
+        val jugador = Jugador(id=uid, nombre=nombreCompleto, email=email)
+        db.collection("jugadores").document(uid).set(jugador)
+        //TODO: ver si conviene pasar a actualizarEstadoJugador
+        db.collection("usuarios").document(uid).update("tipoUsuario", "JUGADOR")
     /**
      * Crea el documento del jugador en la colección "jugadores"
      * y actualiza el campo "tipoUsuario" en la colección "usuarios".

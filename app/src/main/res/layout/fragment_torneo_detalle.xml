@@ -128,5 +128,15 @@
             android:layout_gravity="center_horizontal"
             android:text="Ver partidas" />
 
+        <Button
+            android:id="@+id/btn_editar_torneo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:text="Editar"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
     </LinearLayout>
 </ScrollView>

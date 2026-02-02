@@ -91,7 +91,7 @@
         app:layout_constraintEnd_toEndOf="@id/cCenter">
 
         <TextView
-            android:text="Final"
+            android:text="FINAL F"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -113,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="Semifinal 1" />
+            android:text="SEMI S1" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -126,7 +126,7 @@
         app:layout_constraintEnd_toEndOf="@id/cMid2">
 
         <TextView
-            android:text="Semifinal 2"
+            android:text="SEMI S2"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -143,7 +143,7 @@
         app:layout_constraintEnd_toEndOf="@id/c1">
 
         <TextView
-            android:text="Partida 1"
+            android:text="CUARTOS C1"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -159,7 +159,7 @@
         app:layout_constraintEnd_toEndOf="@id/c2">
 
         <TextView
-            android:text="Partida 2"
+            android:text="CUARTOS C2"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -175,7 +175,7 @@
         app:layout_constraintEnd_toEndOf="@id/c3">
 
         <TextView
-            android:text="Partida 3"
+            android:text="CUARTOS C3"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -191,7 +191,7 @@
         app:layout_constraintEnd_toEndOf="@id/c4">
 
         <TextView
-            android:text="Partida 4"
+            android:text="CUARTOS C4"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -226,5 +226,17 @@
         app:layout_constraintTop_toBottomOf="@id/finalMatch"
         app:layout_constraintStart_toStartOf="@id/finalMatch"
         app:layout_constraintEnd_toEndOf="@id/finalMatch" />
+
+    <Button
+        android:id="@+id/btn_iniciar_torneo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="INICIAR TORNEO"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

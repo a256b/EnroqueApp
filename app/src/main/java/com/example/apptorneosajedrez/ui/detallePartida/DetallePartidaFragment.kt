@@ -1,60 +1,193 @@
 package com.example.apptorneosajedrez.ui.detallePartida
 
+import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.apptorneosajedrez.R
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.example.apptorneosajedrez.data.AuthRepository
+import com.example.apptorneosajedrez.data.JugadorRepository
+import com.example.apptorneosajedrez.data.TorneoRepository
+import com.example.apptorneosajedrez.databinding.FragmentDetallePartidaBinding
+import com.example.apptorneosajedrez.model.EstadoPartida
+import com.example.apptorneosajedrez.model.Partida
+import com.example.apptorneosajedrez.model.TipoUsuario
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [DetallePartidaFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class DetallePartidaFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var _binding: FragmentDetallePartidaBinding? = null
+    private val binding get() = _binding!!
+    private val jugadorRepository = JugadorRepository()
+    private val authRepository = AuthRepository.getInstance()
+    private val torneoRepository = TorneoRepository()
+    private var partida: Partida? = null
+    private var idTorneo: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        partida = arguments?.getSerializable("partida") as? Partida
+        idTorneo = arguments?.getString("idTorneo")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detalle_partida, container, false)
+    ): View {
+        _binding = FragmentDetallePartidaBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment DetallePartidaFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DetallePartidaFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        actualizarUI()
+
+        binding.btnVerPartida.setOnClickListener {
+            // TODO: btn para ir a movimientos de partidas
+        }
+
+        binding.btnIniciarPartida.setOnClickListener {
+            iniciarPartida()
+        }
+
+        binding.btnFinalizarPartida.setOnClickListener {
+            mostrarDialogGanador()
+        }
+    }
+
+    private fun actualizarUI() {
+        partida?.let { p ->
+            binding.tvFase.text = p.fase?.name ?: "---"
+            binding.tvEstado.text = p.estado.name
+            
+            // Cargar nombre del ganador si existe
+            if (!p.ganador.isNullOrEmpty()) {
+                jugadorRepository.obtenerJugador(p.ganador) { ganadorObj ->
+                    binding.tvGanador.text = "Ganador: ${ganadorObj?.nombre ?: p.ganador}"
+                }
+            } else {
+                binding.tvGanador.text = "Ganador: ---"
+            }
+            
+            binding.tvFecha.text = "Fecha: ${if (p.fecha.isNullOrEmpty()) "---" else p.fecha}"
+            binding.tvHora.text = "Hora: ${if (p.hora.isNullOrEmpty()) "---" else p.hora}"
+
+            // Cargar nombres de jugadores
+            p.idJugador1?.let { id ->
+                jugadorRepository.obtenerJugador(id) { jugador ->
+                    binding.tvJugador1.text = "${jugador?.nombre ?: "Sin nombre"} - Blancas"
+                }
+            } ?: run { binding.tvJugador1.text = "Pendiente - Blancas" }
+
+            p.idJugador2?.let { id ->
+                jugadorRepository.obtenerJugador(id) { jugador ->
+                    binding.tvJugador2.text = "${jugador?.nombre ?: "Sin nombre"} - Negras"
+                }
+            } ?: run { binding.tvJugador2.text = "Pendiente - Negras" }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                authRepository.currentUser.collect { user ->
+                    val esAdmin = user?.tipoUsuario == TipoUsuario.ORGANIZADOR
+                    
+                    // Lógica de visibilidad de botones
+                    val esPendiente = p.estado == EstadoPartida.PENDIENTE
+                    val esEnCurso = p.estado == EstadoPartida.EN_CURSO
+                    val jugadoresCargados = !p.idJugador1.isNullOrEmpty() && !p.idJugador2.isNullOrEmpty()
+
+                    binding.btnIniciarPartida.visibility = if (esAdmin && esPendiente) View.VISIBLE else View.GONE
+                    binding.btnIniciarPartida.isEnabled = jugadoresCargados
+
+                    binding.btnFinalizarPartida.visibility = if (esAdmin && esEnCurso) View.VISIBLE else View.GONE
                 }
             }
+        }
+    }
+
+    private fun iniciarPartida() {
+        val p = partida ?: return
+        val idT = idTorneo ?: return
+
+        val sdfFecha = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val sdfHora = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val ahora = Date()
+        
+        val fechaActual = sdfFecha.format(ahora)
+        val horaActual = sdfHora.format(ahora)
+
+        binding.btnIniciarPartida.isEnabled = false
+
+        torneoRepository.iniciarPartida(idT, p.idPartida, fechaActual, horaActual) { exito ->
+            if (exito) {
+                Toast.makeText(requireContext(), "Partida iniciada", Toast.LENGTH_SHORT).show()
+                partida = p.copy(
+                    estado = EstadoPartida.EN_CURSO,
+                    fecha = fechaActual,
+                    hora = horaActual
+                )
+                actualizarUI()
+            } else {
+                binding.btnIniciarPartida.isEnabled = true
+                Toast.makeText(requireContext(), "Error al iniciar partida", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun mostrarDialogGanador() {
+        val p = partida ?: return
+        val idJ1 = p.idJugador1 ?: return
+        val idJ2 = p.idJugador2 ?: return
+
+        // Obtener nombres para el dialog
+        jugadorRepository.obtenerJugador(idJ1) { j1 ->
+            jugadorRepository.obtenerJugador(idJ2) { j2 ->
+                val nombres = arrayOf(j1?.nombre ?: "Jugador 1", j2?.nombre ?: "Jugador 2")
+                val ids = arrayOf(idJ1, idJ2)
+                var seleccionado = 0
+
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Seleccionar Ganador")
+                    .setSingleChoiceItems(nombres, 0) { _, which ->
+                        seleccionado = which
+                    }
+                    .setPositiveButton("GUARDAR") { _, _ ->
+                        finalizarPartida(ids[seleccionado])
+                    }
+                    .setNegativeButton("CANCELAR", null)
+                    .show()
+            }
+        }
+    }
+
+    private fun finalizarPartida(idGanador: String) {
+        val p = partida ?: return
+        val idT = idTorneo ?: return
+
+        binding.btnFinalizarPartida.isEnabled = false
+
+        torneoRepository.finalizarPartida(idT, p, idGanador) { exito ->
+            if (exito) {
+                Toast.makeText(requireContext(), "Partida finalizada", Toast.LENGTH_SHORT).show()
+                partida = p.copy(
+                    estado = EstadoPartida.FINALIZADA,
+                    ganador = idGanador
+                )
+                actualizarUI()
+            } else {
+                binding.btnFinalizarPartida.isEnabled = true
+                Toast.makeText(requireContext(), "Error al finalizar partida", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

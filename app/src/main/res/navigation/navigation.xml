@@ -25,6 +25,9 @@
             android:id="@+id/action_nav_home_to_nav_torneos"
             app:destination="@id/nav_torneos" />
         <action
+            android:id="@+id/action_nav_home_to_detalleJugadorFragment"
+            app:destination="@id/nav_detalleJugadorFragment" />
+        <action
             android:id="@+id/action_nav_home_to_nuevosJugadoresFragment"
             app:destination="@id/nav_nuevosJugadoresFragment" />
 
@@ -32,8 +35,8 @@
             android:id="@+id/action_nav_home_to_nav_perfil"
             app:destination="@id/nav_perfil" />
         <action
-            android:id="@+id/action_nav_home_to_detalleJugadorFragment"
-            app:destination="@id/detalleJugadorFragment" />
+            android:id="@+id/action_nav_home_to_nav_mis_inscripciones"
+            app:destination="@id/nav_mis_inscripciones" />
     </fragment>
 
     <fragment
@@ -50,10 +53,10 @@
         android:id="@+id/nav_jugadores"
         android:name="com.example.apptorneosajedrez.ui.jugadores.JugadoresFragment"
         android:label="@string/menu_jugadores"
-        tools:layout="@layout/fragment_jugadores" >
+        tools:layout="@layout/fragment_jugadores">
         <action
             android:id="@+id/action_nav_jugadores_to_detalleJugadorFragment"
-            app:destination="@id/detalleJugadorFragment" />
+            app:destination="@id/nav_detalleJugadorFragment" />
     </fragment>
 
     <fragment
@@ -72,7 +75,7 @@
         android:id="@+id/nav_detalleTorneoFragment"
         android:name="com.example.apptorneosajedrez.ui.torneos.TorneoDetalleFragment"
         android:label="@string/detalle_torneo"
-        tools:layout="@layout/fragment_torneo_detalle" >
+        tools:layout="@layout/fragment_torneo_detalle">
         <action
             android:id="@+id/action_detalleTorneoFragment_to_fixtureFragment"
             app:destination="@id/nav_fixtureFragment" />
@@ -80,18 +83,23 @@
     <activity
         android:id="@+id/loginActivity"
         android:name="com.example.apptorneosajedrez.ui.login.LoginActivity"
-        android:label="activity_login"
+        android:label="@string/login"
         tools:layout="@layout/activity_login" />
     <activity
         android:id="@+id/registerActivity"
         android:name="com.example.apptorneosajedrez.ui.register.RegisterActivity"
-        android:label="activity_register"
+        android:label="@string/register"
         tools:layout="@layout/activity_register" />
+    <fragment
+        android:id="@+id/nav_detalleJugadorFragment"
+        android:name="com.example.apptorneosajedrez.ui.jugadores.DetalleJugadorFragment"
+        android:label="@string/detalle_jugador"
+        tools:layout="@layout/fragment_detalle_jugador" />
     <fragment
         android:id="@+id/nav_fixtureFragment"
         android:name="com.example.apptorneosajedrez.ui.fixture.FixtureFragment"
-        android:label="fragment_fixture"
-        tools:layout="@layout/fragment_fixture" >
+        android:label="@string/fixture"
+        tools:layout="@layout/fragment_fixture">
         <action
             android:id="@+id/action_fixtureFragment_to_detallePartidaFragment"
             app:destination="@id/nav_detallePartidaFragment" />
@@ -99,27 +107,23 @@
     <fragment
         android:id="@+id/nav_nuevosJugadoresFragment"
         android:name="com.example.apptorneosajedrez.ui.nuevos_jugadores.NuevosJugadoresFragment"
-        android:label="Nuevos jugadores pendientes"
+        android:label="@string/nuevos_jugadores"
         tools:layout="@layout/fragment_nuevos_jugadores" />
     <fragment
         android:id="@+id/nav_perfil"
         android:name="com.example.apptorneosajedrez.ui.perfil.PerfilFragment"
-        android:label="Perfil de usuario"
+        android:label="@string/profile"
         tools:layout="@layout/fragment_perfil" />
     <fragment
         android:id="@+id/nav_detallePartidaFragment"
         android:name="com.example.apptorneosajedrez.ui.detallePartida.DetallePartidaFragment"
-        android:label="fragment_detalle_partida"
+        android:label="@string/detalle_partida"
         tools:layout="@layout/fragment_detalle_partida" />
 
     <fragment
         android:id="@+id/nav_mis_inscripciones"
         android:name="com.example.apptorneosajedrez.ui.inscripciones.MisInscripcionesFragment"
-        android:label="@string/menu_mis_inscripciones"
+        android:label="@string/mis_inscripciones"
         tools:layout="@layout/fragment_mis_inscripciones" />
-    <fragment
-        android:id="@+id/detalleJugadorFragment"
-        android:name="com.example.apptorneosajedrez.ui.detalleJugador.DetalleJugadorFragment"
-        android:label="DetalleJugadorFragment" />
 
 </navigation>

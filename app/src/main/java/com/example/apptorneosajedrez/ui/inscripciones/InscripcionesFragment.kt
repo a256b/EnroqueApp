@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.apptorneosajedrez.data.InscripcionRepository
@@ -88,7 +89,18 @@ class InscripcionesFragment : Fragment() {
 
                     val adapter = InscripcionAdapter(items, object : InscripcionAdapter.OnInscripcionDecisionListener {
                         override fun onAceptar(info: InscripcionInfo) {
+                            val idTorneo = info.inscripcion.idTorneo
+                            val idJugador = info.inscripcion.idJugador
+                            
                             repoInscripciones.actualizarEstadoInscripcion(info.inscripcion.id, EstadoInscripcion.ACEPTADA)
+                            
+                            repoTorneos.agregarJugadorATorneo(idTorneo, idJugador) { exito ->
+                                if (exito) {
+                                    Toast.makeText(requireContext(), "Jugador vinculado al torneo", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(requireContext(), "Error al vincular jugador", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
 
                         override fun onRechazar(info: InscripcionInfo) {
