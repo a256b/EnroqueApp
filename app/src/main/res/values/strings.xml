@@ -18,7 +18,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="inscribirse">Inscribirse</string>
     <string name="ver_partidas">Ver Partidas</string>
-    <string name="detalle_torneo">Detalle Torneo</string>
+    <string name="detalle_torneo">Detalle del Torneo</string>
     <string name="estrella">Estrella</string>
     <string name="filtro">Filtro</string>
     <string name="title_activity_login">Torneos de Ajedrez</string>
@@ -48,7 +48,7 @@
     <string name="logout_message">¿Seguro que quiere cerrar sesión?</string>
     <string name="logout_confirm">Cerrar sesión</string>
     <string name="cancel">Cancelar</string>
-    <string name="profile">Perfil</string>
+    <string name="profile">Perfil del usuario</string>
     <string name="logout">Cerrar sesión</string>
 
     <string name="account">Cuenta</string>
@@ -57,4 +57,11 @@
     <string name="tournament_registrations">Inscripciones a torneos</string>
     <string name="title_activity_register">Registro de nuevo usuario</string>
     <string name="menu_mis_inscripciones">Mis inscripciones</string>
+    <string name="login">Inicio de sesión</string>
+    <string name="register">Registro</string>
+    <string name="detalle_jugador">Detalle del Jugador</string>
+    <string name="fixture">Fixture del Torneo</string>
+    <string name="nuevos_jugadores">Solicitudes de nuevos jugadores</string>
+    <string name="detalle_partida">Detalle de la Partida</string>
+    <string name="mis_inscripciones">Mis inscripciones</string>
 </resources>
