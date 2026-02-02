@@ -92,7 +92,7 @@
         tools:layout="@layout/activity_register" />
     <fragment
         android:id="@+id/nav_detalleJugadorFragment"
-        android:name="com.example.apptorneosajedrez.ui.jugadores.DetalleJugadorFragment"
+        android:name="com.example.apptorneosajedrez.ui.detalleJugador.DetalleJugadorFragment"
         android:label="@string/detalle_jugador"
         tools:layout="@layout/fragment_detalle_jugador" />
     <fragment

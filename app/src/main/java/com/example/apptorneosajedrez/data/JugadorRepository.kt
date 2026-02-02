@@ -44,11 +44,7 @@ class JugadorRepository {
             }
     }
 
-    fun crearJugador(uid: String, nombreCompleto: String, email: String){
-        val jugador = Jugador(id=uid, nombre=nombreCompleto, email=email)
-        db.collection("jugadores").document(uid).set(jugador)
-        //TODO: ver si conviene pasar a actualizarEstadoJugador
-        db.collection("usuarios").document(uid).update("tipoUsuario", "JUGADOR")
+
     /**
      * Crea el documento del jugador en la colección "jugadores"
      * y actualiza el campo "tipoUsuario" en la colección "usuarios".
@@ -90,45 +86,4 @@ class JugadorRepository {
 
         return snapshot.toObject<Jugador>()
     }
-/*
-    *//**
-     * Guarda (crea/actualiza) un jugador completo.
-     *//*
-    suspend fun guardarJugador(jugador: Jugador) {
-        jugadoresRef
-            .document(jugador.id)
-            .set(jugador)
-            .await()
-    }
-
-    *//**
-     * Actualiza sólo el nombre del jugador.
-     *//*
-    suspend fun actualizarNombreJugador(
-        idJugador: String,
-        nombreCompleto: String
-    ) {
-        jugadoresRef
-            .document(idJugador)
-            .update("nombre", nombreCompleto)
-            .await()
-    }
-
-    *//**
-     * Actualiza el estado de un jugador.
-     *//*
-    fun actualizarEstadoJugador(id: String, nuevoEstado: String) {
-        jugadoresRef
-            .document(id)
-            .update("estado", nuevoEstado)
-    }
-
-    *//**
-     * Elimina un jugador por id.
-     *//*
-    fun eliminarJugador(id: String) {
-        jugadoresRef
-            .document(id)
-            .delete()
-    }*/
 }
