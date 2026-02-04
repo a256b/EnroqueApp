@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.movimientos.CargarMovimientosFragment">
+    tools:context=".ui.movimientos.MovimientosFragment">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Cargar Movimientos" />
+        android:text="@string/cargar_movimientos" />
 
 </FrameLayout>

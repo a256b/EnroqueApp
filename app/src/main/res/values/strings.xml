@@ -57,6 +57,9 @@
     <string name="tournament_registrations">Inscripciones a torneos</string>
     <string name="title_activity_register">Registro de nuevo usuario</string>
     <string name="menu_mis_inscripciones">Mis inscripciones</string>
+    <string name="perfil">Perfil</string>
+    <string name="vista_general">Vista general</string>
+    <string name="solicitudes">Solicitudes</string>
     <string name="login">Inicio de sesión</string>
     <string name="register">Registro</string>
     <string name="detalle_jugador">Detalle del Jugador</string>
@@ -64,4 +67,6 @@
     <string name="nuevos_jugadores">Solicitudes de nuevos jugadores</string>
     <string name="detalle_partida">Detalle de la Partida</string>
     <string name="mis_inscripciones">Mis inscripciones</string>
+    <string name="movimientos">Movimientos</string>
+    <string name="cargar_movimientos">Cargar Movimientos</string>
 </resources>

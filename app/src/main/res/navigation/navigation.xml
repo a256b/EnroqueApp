@@ -35,6 +35,9 @@
             android:id="@+id/action_nav_home_to_nav_perfil"
             app:destination="@id/nav_perfil" />
         <action
+            android:id="@+id/action_nav_home_to_nav_movimientos"
+            app:destination="@id/nav_movimientos" />
+        <action
             android:id="@+id/action_nav_home_to_nav_mis_inscripciones"
             app:destination="@id/nav_mis_inscripciones" />
     </fragment>
@@ -125,5 +128,9 @@
         android:name="com.example.apptorneosajedrez.ui.inscripciones.MisInscripcionesFragment"
         android:label="@string/mis_inscripciones"
         tools:layout="@layout/fragment_mis_inscripciones" />
+    <fragment
+        android:id="@+id/nav_movimientos"
+        android:name="com.example.apptorneosajedrez.ui.movimientos.MovimientosFragment"
+        android:label="@string/movimientos" />
 
 </navigation>

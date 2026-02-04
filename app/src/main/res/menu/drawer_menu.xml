@@ -11,7 +11,7 @@
             android:title="@string/menu_inicio" />
     </group>
     <!-- Separador visual -->
-    <item android:title="Vista general">
+    <item android:title="@string/vista_general">
         <menu>
 
             <item
@@ -29,7 +29,7 @@
         </menu>
     </item>
     <!-- Separador visual -->
-    <item android:title="Solicitudes" >
+    <item android:title="@string/solicitudes" >
         <menu>
             <item
                 android:id="@+id/nav_quiero_ser_jugador"
@@ -59,7 +59,7 @@
                 android:id="@+id/nav_perfil"
                 android:checkable="false"
                 android:icon="@drawable/account_box_24px"
-                android:title="Perfil" />
+                android:title="@string/perfil" />
             <item
                 android:id="@+id/nav_logout"
                 android:checkable="false"
@@ -67,4 +67,10 @@
                 android:title="@string/logout" />
         </menu>
     </item>
+
+            <item
+                android:id="@+id/nav_movimientos"
+                android:checkable="false"
+                android:icon="@drawable/add_ad_24px"
+                android:title="TEMP - Movimientos" />
 </menu>
