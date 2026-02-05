@@ -69,4 +69,5 @@
     <string name="mis_inscripciones">Mis inscripciones</string>
     <string name="movimientos">Movimientos</string>
     <string name="cargar_movimientos">Cargar Movimientos</string>
+    <string name="torneo_imagen">Imágen del torneo</string>
 </resources>
