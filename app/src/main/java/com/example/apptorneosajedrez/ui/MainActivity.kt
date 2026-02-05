@@ -9,7 +9,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -21,6 +23,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.databinding.ActivityMainBinding
+import com.example.apptorneosajedrez.model.TipoUsuario
+import com.example.apptorneosajedrez.model.Usuario
 import com.example.apptorneosajedrez.ui.login.LoginActivity
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.launch
@@ -46,14 +50,51 @@ class MainActivity : AppCompatActivity() {
 
             if (isFinishing || isDestroyed) return@launch
 
-            // 👇 Mostrar el saludo solo si viene el nombre
             mostrarToastBienvenidaSiCorresponde()
-
             configureToolbar()
             setupNavigationSystem()
+            observarUsuario()
         }
     }
 
+    private fun observarUsuario() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+               val usuarioLogueado = authRepository.getCurrentUserInMemory()
+                actualizarMenuDrawer(usuarioLogueado)
+            }
+        }
+    }
+
+    private fun actualizarMenuDrawer(usuario: Usuario?) {
+        val esOrganizador = usuario?.tipoUsuario == TipoUsuario.ORGANIZADOR
+        val esJugador = usuario?.tipoUsuario == TipoUsuario.JUGADOR
+        val esAficionado = usuario?.tipoUsuario == TipoUsuario.AFICIONADO
+        val estadoComoJugador = usuario?.estadoComoJugador?.name
+        val esJugadorSinEstado = estadoComoJugador == "NINGUNO"
+        val esJugadorRechazado = estadoComoJugador == "RECHAZADO"
+
+        // Opciones que ve solo un Organizador
+        binding.navigationView.menu
+            .findItem(R.id.nav_nuevosJugadoresFragment)
+            .isVisible = esOrganizador
+        binding.navigationView.menu
+            .findItem(R.id.nav_inscripciones)
+            .isVisible = esOrganizador
+
+
+        // Opciones que puede ver solo un Jugador
+        binding.navigationView.menu
+            .findItem(R.id.nav_mis_inscripciones)
+            .isVisible = esJugador
+
+
+       // Opciones que puede ver solo un Aficionado
+        binding.navigationView.menu
+            .findItem(R.id.nav_quiero_ser_jugador)
+            .isVisible = esAficionado && (esJugadorSinEstado || esJugadorRechazado)
+
+    }
     private fun mostrarToastBienvenidaSiCorresponde() {
         val nombreUsuario = intent.getStringExtra(EXTRA_NOMBRE_USUARIO)
 
