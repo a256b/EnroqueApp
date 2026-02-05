@@ -1,5 +1,6 @@
 package com.example.apptorneosajedrez.ui.torneos
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,9 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.annotation.ColorRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -27,6 +30,7 @@ import com.example.apptorneosajedrez.ui.fixture.FixtureViewModel
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.launch
 
+@Suppress("DEPRECATION")
 class TorneoDetalleFragment : Fragment() {
 
     private var _binding: FragmentTorneoDetalleBinding? = null
@@ -64,7 +68,7 @@ class TorneoDetalleFragment : Fragment() {
             var esJugadorSinAlta = false
             var hayCapacidad = true
             var yaInscripto = false
-            var esTorneoProximo = t.estado == EstadoTorneo.PROXIMO
+            val esTorneoProximo = t.estado == EstadoTorneo.PROXIMO
 
             fun actualizarInterfazFiltros() {
                 val b = _binding ?: return
@@ -170,18 +174,36 @@ class TorneoDetalleFragment : Fragment() {
     private fun actualizarVista(t: Torneo) {
         binding.nombreTorneo.text = t.nombre
         binding.tvEstadoTorneo.text = t.estado.name
-        binding.tvFechaInicio.text = "Fecha de inicio: ${t.fechaInicio}"
-        binding.tvFechaFin.text = "Fecha de fin: ${t.fechaFin}"
-        binding.tvHoraInicio.text = "Hora de inicio: ${t.horaInicio}"
+        binding.tvFechaInicio.text = "Inicio: ${t.fechaInicio}"
+        binding.tvFechaFin.text = "Finalización: ${t.fechaFin}"
+        binding.tvHoraInicio.text = "${t.horaInicio}hs."
         binding.tvUbicacion.text = "Lugar: ${t.ubicacion}"
         binding.tvDescripcion.text = t.descripcion
+
+        binding.tvEstadoTorneo.backgroundTintList =
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireContext(),
+                    colorFondoSegunEstado(t)
+                )
+            )
+    }
+
+    @ColorRes
+    private fun colorFondoSegunEstado(torneo: Torneo): Int {
+        return when (torneo.estado) {
+            EstadoTorneo.ACTIVO -> R.color.estado_torneo_activo
+            EstadoTorneo.FINALIZADO -> R.color.estado_torneo_finalizado
+            EstadoTorneo.SUSPENDIDO -> R.color.estado_torneo_suspendido
+            EstadoTorneo.PROXIMO -> R.color.estado_torneo_proximo
+        }
     }
 
     private fun mostrarDialogEditar(t: Torneo) {
         val builder = AlertDialog.Builder(requireContext())
         val dialogView = layoutInflater.inflate(R.layout.dialog_editar_torneo, null)
         val spinner = dialogView.findViewById<Spinner>(R.id.spinner_estado_torneo)
-        
+
         val estados = EstadoTorneo.values()
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, estados)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

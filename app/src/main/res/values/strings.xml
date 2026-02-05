@@ -70,4 +70,6 @@
     <string name="movimientos">Movimientos</string>
     <string name="cargar_movimientos">Cargar Movimientos</string>
     <string name="torneo_imagen">Imágen del torneo</string>
+    <string name="solicit_el_alta_como_jugador_para_participar">¡Solicitá el alta como jugador para participar!</string>
+    <string name="cambiar_estado">Cambiar estado</string>
 </resources>

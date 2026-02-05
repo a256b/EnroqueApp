@@ -50,7 +50,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/pinguino"
+                    android:src="@drawable/imagen_torneo"
                     android:scaleType="centerCrop"
                     tools:ignore="ContentDescription" />
 
@@ -73,79 +73,93 @@
 
 
         <!-- Estado (tipo chip simple centrado) -->
+
+        <!-- Bloque de información (centrado, bodyLarge) -->
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_estado_torneo"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="48dp"
             android:background="@drawable/bg_estado_torneo"
             android:paddingHorizontal="14dp"
             android:paddingVertical="6dp"
+            android:gravity="center"
             android:textAppearance="?attr/textAppearanceTitleMedium"
             android:textColor="?attr/colorOnSurface"
+            android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/nombre_torneo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="ACTIVO" />
 
-        <!-- Bloque de información (centrado, bodyLarge) -->
+
         <TextView
             android:id="@+id/tv_fecha_inicio"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:gravity="center"
+            android:layout_marginTop="70dp"
+            android:gravity="end"
             android:textAppearance="?attr/textAppearanceBodyLarge"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/tv_hora_inicio"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_estado_torneo"
             tools:text="Inicio: 05/02/2026" />
 
-        <TextView
-            android:id="@+id/tv_fecha_fin"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_fecha_inicio"
-            tools:text="Fin: 07/02/2026" />
 
         <TextView
             android:id="@+id/tv_hora_inicio"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_fecha_inicio"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_fecha_inicio"
+            app:layout_constraintTop_toTopOf="@+id/tv_fecha_inicio"
+            tools:text="19:00" />
+
+        <TextView
+            android:id="@+id/tv_fecha_fin"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_fecha_fin"
-            tools:text="Hora: 19:00" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_fecha_inicio"
+            tools:text="Fin: 07/02/2026" />
 
         <TextView
             android:id="@+id/tv_descripcion"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textSize="14sp"
+
             android:textColor="?attr/colorOnBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_hora_inicio"
+            app:layout_constraintTop_toBottomOf="@id/tv_fecha_fin"
             tools:text="Descripción: Torneo suizo a 7 rondas." />
 
         <TextView
             android:id="@+id/tv_ubicacion"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textSize="14sp"
+
             android:textColor="?attr/colorOnBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -153,43 +167,52 @@
             tools:text="Ubicación: Calle Falsa 123" />
 
         <!-- Mensaje jugador (error/alerta) -->
+
+        <!-- Cantidad inscriptos -->
         <TextView
             android:id="@+id/tv_mensaje_jugador"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:gravity="center"
-            android:text="¡Solicitá el alta como jugador para participar!"
+            android:text="@string/solicit_el_alta_como_jugador_para_participar"
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="?attr/colorError"
+            android:textSize="14sp"
             android:textStyle="italic"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_ubicacion"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cantidad_inscriptos"
             tools:visibility="visible" />
 
-        <!-- Cantidad inscriptos -->
         <TextView
             android:id="@+id/tv_cantidad_inscriptos"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:gravity="center"
             android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textSize="14sp"
+
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_mensaje_jugador"
+            app:layout_constraintTop_toBottomOf="@id/tv_ubicacion"
             tools:text="Inscriptos: 24" />
 
         <!-- Botones (columna centrada) -->
+
+        <!-- Espacio final -->
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_inscribirse"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Inscribirse"
+            android:layout_marginTop="48dp"
+            android:text="@string/inscribirse"
+            android:textAllCaps="false"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_cantidad_inscriptos"
@@ -199,8 +222,11 @@
             android:id="@+id/btn_ver_partidas"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Ver partidas"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+            android:text="@string/ver_partidas"
+            android:textAllCaps="false"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_inscribirse"
@@ -208,27 +234,18 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_editar_torneo"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Editar"
+            android:layout_marginTop="8dp"
+            android:text="@string/cambiar_estado"
+            android:textAllCaps="false"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_ver_partidas"
+            app:layout_constraintTop_toBottomOf="@+id/tv_estado_torneo"
             app:layout_constraintWidth_percent="0.75"
             tools:visibility="visible" />
-
-        <!-- Espacio final -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_editar_torneo" />
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
