@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.apptorneosajedrez.data.AuthRepository
 
 class RegisterViewModelFactory(
-    private val authRepository: AuthRepository = AuthRepository.getInstance()
+    private val authRepository: AuthRepository
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")

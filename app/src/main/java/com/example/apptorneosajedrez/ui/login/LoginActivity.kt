@@ -17,6 +17,7 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
 import com.example.apptorneosajedrez.ui.MainActivity
 import com.example.apptorneosajedrez.R
+import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.databinding.ActivityLoginBinding
 import com.example.apptorneosajedrez.model.Usuario
 import com.example.apptorneosajedrez.ui.register.RegisterActivity
@@ -29,8 +30,10 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
 
     private val loginViewModel: LoginViewModel by lazy {
-        ViewModelProvider(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
+
+        val factory = LoginViewModelFactory(authRepository = AuthRepository.getInstance())
+
+        ViewModelProvider(this, factory)[LoginViewModel::class.java]
     }
 
     // Google / Credential Manager

@@ -1,5 +1,6 @@
 package com.example.apptorneosajedrez.ui.register
 
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.model.Usuario
 import kotlinx.coroutines.launch
+
 
 data class RegisterUiState(
     val isLoading: Boolean = false,
@@ -19,6 +21,10 @@ class RegisterViewModel(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
+    private companion object {
+        const val TAG = "RegisterViewModel"
+    }
+
     private val _uiState = MutableLiveData(RegisterUiState())
     val uiState: LiveData<RegisterUiState> = _uiState
 
@@ -29,6 +35,7 @@ class RegisterViewModel(
         confirmPassword: String
     ) {
         if (fullName.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+            Log.d(TAG, "register() - Todos los campos son obligatorios")
             _uiState.value = RegisterUiState(
                 errorMessage = "Todos los campos son obligatorios"
             )
@@ -92,6 +99,7 @@ class RegisterViewModel(
     }
 
     private fun traducirMensajeErrorRegistro(e: Exception): String {
+        Log.d(TAG, "traducirMensajeErrorRegistro() - ${e.message}")
         val msg = e.message ?: return "No se pudo crear la cuenta"
 
         return when {
@@ -100,7 +108,7 @@ class RegisterViewModel(
 
             msg.contains("email address is already in use", ignoreCase = true) ||
                     msg.contains("ERROR_EMAIL_ALREADY_IN_USE", ignoreCase = true) ->
-                "Este correo ya está registrado"
+                "Este correo ya se encuentra registrado"
 
             msg.contains("Password should be at least", ignoreCase = true) ||
                     msg.contains("WEAK_PASSWORD", ignoreCase = true) ->

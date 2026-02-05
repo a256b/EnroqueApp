@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.databinding.ActivityRegisterBinding
-import com.example.apptorneosajedrez.model.Jugador
 import com.example.apptorneosajedrez.ui.login.LoginActivity
 
 class RegisterActivity() : AppCompatActivity() {
@@ -17,8 +17,12 @@ class RegisterActivity() : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
 
     private val registerViewModel: RegisterViewModel by lazy {
-        ViewModelProvider(this, RegisterViewModelFactory())[RegisterViewModel::class.java]
+
+        val factory = RegisterViewModelFactory(authRepository = AuthRepository.getInstance())
+
+        ViewModelProvider(this, factory)[RegisterViewModel::class.java]
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
