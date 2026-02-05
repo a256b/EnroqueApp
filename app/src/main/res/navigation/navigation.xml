@@ -78,7 +78,7 @@
         android:id="@+id/nav_detalleTorneoFragment"
         android:name="com.example.apptorneosajedrez.ui.torneos.TorneoDetalleFragment"
         android:label="@string/detalle_torneo"
-        tools:layout="@layout/fragment_torneo_detalle">
+        tools:layout="@layout/fragment_detalle_torneo">
         <action
             android:id="@+id/action_detalleTorneoFragment_to_fixtureFragment"
             app:destination="@id/nav_fixtureFragment" />

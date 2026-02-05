@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.apptorneosajedrez.R
-import com.example.apptorneosajedrez.databinding.FragmentTorneoDetalleBinding
+import com.example.apptorneosajedrez.databinding.FragmentDetalleTorneoBinding
 import com.example.apptorneosajedrez.data.InscripcionRepository
 import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.data.TorneoRepository
@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 @Suppress("DEPRECATION")
 class TorneoDetalleFragment : Fragment() {
 
-    private var _binding: FragmentTorneoDetalleBinding? = null
+    private var _binding: FragmentDetalleTorneoBinding? = null
     private val binding get() = _binding!!
     private val repoInscripciones = InscripcionRepository()
     private val repoTorneos = TorneoRepository()
@@ -53,7 +53,7 @@ class TorneoDetalleFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentTorneoDetalleBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentDetalleTorneoBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
