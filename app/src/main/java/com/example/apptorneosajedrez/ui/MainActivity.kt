@@ -3,7 +3,6 @@ package com.example.apptorneosajedrez.ui
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +26,7 @@ import com.example.apptorneosajedrez.model.TipoUsuario
 import com.example.apptorneosajedrez.model.Usuario
 import com.example.apptorneosajedrez.ui.login.LoginActivity
 import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
-    private val authRepository: AuthRepository by lazy { AuthRepository.Companion.getInstance() }
+    private val authRepository: AuthRepository by lazy { AuthRepository.getInstance() }
 
     companion object {
         const val EXTRA_NOMBRE_USUARIO = "EXTRA_NOMBRE_USUARIO"
@@ -60,16 +60,19 @@ class MainActivity : AppCompatActivity() {
     private fun observarUsuario() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-               val usuarioLogueado = authRepository.getCurrentUserInMemory()
-                actualizarMenuDrawer(usuarioLogueado)
+                authRepository.currentUser.collectLatest { usuario ->
+                    actualizarMenuDrawer(usuario)
+                }
             }
         }
     }
+
 
     private fun actualizarMenuDrawer(usuario: Usuario?) {
         val esOrganizador = usuario?.tipoUsuario == TipoUsuario.ORGANIZADOR
         val esJugador = usuario?.tipoUsuario == TipoUsuario.JUGADOR
         val esAficionado = usuario?.tipoUsuario == TipoUsuario.AFICIONADO
+
         val estadoComoJugador = usuario?.estadoComoJugador?.name
         val esJugadorSinEstado = estadoComoJugador == "NINGUNO"
         val esJugadorRechazado = estadoComoJugador == "RECHAZADO"
@@ -88,13 +91,13 @@ class MainActivity : AppCompatActivity() {
             .findItem(R.id.nav_mis_inscripciones)
             .isVisible = esJugador
 
-
-       // Opciones que puede ver solo un Aficionado
+        // Opciones que puede ver solo un Aficionado
         binding.navigationView.menu
             .findItem(R.id.nav_quiero_ser_jugador)
             .isVisible = esAficionado && (esJugadorSinEstado || esJugadorRechazado)
 
     }
+
     private fun mostrarToastBienvenidaSiCorresponde() {
         val nombreUsuario = intent.getStringExtra(EXTRA_NOMBRE_USUARIO)
 
@@ -153,22 +156,6 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout = binding.drawerLayout
         val navigationView = binding.navigationView
 
-        // Primer llamado al crear la activity
-        checkEstadoComoJugadorVisibilidad(navigationView)
-
-        // Listener para actualizar cada vez que se abre el drawer
-        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
-
-            override fun onDrawerOpened(drawerView: View) {
-                checkEstadoComoJugadorVisibilidad(navigationView)
-            }
-
-            override fun onDrawerClosed(drawerView: View) {}
-
-            override fun onDrawerStateChanged(newState: Int) {}
-        })
-
         setupAppBarConfiguration(drawerLayout)
         connectActionBarWithNavigation(navController)
         connectDrawerWithNavigation(navigationView, navController)
@@ -196,7 +183,7 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
 
                 // Captura de la opción Quiero ser jugador
-                R.id.nav_quiero_ser_jugador ->{
+                R.id.nav_quiero_ser_jugador -> {
                     showAltaJugadorDialog()
                     binding.drawerLayout.closeDrawers()
                     true
@@ -231,20 +218,20 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    private fun showAltaJugadorDialog(){
+    private fun showAltaJugadorDialog() {
         AlertDialog.Builder(this)
             .setTitle("Solicitar alta como jugador")
             .setMessage("¿Desea solicitar el alta como jugador?")
-            .setPositiveButton("Aceptar"){_, _ ->
+            .setPositiveButton("Aceptar") { _, _ ->
                 actualizarEstadoJugadorPendiente()
             }
-            .setNegativeButton(getString(R.string.cancel)){ dialog, _ ->
+            .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
     }
 
-    private fun actualizarEstadoJugadorPendiente(){
+    private fun actualizarEstadoJugadorPendiente() {
         val currentUser = authRepository.getCurrentUserInMemory() ?: return
         val uid = currentUser.uid
         val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
@@ -289,26 +276,5 @@ class MainActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .show()
-    }
-
-    // TODO: mejorar en una sola consulta a la bd por sesión para guardar en caché la info
-    private fun checkEstadoComoJugadorVisibilidad(navigationView: NavigationView){
-        val currentUser = authRepository.getCurrentUserInMemory() ?: return
-        val uid = currentUser.uid
-        val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
-
-        db.collection("usuarios")
-            .document(uid)
-            .get()
-            .addOnSuccessListener { document ->
-                if(!document.exists()) return@addOnSuccessListener
-                val estado = document.getString("estadoComoJugador") ?: "NINGUNO"
-                val menu = navigationView.menu
-                val item = menu.findItem(R.id.nav_quiero_ser_jugador)
-                when (estado){
-                    "NINGUNO", "RECHAZADO" -> item.isVisible = true
-                    "PENDIENTE", "ACEPTADO" -> item.isVisible = false
-                }
-            }
     }
 }
