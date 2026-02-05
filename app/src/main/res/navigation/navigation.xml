@@ -121,7 +121,12 @@
         android:id="@+id/nav_detallePartidaFragment"
         android:name="com.example.apptorneosajedrez.ui.detallePartida.DetallePartidaFragment"
         android:label="@string/detalle_partida"
-        tools:layout="@layout/fragment_detalle_partida" />
+        tools:layout="@layout/fragment_detalle_partida">
+
+        <action
+            android:id="@+id/action_detallePartidaFragment_to_movimientosFragment"
+            app:destination="@id/nav_movimientos" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_mis_inscripciones"
@@ -131,6 +136,14 @@
     <fragment
         android:id="@+id/nav_movimientos"
         android:name="com.example.apptorneosajedrez.ui.movimientos.MovimientosFragment"
-        android:label="@string/movimientos" />
+        android:label="Movimientos">
+        <argument
+            android:name="torneoId"
+            app:argType="string" />
+
+        <argument
+            android:name="partidaId"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

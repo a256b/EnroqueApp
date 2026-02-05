@@ -10,6 +10,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.data.MovimientosRepository
 import com.example.apptorneosajedrez.databinding.FragmentMovimientosBinding
@@ -21,23 +22,16 @@ class MovimientosFragment : Fragment() {
     private var _binding: FragmentMovimientosBinding? = null
     private val binding get() = _binding!!
 
-    // TODO: Constantes para pruebas
-    companion object {
-        const val TORNEO_ID_DEBUG = "0VSJmWIcqLUtNs9nyLUt"
-        const val PARTIDA_ID_DEBUG = "YeOkCTXRETTaYLPNmg6E"
-    }
-
+    private val args: MovimientosFragmentArgs by navArgs<MovimientosFragmentArgs>()
     // Repositorios
     private val firestore by lazy { FirebaseFirestore.getInstance() }
     private val movimientosRepository by lazy { MovimientosRepository(firestore) }
-
-    // 👇 USAR el singleton correcto de AuthRepository
     private val authRepository by lazy { AuthRepository.getInstance() }
 
     private val viewModel: MovimientosViewModel by viewModels {
         MovimientosViewModelFactory(
-            torneoId = TORNEO_ID_DEBUG,
-            partidaId = PARTIDA_ID_DEBUG,
+            torneoId = args.torneoId,
+            partidaId = args.partidaId,
             repository = movimientosRepository,
             authRepository = authRepository
         )

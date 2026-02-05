@@ -117,7 +117,7 @@ class TorneoDetalleFragment : Fragment() {
             listenerInscripciones = repoInscripciones.escucharInscripciones { inscripciones ->
                 if (_binding == null) return@escucharInscripciones
 
-                val inscripcionesDeEsteTorneo = inscripciones.filter { it.idTorneo == t.idTorneo.toString() }
+                val inscripcionesDeEsteTorneo = inscripciones.filter { it.idTorneo == t.idTorneo }
                 
                 // Se suman al contador si el estado es ACEPTADA o PENDIENTE
                 val cantidadValida = inscripcionesDeEsteTorneo.count { it.estado != EstadoInscripcion.RECHAZADA }
@@ -139,7 +139,7 @@ class TorneoDetalleFragment : Fragment() {
                 if (uid != null) {
                     val nuevaInscripcion = Inscripcion(
                         idJugador = uid,
-                        idTorneo = t.idTorneo.toString(),
+                        idTorneo = t.idTorneo,
                         estado = EstadoInscripcion.PENDIENTE
                     )
                     
@@ -204,7 +204,7 @@ class TorneoDetalleFragment : Fragment() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_editar_torneo, null)
         val spinner = dialogView.findViewById<Spinner>(R.id.spinner_estado_torneo)
 
-        val estados = EstadoTorneo.values()
+        val estados = EstadoTorneo.entries.toTypedArray()
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, estados)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter

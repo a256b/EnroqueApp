@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.data.JugadorRepository
 import com.example.apptorneosajedrez.data.TorneoRepository
@@ -50,7 +51,13 @@ class DetallePartidaFragment : Fragment() {
         actualizarUI()
 
         binding.btnVerPartida.setOnClickListener {
-            // TODO: btn para ir a movimientos de partidas
+            val action = DetallePartidaFragmentDirections.actionDetallePartidaFragmentToMovimientosFragment(
+                    torneoId = idTorneo ?: "",
+                    partidaId = partida?.idPartida ?: ""
+                )
+
+            findNavController().navigate(action)
+
         }
 
         binding.btnIniciarPartida.setOnClickListener {
