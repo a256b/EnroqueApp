@@ -19,6 +19,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.apptorneosajedrez.R
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
+import androidx.compose.runtime.*
 
 
 @Composable
@@ -120,21 +123,37 @@ private fun ProfileScreenContent(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
 
-                Text(
-                    text = "Permisos",
-                    textAlign = TextAlign.Left,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Spacer(modifier = Modifier.height(10.dp))
 
-                uiState.detallePermisos?.let {
-                    Text(
-                        text = it,
-                        textAlign = TextAlign.Left,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                uiState.detallePermisos?.let { detalle ->
+
+                    var expanded by remember { mutableStateOf(false) }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateContentSize()
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = if (expanded) "Ocultar permisos" else "Ver permisos",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .clickable { expanded = !expanded }
+                        )
+
+                        if (expanded) {
+                            Spacer(modifier = Modifier.height(6.dp))
+
+                            Text(
+                                text = detalle,
+                                textAlign = TextAlign.Left,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+                    }
                 }
             }
         }
