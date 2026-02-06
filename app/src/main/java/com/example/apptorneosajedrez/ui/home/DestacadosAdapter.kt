@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.model.Torneo
@@ -32,10 +33,24 @@ class DestacadosAdapter(
 
     inner class DestacadoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val nombreTextView: TextView = itemView.findViewById(R.id.textNombreTorneo)
+        private val ubicacionTextView: TextView = itemView.findViewById(R.id.textUbicacionTorneo)
+        private val inscriptosTextView: TextView = itemView.findViewById(R.id.textInscriptosTorneo)
         private val estrellaImageView: ImageView = itemView.findViewById(R.id.imgEstrella)
 
         fun bind(torneo: Torneo) {
             nombreTextView.text = torneo.nombre
+            ubicacionTextView.text = torneo.ubicacion
+            
+            val numInscriptos = torneo.jugadores.size
+            inscriptosTextView.text = "Inscriptos: $numInscriptos"
+            
+            val context = itemView.context
+            if (numInscriptos == 8) {
+                inscriptosTextView.setTextColor(ContextCompat.getColor(context, R.color.rojo))
+            } else {
+                inscriptosTextView.setTextColor(ContextCompat.getColor(context, R.color.estado_torneo_activo))
+            }
+
             estrellaImageView.setImageResource(R.drawable.ic_star2)
 
             estrellaImageView.setOnClickListener {

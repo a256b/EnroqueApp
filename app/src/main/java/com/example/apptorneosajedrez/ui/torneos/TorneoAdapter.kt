@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.model.Torneo
@@ -38,12 +39,26 @@ class TorneoAdapter(
 
     inner class TorneoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val nombreTextView: TextView = itemView.findViewById(R.id.textNombreTorneo)
+        private val ubicacionTextView: TextView = itemView.findViewById(R.id.textUbicacionTorneo)
+        private val inscriptosTextView: TextView = itemView.findViewById(R.id.textInscriptosTorneo)
         private val estrellaImageView: ImageView = itemView.findViewById(R.id.imgEstrella)
         private val sharedPreferences: SharedPreferences =
             context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
         fun bind(torneo: Torneo) {
             nombreTextView.text = torneo.nombre
+            ubicacionTextView.text = torneo.ubicacion
+            
+            val numInscriptos = torneo.jugadores.size
+            inscriptosTextView.text = "Inscriptos: $numInscriptos"
+            
+            if (numInscriptos == 8) {
+                inscriptosTextView.setTextColor(ContextCompat.getColor(context, R.color.rojo))
+            } else {
+                // Usamos el color verde del estado activo si existe, o uno estándar
+                inscriptosTextView.setTextColor(ContextCompat.getColor(context, R.color.estado_torneo_activo))
+            }
+
             itemView.setOnClickListener { onTorneoClick(torneo) }
 
             val favoritos = sharedPreferences.getStringSet(KEY_TORNEO_DESTACADO, setOf())?.toMutableSet()
