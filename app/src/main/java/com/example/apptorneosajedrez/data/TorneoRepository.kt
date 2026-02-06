@@ -9,6 +9,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.FieldValue
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class TorneoRepository {
 
@@ -50,6 +53,12 @@ class TorneoRepository {
             .update("estado", nuevoEstado.name)
             .addOnSuccessListener { onComplete(true) }
             .addOnFailureListener { onComplete(false) }
+    }
+
+    fun actualizarFechaTorneo(idTorneo: String, fecha: String) {
+        if (idTorneo.isEmpty()) return
+        db.collection("torneos").document(idTorneo)
+            .update("fechaFin", fecha)
     }
 
     /**
@@ -224,8 +233,10 @@ class TorneoRepository {
         partidasCol.document(partida.idPartida)
             .update("estado", EstadoPartida.FINALIZADA.name, "ganador", idGanador)
             .addOnSuccessListener {
-                // 2. Si es la FINAL, cambiamos el estado del TORNEO a FINALIZADO. Si no, avanzamos al ganador.
+                // 2. Si es la FINAL, cambiamos el estado del TORNEO a FINALIZADO y seteamos fechaFin.
                 if (partida.fase == Fase.FINAL) {
+                    val fechaHoy = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+                    actualizarFechaTorneo(idTorneo, fechaHoy)
                     actualizarEstadoTorneo(idTorneo, EstadoTorneo.FINALIZADO, onComplete)
                 } else {
                     avanzarGanador(idTorneo, partida.fase, idGanador, onComplete)
