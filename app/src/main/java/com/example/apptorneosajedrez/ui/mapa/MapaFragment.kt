@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.apptorneosajedrez.databinding.FragmentMapaBinding
 import com.example.apptorneosajedrez.model.Marcador
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -22,8 +23,11 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.apptorneosajedrez.R
+import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.model.Categoria
+import com.example.apptorneosajedrez.model.TipoUsuario
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import kotlinx.coroutines.launch
 
 
 class MapaFragment : Fragment(), OnMapReadyCallback {
@@ -33,11 +37,14 @@ class MapaFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var googleMap: GoogleMap
     private val viewModel: MapaViewModel by viewModels()
+    private val authRepository = AuthRepository.getInstance()
 
     private var filtroNombre: String = ""
     private var filtroCategoria: String = "Ambas categorías"
     private var filtroDescripcion: String = ""
     private var filtroDescuento: Int? = null
+    
+    private var esOrganizador: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -48,6 +55,13 @@ class MapaFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            authRepository.currentUser.collect { user ->
+                esOrganizador = user?.tipoUsuario == TipoUsuario.ORGANIZADOR
+            }
+        }
+        
         inicializarMapa()
         observarMarcadores()
         binding.btnFiltro.setOnClickListener {
@@ -88,7 +102,6 @@ class MapaFragment : Fragment(), OnMapReadyCallback {
 
                     view
                 } else {
-                    // TODO: por si se muestra otra cosa en los otros markers
                     null
                 }
             }
@@ -99,7 +112,11 @@ class MapaFragment : Fragment(), OnMapReadyCallback {
         })
 
         googleMap.setOnMapLongClickListener { latLng ->
-            mostrarDialogoAgregarMarcador(latLng)
+            if (esOrganizador) {
+                mostrarDialogoAgregarMarcador(latLng)
+            } else {
+                Toast.makeText(requireContext(), "Solo los organizadores pueden agregar marcadores", Toast.LENGTH_SHORT).show()
+            }
         }
 
         googleMap.setOnMarkerClickListener { marker ->
@@ -355,5 +372,4 @@ class MapaFragment : Fragment(), OnMapReadyCallback {
         super.onDestroyView()
         _binding = null
     }
-
 }
