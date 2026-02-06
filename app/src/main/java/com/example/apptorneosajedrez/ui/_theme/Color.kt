@@ -23,7 +23,7 @@ val Negro       = Color(0xFF000000)  // @color/black
 // =========================
 
 // Equivalentes a themes.xml
-val Primary         = Marino          // colorPrimary
+/*val Primary         = Marino          // colorPrimary
 val PrimaryDark     = Noche           // colorPrimaryVariant
 val OnPrimary       = Niebla          // colorOnPrimary
 
@@ -36,7 +36,7 @@ val Background      = Blanco          // Fondo general (similar a @color/white)
 val Surface         = Niebla          // Superficie de tarjetas / paneles
 
 // Error
-val ErrorRed        = Rojo            // Usamos @color/rojo como color de error
+val ErrorRed        = Rojo            // Usamos @color/rojo como color de error*/
 
 // =========================
 // Colores de estado de torneo (de colors.xml)
@@ -57,3 +57,31 @@ val Pink80        = Color(0xFFEFB8C8)
 val Purple40      = Color(0xFF6650A4)
 val PurpleGrey40  = Color(0xFF625B71)
 val Pink40        = Color(0xFF7D5260)
+
+
+val Primary = Color(0xFF123458)
+val OnPrimary = Color(0xFFFFFFFF)
+val PrimaryContainer = Color(0xFF345A89)
+val OnPrimaryContainer = Color(0xFFE7F1FF)
+
+val Secondary = Color(0xFF5A708F)
+val OnSecondary = Color(0xFFFFFFFF)
+val SecondaryContainer = Color(0xFFD6E2F5)
+val OnSecondaryContainer = Color(0xFF1B2838)
+
+val Tertiary = Color(0xFF2B7A78)
+val OnTertiary = Color(0xFFFFFFFF)
+val TertiaryContainer = Color(0xFFA6E4DE)
+val OnTertiaryContainer = Color(0xFF073E3B)
+
+val ErrorRed = Color(0xFFB3261E)
+val OnError = Color(0xFFFFFFFF)
+val ErrorContainer = Color(0xFFF9DEDC)
+val OnErrorContainer = Color(0xFF410E0B)
+
+val Background = Color(0xFFF9FAFC)
+val OnBackground = Color(0xFF1A1C1E)
+val Surface = Color(0xFFFFFFFF)
+val OnSurface = Color(0xFF1A1C1E)
+val SurfaceVariant = Color(0xFFDFE3EB)
+val OnSurfaceVariant = Color(0xFF444B53)
