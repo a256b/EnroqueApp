@@ -233,7 +233,7 @@ class MapaFragment : Fragment(), OnMapReadyCallback {
 
         inputDescripcion.isEnabled = false
         inputDescuento.isEnabled = false
-        spinnerCategoria.setOnItemSelectedListener(object : android.widget.AdapterView.OnItemSelectedListener {
+        spinnerCategoria.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: android.widget.AdapterView<*>?,
                 view: View?,
@@ -247,7 +247,7 @@ class MapaFragment : Fragment(), OnMapReadyCallback {
             }
 
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
-        })
+        }
 
         AlertDialog.Builder(requireContext())
             .setTitle("Nuevo marcador")
@@ -309,7 +309,7 @@ class MapaFragment : Fragment(), OnMapReadyCallback {
         val indexCategoria = categorias.indexOf(filtroCategoria)
         if (indexCategoria >= 0) spinnerCategoria.setSelection(indexCategoria)
 
-        spinnerCategoria.setOnItemSelectedListener(object : android.widget.AdapterView.OnItemSelectedListener {
+        spinnerCategoria.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val seleccion = categorias[position]
                 val esTorneo = seleccion.equals("Torneo", ignoreCase = true)
@@ -318,8 +318,9 @@ class MapaFragment : Fragment(), OnMapReadyCallback {
                     inputDescuento.setText("")
                 }
             }
+
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
-        })
+        }
 
         AlertDialog.Builder(requireContext())
             .setTitle("Filtrar marcadores")

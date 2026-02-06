@@ -54,7 +54,7 @@ class JugadorAdapter(
         }
     }
 
-    inner class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val txtHeader: TextView = view.findViewById(R.id.textHeader)
 
         fun bind(titulo: String) {
@@ -62,7 +62,7 @@ class JugadorAdapter(
         }
     }
 
-    inner class JugadorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class JugadorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val nombreTextView: TextView = view.findViewById(R.id.textNombreJugador)
         private val emailTextView: TextView = view.findViewById(R.id.txtEmail)
 

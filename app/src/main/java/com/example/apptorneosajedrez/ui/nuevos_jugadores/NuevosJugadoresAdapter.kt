@@ -16,7 +16,7 @@ class NuevosJugadoresAdapter(
         fun onRechazar(usuario: Usuario)
     }
 
-    inner class UsuarioViewHolder(val binding: ItemNuevosJugadoresBinding)
+    class UsuarioViewHolder(val binding: ItemNuevosJugadoresBinding)
         : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsuarioViewHolder {

@@ -24,7 +24,7 @@ class DestacadosAdapter(
     private val VIEW_HEADER = 0
     private val VIEW_TORNEO = 1
 
-    inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val headerText: TextView = itemView.findViewById(R.id.textHeader)
         fun bind(text: String) {
             headerText.text = text

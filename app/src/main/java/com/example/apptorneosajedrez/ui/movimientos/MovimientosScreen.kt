@@ -266,10 +266,10 @@ private fun TurnIndicator(
     modifier: Modifier = Modifier
 ) {
     val (bg, content) =
-        if (esTurnoBlancas) {
-            MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
+        if (!esTurnoBlancas) {
+            MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
         } else {
-            MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
+            MaterialTheme.colorScheme.surface to MaterialTheme.colorScheme.onSurface
         }
 
     val texto = "Turno de " + if (esTurnoBlancas) "Blancas" else "Negras"

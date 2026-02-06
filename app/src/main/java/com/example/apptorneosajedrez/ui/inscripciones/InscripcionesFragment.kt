@@ -40,7 +40,7 @@ class InscripcionesFragment : Fragment() {
         binding.recyclerViewInscripciones.layoutManager = LinearLayoutManager(requireContext())
 
         listenerJugadores = repoJugadores.escucharJugadores { listaJugadores ->
-            val b = _binding ?: return@escucharJugadores
+            _binding ?: return@escucharJugadores
             val jugadoresMap = listaJugadores.associateBy { it.id }
 
             listenerTorneos = repoTorneos.escucharTorneos { listaTorneos ->
