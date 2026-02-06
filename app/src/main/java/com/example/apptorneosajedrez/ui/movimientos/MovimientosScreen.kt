@@ -243,7 +243,7 @@ fun MovimientoInputRow(
             }
         }
 
-        // Botón de borrar todo el movimiento
+        // Botón de borrar el movimiento
         IconButton(
             onClick = onClearMovimiento,
             enabled = movimiento.isNotBlank()

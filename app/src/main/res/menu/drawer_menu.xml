@@ -29,21 +29,25 @@
         </menu>
     </item>
     <!-- Separador visual -->
-    <item android:title="@string/solicitudes" >
+    <item android:title="@string/solicitudes">
         <menu>
+
+            // Solo aficionados
             <item
                 android:id="@+id/nav_quiero_ser_jugador"
                 android:icon="@drawable/group_add_24px"
-                android:title="@string/to_be_player" />       // Solo aficionados
+                android:title="@string/to_be_player" />
+
+            // Solo organizadores
             <item
                 android:id="@+id/nav_nuevosJugadoresFragment"
                 android:icon="@drawable/group_add_24px"
-                android:title="@string/new_players" />         // Solo organizadores
+                android:title="@string/new_players" />
             <item
                 android:id="@+id/nav_inscripciones"
                 android:checkable="false"
                 android:icon="@drawable/add_ad_24px"
-                android:title="@string/tournament_registrations" />     // Solo organizadores
+                android:title="@string/tournament_registrations" />
         </menu>
     </item>
 
