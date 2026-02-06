@@ -75,6 +75,21 @@ class FixtureFragment : Fragment() {
         configurarClickCards()
     }
 
+    private fun actualizarAparienciaCards() {
+        val cardsPorFase = mapOf(
+            Fase.CUARTOS to listOf(binding.m1, binding.m2, binding.m3, binding.m4),
+            Fase.SEMI to listOf(binding.semi1, binding.semi2),
+            Fase.FINAL to listOf(binding.finalMatch)
+        )
+
+        cardsPorFase.forEach { (fase, cards) ->
+            val cantidadPartidasEnFase = partidasGeneradas.count { it.fase == fase }
+            cards.forEachIndexed { index, card ->
+                card.isEnabled = index < cantidadPartidasEnFase
+            }
+        }
+    }
+
     private fun cargarPartidas(idTorneo: String) {
         torneoRepository.obtenerPartidas(idTorneo) { partidas ->
             partidasGeneradas = partidas
@@ -82,6 +97,7 @@ class FixtureFragment : Fragment() {
                 fixtureViewModel.ocultarBotonIniciarTorneo(idTorneo)
                 fixtureViewModel.ocultarBotonEditar(idTorneo)
             }
+            actualizarAparienciaCards()
         }
     }
 

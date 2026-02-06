@@ -13,6 +13,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="oro">#EFBF04</color>
     <color name="rojo">#550000</color>
+    <color name="rojo_claro">#FFEBEE</color>
 
     <color name="estado_torneo_activo">#4CAF50</color>        <!-- Verde -->
     <color name="estado_torneo_finalizado">#9E9E9E</color>    <!-- Gris -->
