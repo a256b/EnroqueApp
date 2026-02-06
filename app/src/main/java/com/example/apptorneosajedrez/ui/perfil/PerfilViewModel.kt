@@ -24,8 +24,8 @@ class PerfilViewModel(
      * Convierte el tipo de usuario desde el formato de base de datos
      * al formato legible para mostrar en la UI.
      */
-    private fun formatUserType(tipo: String?): String {
-        return when (tipo?.uppercase()) {
+    private fun formatUserType(tipo: TipoUsuario?): String {
+        return when (tipo?.toString()?.uppercase()) {
             "ORGANIZADOR" -> "Organizador/a"
             "JUGADOR" -> "Jugador/a"
             else -> "Aficionado/a"
@@ -52,17 +52,17 @@ class PerfilViewModel(
                             isLoading = false,
                             userName = usuario.nombreCompleto ?: "Usuario sin nombre",
                             userEmail = usuario.email,
-                            userType = formatUserType(
-                                usuario.tipoUsuario.toString()
-                            ),
-                            error = null
+                            userType = formatUserType(usuario.tipoUsuario),
+                            detallePermisos = obtenerDetallePermisos(usuario.tipoUsuario),
+                            error = null,
                         )
                     } else {
                         _uiState.value = PerfilUiState(
                             isLoading = false,
                             userName = "",
                             userEmail = "",
-                            userType = formatUserType(TipoUsuario.AFICIONADO.toString()),
+                            userType = formatUserType(TipoUsuario.AFICIONADO),
+                            detallePermisos = "",
                             error = "No hay usuario autenticado"
                         )
                     }
@@ -75,4 +75,38 @@ class PerfilViewModel(
             }
         }
     }
+
+    private fun obtenerDetallePermisos(tipoUsuario: TipoUsuario): String {
+        val permisosBase = """
+        Visualización y seguimiento de torneos
+        Visualización de partidas
+        Visualización de jugadores
+        Visualización de movimientos de partidas (en vivo)
+        Acceder y utilizar el mapa interactivo
+        Consultar su perfil de usuario
+    """.trimIndent()
+
+        val permisosAdicionales = when (tipoUsuario) {
+            TipoUsuario.AFICIONADO -> """
+            Solicitar alta como Jugador
+            """.trimIndent()
+
+            TipoUsuario.ORGANIZADOR -> """
+            Gestión de torneos
+            Gestión de altas de jugadores
+            Gestión de inscripciones a torneos
+            Gestión de partidas
+            Ingreso de movimientos de partidas en directo
+            """.trimIndent()
+
+            TipoUsuario.JUGADOR -> """
+            Consultar sus inscripciones
+            Gestión de inscripciones a torneos
+            Gestión de partidas
+            """.trimIndent()
+        }
+
+        return "$permisosBase\n$permisosAdicionales".trim()
+    }
+
 }

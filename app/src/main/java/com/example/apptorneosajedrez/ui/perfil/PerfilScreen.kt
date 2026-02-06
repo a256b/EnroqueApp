@@ -118,6 +118,24 @@ private fun ProfileScreenContent(
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(
+                    text = "Permisos",
+                    textAlign = TextAlign.Left,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+
+                uiState.detallePermisos?.let {
+                    Text(
+                        text = it,
+                        textAlign = TextAlign.Left,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             }
         }
     }
