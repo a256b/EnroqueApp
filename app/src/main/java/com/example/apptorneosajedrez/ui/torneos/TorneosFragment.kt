@@ -198,7 +198,6 @@ class TorneosFragment : Fragment() {
         val etNombre = view.findViewById<EditText>(R.id.etNombre)
         val etDescripcion = view.findViewById<EditText>(R.id.etDescripcion)
         val etFechaInicio = view.findViewById<EditText>(R.id.etFechaInicio)
-        val etFechaFin = view.findViewById<EditText>(R.id.etFechaFin)
         val etHoraInicio = view.findViewById<EditText>(R.id.etHoraInicio)
         val spinnerUbicacion = view.findViewById<Spinner>(R.id.spinnerUbicacion)
 
@@ -207,12 +206,6 @@ class TorneosFragment : Fragment() {
         etFechaInicio.setOnClickListener {
             DatePickerDialog(requireContext(), { _, y, m, d ->
                 etFechaInicio.setText("%04d-%02d-%02d".format(y, m + 1, d))
-            }, calendario[Calendar.YEAR], calendario[Calendar.MONTH], calendario[Calendar.DAY_OF_MONTH]).show()
-        }
-
-        etFechaFin.setOnClickListener {
-            DatePickerDialog(requireContext(), { _, y, m, d ->
-                etFechaFin.setText("%04d-%02d-%02d".format(y, m + 1, d))
             }, calendario[Calendar.YEAR], calendario[Calendar.MONTH], calendario[Calendar.DAY_OF_MONTH]).show()
         }
 
@@ -240,7 +233,6 @@ class TorneosFragment : Fragment() {
                     nombre = etNombre.text.toString(),
                     descripcion = etDescripcion.text.toString(),
                     fechaInicio = etFechaInicio.text.toString(),
-                    fechaFin = etFechaFin.text.toString(),
                     horaInicio = etHoraInicio.text.toString(),
                     ubicacion = spinnerUbicacion.selectedItem?.toString() ?: ""
                 )

@@ -12,7 +12,6 @@
         <EditText android:id="@+id/etNombre" android:hint="Nombre" android:layout_width="match_parent" android:layout_height="wrap_content"/>
         <EditText android:id="@+id/etDescripcion" android:hint="Descripción" android:layout_width="match_parent" android:layout_height="wrap_content"/>
         <EditText android:id="@+id/etFechaInicio" android:hint="Fecha de inicio" android:focusable="false" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-        <EditText android:id="@+id/etFechaFin" android:hint="Fecha de fin" android:focusable="false" android:layout_width="match_parent" android:layout_height="wrap_content"/>
         <EditText android:id="@+id/etHoraInicio" android:hint="Hora de inicio" android:focusable="false" android:layout_width="match_parent" android:layout_height="wrap_content"/>
         <Spinner android:id="@+id/spinnerUbicacion" android:layout_width="match_parent" android:layout_height="wrap_content"/>
     </LinearLayout>
