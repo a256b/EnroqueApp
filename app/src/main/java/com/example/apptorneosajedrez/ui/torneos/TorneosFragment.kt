@@ -13,13 +13,17 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.apptorneosajedrez.R
+import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.data.MarcadorRepository
 import com.example.apptorneosajedrez.data.TorneoRepository
 import com.example.apptorneosajedrez.databinding.FragmentTorneosBinding
 import com.example.apptorneosajedrez.model.EstadoTorneo
+import com.example.apptorneosajedrez.model.TipoUsuario
 import com.example.apptorneosajedrez.model.Torneo
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class TorneosFragment : Fragment() {
@@ -28,6 +32,7 @@ class TorneosFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: TorneoViewModel by viewModels()
+    private val authRepository = AuthRepository.getInstance()
     private var torneosList: List<Torneo> = emptyList()
 
     // Variables para mantener los filtros aplicados
@@ -46,6 +51,14 @@ class TorneosFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            authRepository.currentUser.collect { user ->
+                binding.fabAgregarTorneo.visibility = 
+                    if (user?.tipoUsuario == TipoUsuario.ORGANIZADOR) View.VISIBLE else View.GONE
+            }
+        }
+
         observarTorneos()
         binding.fabAgregarTorneo.setOnClickListener {
             mostrarDialogoAgregarTorneo()
