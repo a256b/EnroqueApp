@@ -204,13 +204,18 @@ class TorneoDetalleFragment : Fragment() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_editar_torneo, null)
         val spinner = dialogView.findViewById<Spinner>(R.id.spinner_estado_torneo)
 
-        val estados = EstadoTorneo.entries.toTypedArray()
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, estados)
+        // Filtramos para mostrar solo ACTIVO y SUSPENDIDO
+        val estadosPermitidos = listOf(EstadoTorneo.ACTIVO, EstadoTorneo.SUSPENDIDO)
+        
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, estadosPermitidos)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
         
-        // Seleccionar el estado actual
-        spinner.setSelection(estados.indexOf(t.estado))
+        // Seleccionar el estado actual si está en la lista, sino por defecto el primero
+        val indexActual = estadosPermitidos.indexOf(t.estado)
+        if (indexActual >= 0) {
+            spinner.setSelection(indexActual)
+        }
 
         builder.setView(dialogView)
         builder.setPositiveButton("Guardar") { _, _ ->
