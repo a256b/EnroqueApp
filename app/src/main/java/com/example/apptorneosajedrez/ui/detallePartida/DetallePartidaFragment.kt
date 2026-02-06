@@ -51,13 +51,13 @@ class DetallePartidaFragment : Fragment() {
         actualizarUI()
 
         binding.btnVerPartida.setOnClickListener {
-            val action = DetallePartidaFragmentDirections.actionDetallePartidaFragmentToMovimientosFragment(
+            val action =
+                DetallePartidaFragmentDirections.actionDetallePartidaFragmentToMovimientosFragment(
                     torneoId = idTorneo ?: "",
                     partidaId = partida?.idPartida ?: ""
                 )
 
             findNavController().navigate(action)
-
         }
 
         binding.btnIniciarPartida.setOnClickListener {
@@ -70,67 +70,77 @@ class DetallePartidaFragment : Fragment() {
     }
 
     private fun actualizarUI() {
-        partida?.let { p ->
-            binding.tvFase.text = p.fase?.name ?: "---"
-            binding.tvEstado.text = p.estado.name
-            
-            // Cargar nombre del ganador si existe
-            if (!p.ganador.isNullOrEmpty()) {
-                jugadorRepository.obtenerJugador(p.ganador) { ganadorObj ->
-                    binding.tvGanador.text = "Ganador: ${ganadorObj?.nombre ?: p.ganador}"
-                }
-            } else {
-                binding.tvGanador.text = "Ganador: ---"
+        val binding = _binding ?: return
+        val p = partida ?: return
+
+        binding.tvFase.text = p.fase?.name ?: "---"
+        binding.tvEstado.text = p.estado.name
+
+        // Ganador
+        if (!p.ganador.isNullOrEmpty()) {
+            jugadorRepository.obtenerJugador(p.ganador) { ganadorObj ->
+                val b = _binding ?: return@obtenerJugador
+                b.tvGanador.text = "Ganador: ${ganadorObj?.nombre ?: p.ganador}"
             }
-            
-            binding.tvFecha.text = "Fecha: ${if (p.fecha.isNullOrEmpty()) "---" else p.fecha}"
-            binding.tvHora.text = "Hora: ${if (p.hora.isNullOrEmpty()) "---" else p.hora}"
+        } else {
+            binding.tvGanador.text = "Ganador: ---"
+        }
 
-            // Cargar nombres de jugadores
-            p.idJugador1?.let { id ->
-                jugadorRepository.obtenerJugador(id) { jugador ->
-                    binding.tvJugador1.text = "${jugador?.nombre ?: "Sin nombre"} - Blancas"
-                }
-            } ?: run { binding.tvJugador1.text = "Pendiente - Blancas" }
+        binding.tvFecha.text = "Fecha: ${if (p.fecha.isNullOrEmpty()) "---" else p.fecha}"
+        binding.tvHora.text = "Hora: ${if (p.hora.isNullOrEmpty()) "---" else p.hora}"
 
-            p.idJugador2?.let { id ->
-                jugadorRepository.obtenerJugador(id) { jugador ->
-                    binding.tvJugador2.text = "${jugador?.nombre ?: "Sin nombre"} - Negras"
-                }
-            } ?: run { binding.tvJugador2.text = "Pendiente - Negras" }
+        // Jugador 1
+        p.idJugador1?.let { id ->
+            jugadorRepository.obtenerJugador(id) { jugador ->
+                val b = _binding ?: return@obtenerJugador
+                b.tvJugador1.text = "${jugador?.nombre ?: "Sin nombre"} - Blancas"
+            }
+        } ?: run { binding.tvJugador1.text = "Pendiente - Blancas" }
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                authRepository.currentUser.collect { user ->
-                    val esAdmin = user?.tipoUsuario == TipoUsuario.ORGANIZADOR
-                    
-                    // Lógica de visibilidad de botones
-                    val esPendiente = p.estado == EstadoPartida.PENDIENTE
-                    val esEnCurso = p.estado == EstadoPartida.EN_CURSO
-                    val jugadoresCargados = !p.idJugador1.isNullOrEmpty() && !p.idJugador2.isNullOrEmpty()
+        // Jugador 2
+        p.idJugador2?.let { id ->
+            jugadorRepository.obtenerJugador(id) { jugador ->
+                val b = _binding ?: return@obtenerJugador
+                b.tvJugador2.text = "${jugador?.nombre ?: "Sin nombre"} - Negras"
+            }
+        } ?: run { binding.tvJugador2.text = "Pendiente - Negras" }
 
-                    binding.btnIniciarPartida.visibility = if (esAdmin && esPendiente) View.VISIBLE else View.GONE
-                    binding.btnIniciarPartida.isEnabled = jugadoresCargados
+        viewLifecycleOwner.lifecycleScope.launch {
+            authRepository.currentUser.collect { user ->
+                val b = _binding ?: return@collect
+                val esAdmin = user?.tipoUsuario == TipoUsuario.ORGANIZADOR
 
-                    binding.btnFinalizarPartida.visibility = if (esAdmin && esEnCurso) View.VISIBLE else View.GONE
-                }
+                val esPendiente = p.estado == EstadoPartida.PENDIENTE
+                val esEnCurso = p.estado == EstadoPartida.EN_CURSO
+                val jugadoresCargados =
+                    !p.idJugador1.isNullOrEmpty() && !p.idJugador2.isNullOrEmpty()
+
+                b.btnIniciarPartida.visibility =
+                    if (esAdmin && esPendiente) View.VISIBLE else View.GONE
+                b.btnIniciarPartida.isEnabled = jugadoresCargados
+
+                b.btnFinalizarPartida.visibility =
+                    if (esAdmin && esEnCurso) View.VISIBLE else View.GONE
             }
         }
     }
 
     private fun iniciarPartida() {
+        val binding = _binding ?: return
         val p = partida ?: return
         val idT = idTorneo ?: return
 
         val sdfFecha = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val sdfHora = SimpleDateFormat("HH:mm", Locale.getDefault())
         val ahora = Date()
-        
+
         val fechaActual = sdfFecha.format(ahora)
         val horaActual = sdfHora.format(ahora)
 
         binding.btnIniciarPartida.isEnabled = false
 
         torneoRepository.iniciarPartida(idT, p.idPartida, fechaActual, horaActual) { exito ->
+            val b = _binding ?: return@iniciarPartida
             if (exito) {
                 Toast.makeText(requireContext(), "Partida iniciada", Toast.LENGTH_SHORT).show()
                 partida = p.copy(
@@ -140,7 +150,7 @@ class DetallePartidaFragment : Fragment() {
                 )
                 actualizarUI()
             } else {
-                binding.btnIniciarPartida.isEnabled = true
+                b.btnIniciarPartida.isEnabled = true
                 Toast.makeText(requireContext(), "Error al iniciar partida", Toast.LENGTH_SHORT).show()
             }
         }
@@ -154,6 +164,9 @@ class DetallePartidaFragment : Fragment() {
         // Obtener nombres para el dialog
         jugadorRepository.obtenerJugador(idJ1) { j1 ->
             jugadorRepository.obtenerJugador(idJ2) { j2 ->
+                // Si el fragment ya no está añadido, no mostramos nada
+                if (!isAdded) return@obtenerJugador
+
                 val nombres = arrayOf(j1?.nombre ?: "Jugador 1", j2?.nombre ?: "Jugador 2")
                 val ids = arrayOf(idJ1, idJ2)
                 var seleccionado = 0
@@ -173,12 +186,14 @@ class DetallePartidaFragment : Fragment() {
     }
 
     private fun finalizarPartida(idGanador: String) {
+        val binding = _binding ?: return
         val p = partida ?: return
         val idT = idTorneo ?: return
 
         binding.btnFinalizarPartida.isEnabled = false
 
         torneoRepository.finalizarPartida(idT, p, idGanador) { exito ->
+            val b = _binding ?: return@finalizarPartida
             if (exito) {
                 Toast.makeText(requireContext(), "Partida finalizada", Toast.LENGTH_SHORT).show()
                 partida = p.copy(
@@ -187,7 +202,7 @@ class DetallePartidaFragment : Fragment() {
                 )
                 actualizarUI()
             } else {
-                binding.btnFinalizarPartida.isEnabled = true
+                b.btnFinalizarPartida.isEnabled = true
                 Toast.makeText(requireContext(), "Error al finalizar partida", Toast.LENGTH_SHORT).show()
             }
         }
