@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.example.apptorneosajedrez.data.AuthRepository
+import com.example.apptorneosajedrez.data.TorneoRepository
 import com.example.apptorneosajedrez.data.MovimientosRepository
 import com.example.apptorneosajedrez.databinding.FragmentMovimientosBinding
 import com.example.apptorneosajedrez.ui._theme.AppTorneosTheme
@@ -28,12 +29,15 @@ class MovimientosFragment : Fragment() {
     private val movimientosRepository by lazy { MovimientosRepository(firestore) }
     private val authRepository by lazy { AuthRepository.getInstance() }
 
+    private val torneoRepository by lazy { TorneoRepository() }
+
     private val viewModel: MovimientosViewModel by viewModels {
         MovimientosViewModelFactory(
             torneoId = args.torneoId,
             partidaId = args.partidaId,
             repository = movimientosRepository,
-            authRepository = authRepository
+            authRepository = authRepository,
+            torneoRepository = torneoRepository
         )
     }
 

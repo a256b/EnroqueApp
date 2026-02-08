@@ -6,16 +6,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.apptorneosajedrez.data.AuthRepository
 import com.example.apptorneosajedrez.data.MovimientosRepository
+import com.example.apptorneosajedrez.data.TorneoRepository
+import com.example.apptorneosajedrez.model.EstadoPartida
 import com.example.apptorneosajedrez.model.Movimiento
 import com.example.apptorneosajedrez.model.MovimientoFila
 import com.example.apptorneosajedrez.model.TipoUsuario
 import com.google.firebase.firestore.ListenerRegistration
 
+
 class MovimientosViewModel(
     private val torneoId: String,
     private val partidaId: String,
     private val movimientosRepository: MovimientosRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val torneoRepository: TorneoRepository
 ) : ViewModel() {
 
     private companion object {
@@ -40,12 +44,29 @@ class MovimientosViewModel(
 
     private fun determinarPermisos() {
         val usuario = authRepository.getCurrentUserInMemory()
-        val puedeCargar = usuario?.tipoUsuario == TipoUsuario.ORGANIZADOR
+        val esOrganizador = usuario?.tipoUsuario == TipoUsuario.ORGANIZADOR
 
-        _uiState.value = _uiState.value?.copy(
-            usuarioPuedeCargarMovimientos = puedeCargar
-        )
+        Log.d(TAG, "esOrganizador: $esOrganizador")
+
+        if (torneoId.isNullOrEmpty() || partidaId.isNullOrEmpty()) {
+            Log.w(TAG, "determinarPermisos: ids inválidos torneoId=$torneoId partidaId=$partidaId")
+            _uiState.value = _uiState.value?.copy(
+                usuarioPuedeCargarMovimientos = false
+            )
+            return
+        }
+
+        torneoRepository.obtenerPartida(torneoId, partidaId) { partida ->
+            val partidaEnCurso = partida?.estado == EstadoPartida.EN_CURSO
+
+            Log.d(TAG, "partida: $partida")
+
+            _uiState.value = _uiState.value?.copy(
+                usuarioPuedeCargarMovimientos = esOrganizador && partidaEnCurso
+            )
+        }
     }
+
 
     private fun cargarMovimientos() {
         _uiState.value = _uiState.value?.copy(

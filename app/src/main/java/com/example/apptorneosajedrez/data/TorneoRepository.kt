@@ -1,5 +1,6 @@
 package com.example.apptorneosajedrez.data
 
+import android.util.Log
 import com.example.apptorneosajedrez.model.EstadoTorneo
 import com.example.apptorneosajedrez.model.Torneo
 import com.example.apptorneosajedrez.model.Partida
@@ -14,7 +15,9 @@ import java.util.Date
 import java.util.Locale
 
 class TorneoRepository {
-
+    private companion object {
+        const val TAG = "TorneoRepository"
+    }
     private val db = FirebaseFirestore.getInstance()
 
     fun escucharTorneos(cuandoCambia: (List<Torneo>) -> Unit): ListenerRegistration {
@@ -244,6 +247,38 @@ class TorneoRepository {
             }
             .addOnFailureListener { onComplete(false) }
     }
+
+
+    fun obtenerPartida(
+        idTorneo: String,
+        idPartida: String,
+        onComplete: (Partida?) -> Unit
+    ) {
+        if (idTorneo.isEmpty() || idPartida.isEmpty()) {
+            onComplete(null)
+            return
+        }
+
+        db.collection("torneos")
+            .document(idTorneo)
+            .collection("partidas")
+            .document(idPartida)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                if (snapshot != null && snapshot.exists()) {
+                    val partida = snapshot.toObject<Partida>()?.copy(idPartida = snapshot.id)
+                    onComplete(partida)
+                } else {
+                    onComplete(null)
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error al obtener partida $idPartida de torneo $idTorneo", e)
+                onComplete(null)
+            }
+    }
+
+
 
     /**
      * Busca la siguiente fase y asigna al ganador en el primer lugar disponible.
