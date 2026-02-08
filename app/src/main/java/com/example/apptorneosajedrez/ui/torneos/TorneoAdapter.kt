@@ -22,7 +22,7 @@ sealed class TorneoItem{
 }
 
 class TorneoAdapter(
-    private val items: List<TorneoItem>,
+    private var items: List<TorneoItem>,
     private val context: Context,
     private val onTorneoClick: (Torneo) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -35,6 +35,11 @@ class TorneoAdapter(
         fun bind(text: String) {
             headerText.text = text
         }
+    }
+
+    fun updateItems(newItems: List<TorneoItem>) {
+        items = newItems
+        notifyDataSetChanged()
     }
 
     inner class TorneoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -115,4 +120,6 @@ class TorneoAdapter(
     }
 
     override fun getItemCount(): Int = items.size
+
+
 }

@@ -35,6 +35,8 @@ class TorneosFragment : Fragment() {
     private val authRepository = AuthRepository.getInstance()
     private var torneosList: List<Torneo> = emptyList()
 
+    private lateinit var torneosAdapter: TorneoAdapter
+
     // Variables para mantener los filtros aplicados
     private var filtroNombre = ""
     private var filtroUbicacion = "Todas las ubicaciones"
@@ -51,6 +53,24 @@ class TorneosFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 👇 1) Configurar adapter una sola vez
+        torneosAdapter = TorneoAdapter(
+            items = emptyList(),
+            context = requireContext()
+        ) { torneo ->
+            val bundle = Bundle().apply { putSerializable("torneo", torneo) }
+            findNavController().navigate(
+                R.id.action_nav_torneos_to_detalleTorneoFragment,
+                bundle
+            )
+        }
+
+        // 👇 2) Conectar RecyclerView con adapter y layoutManager
+        binding.recyclerViewTorneos.apply {
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+            adapter = torneosAdapter
+        }
         
         viewLifecycleOwner.lifecycleScope.launch {
             authRepository.currentUser.collect { user ->
@@ -116,14 +136,7 @@ class TorneosFragment : Fragment() {
             suspendidos.forEach { items.add(TorneoItem.TorneoData(it)) }
         }
 
-        binding.recyclerViewTorneos.adapter =
-            TorneoAdapter(items, requireContext()) { torneo ->
-                val bundle = Bundle().apply { putSerializable("torneo", torneo) }
-                findNavController().navigate(
-                    R.id.action_nav_torneos_to_detalleTorneoFragment,
-                    bundle
-                )
-            }
+        torneosAdapter.updateItems(items)
     }
 
     private fun mostrarDialogoFiltro() {
