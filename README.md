@@ -1,6 +1,13 @@
 # ♟️ EnroqueApp - Gestión de Torneos de Ajedrez
 
----
+<p align="center">
+<img width="800" height="600" alt="EnroqueApp" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770594640/Enroque_App_c0xp7g.png" />
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
+  <img src="https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white" />
+  <img src="https://img.shields.io/badge/firebase-a08021?style=for-the-badge&logo=firebase&logoColor=ffcd34" />
+</p>
 
 **EnroqueApp** es una aplicación Android moderna diseñada para gestionar y dar seguimiento a torneos de ajedrez.
 
@@ -33,7 +40,7 @@
 
 ## Tecnologías y librerías
 
-- **Lenguaje:** [Kotlin](https://kotlinlang.org/)
+- **Lenguaje:** Kotlin
 - **Arquitectura:** MVVM (Model-View-ViewModel) con Clean Architecture.
 - **Backend:** 
   - **Firebase Auth:** Autenticación de usuarios.
