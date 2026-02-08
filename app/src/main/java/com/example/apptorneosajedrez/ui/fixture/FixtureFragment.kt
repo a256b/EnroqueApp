@@ -61,7 +61,7 @@ class FixtureFragment : Fragment() {
                 val esOrganizador = user?.tipoUsuario == TipoUsuario.ORGANIZADOR
                 val esTorneoActivo = torneo?.estado == EstadoTorneo.ACTIVO
                 val estaOcultoParaEsteTorneo = setOcultos.contains(idTorneoActual)
-                
+
                 esOrganizador && esTorneoActivo && !estaOcultoParaEsteTorneo
             }.collect { visible ->
                 binding.btnIniciarTorneo.visibility = if (visible) View.VISIBLE else View.GONE
@@ -76,6 +76,8 @@ class FixtureFragment : Fragment() {
     }
 
     private fun actualizarAparienciaCards() {
+        val binding = _binding ?: return
+
         val cardsPorFase = mapOf(
             Fase.CUARTOS to listOf(binding.m1, binding.m2, binding.m3, binding.m4),
             Fase.SEMI to listOf(binding.semi1, binding.semi2),
@@ -92,6 +94,7 @@ class FixtureFragment : Fragment() {
 
     private fun cargarPartidas(idTorneo: String) {
         torneoRepository.obtenerPartidas(idTorneo) { partidas ->
+            if (!isAdded || _binding == null) return@obtenerPartidas
             partidasGeneradas = partidas
             if (partidas.isNotEmpty()) {
                 fixtureViewModel.ocultarBotonIniciarTorneo(idTorneo)
@@ -121,7 +124,10 @@ class FixtureFragment : Fragment() {
                 putSerializable("partida", partida)
                 putString("idTorneo", torneo?.idTorneo)
             }
-            findNavController().navigate(R.id.action_fixtureFragment_to_detallePartidaFragment, bundle)
+            findNavController().navigate(
+                R.id.action_fixtureFragment_to_detallePartidaFragment,
+                bundle
+            )
         } else {
             //TODO: Si no existe ocultar la CardView...
         }
@@ -135,9 +141,17 @@ class FixtureFragment : Fragment() {
                     ocultarBotonIniciarTorneo(idTorneo)
                     ocultarBotonEditarDetalle(idTorneo)
                     cargarPartidas(idTorneo) // Test: recarga las partidas y habilita clicks
-                    Toast.makeText(requireContext(), "Torneo iniciado: Partidas generadas", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Torneo iniciado: Partidas generadas",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
-                    Toast.makeText(requireContext(), "Error: El torneo debe tener entre 2 y 8 jugadores.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Error: El torneo debe tener entre 2 y 8 jugadores.",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
