@@ -13,6 +13,7 @@ import com.example.apptorneosajedrez.R
 import com.example.apptorneosajedrez.data.TorneoRepository
 import com.example.apptorneosajedrez.databinding.FragmentDestacadosBinding
 import com.example.apptorneosajedrez.model.EstadoTorneo
+import com.example.apptorneosajedrez.model.Torneo
 import com.example.apptorneosajedrez.ui.torneos.KEY_TORNEO_DESTACADO
 import com.example.apptorneosajedrez.ui.torneos.PREF_NAME
 
@@ -22,12 +23,56 @@ class DestacadosFragment : Fragment() {
     private val binding get() = _binding!!
     private val torneoRepo = TorneoRepository()
 
+    private lateinit var destacadosAdapter: DestacadosAdapter   // 👈 NUEVO
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDestacadosBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 1) Crear adapter vacío, con callbacks
+        destacadosAdapter = DestacadosAdapter(
+            items = emptyList(),
+            onEliminarFavorito = { torneo ->
+                // Actualizamos SharedPreferences cuando se toca la estrellita
+                val prefs = requireContext()
+                    .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+
+                val favoritos = prefs
+                    .getStringSet(KEY_TORNEO_DESTACADO, emptySet())
+                    ?.toMutableSet() ?: mutableSetOf()
+
+                favoritos.remove(torneo.nombre)
+
+                prefs.edit().putStringSet(KEY_TORNEO_DESTACADO, favoritos).apply()
+
+                Toast.makeText(requireContext(), "Torneo desmarcado", Toast.LENGTH_SHORT).show()
+
+                // Volver a cargar la lista
+                mostrarFavoritos()
+            },
+            onTorneoClick = { torneo ->
+                val bundle = Bundle().apply {
+                    putSerializable("torneo", torneo)
+                }
+                findNavController().navigate(
+                    R.id.action_nav_home_to_detalleTorneoFragment,
+                    bundle
+                )
+            }
+        )
+
+        // 2) Conectar RecyclerView con layoutManager y adapter
+        binding.recyclerViewDestacados.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = destacadosAdapter
+        }
     }
 
     override fun onResume() {
@@ -37,7 +82,8 @@ class DestacadosFragment : Fragment() {
 
     private fun mostrarFavoritos() {
         val prefs = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        val favoritos = prefs.getStringSet(KEY_TORNEO_DESTACADO, emptySet())?.toMutableSet() ?: mutableSetOf()
+        val favoritos = prefs.getStringSet(KEY_TORNEO_DESTACADO, emptySet())
+            ?.toMutableSet() ?: mutableSetOf()
 
         torneoRepo.escucharTorneos { listaTorneos ->
             val torneosFavoritos = listaTorneos.filter { favoritos.contains(it.nombre) }
@@ -68,24 +114,8 @@ class DestacadosFragment : Fragment() {
                 }
             }
 
-            val adapter = DestacadosAdapter(
-                items = items,
-                onEliminarFavorito = { torneo ->
-                    favoritos.remove(torneo.nombre)
-                    prefs.edit().putStringSet(KEY_TORNEO_DESTACADO, favoritos).apply()
-                    Toast.makeText(requireContext(), "Torneo desmarcado", Toast.LENGTH_SHORT).show()
-                    mostrarFavoritos()
-                },
-                onTorneoClick = { torneo ->
-                    val bundle = Bundle().apply {
-                        putSerializable("torneo", torneo)
-                    }
-                    findNavController().navigate(R.id.action_nav_home_to_detalleTorneoFragment, bundle)
-                }
-            )
-
-            _binding?.recyclerViewDestacados?.layoutManager = LinearLayoutManager(requireContext())
-            _binding?.recyclerViewDestacados?.adapter = adapter
+            // 3) Solo actualizamos los items del adapter
+            destacadosAdapter.updateItems(items)
         }
     }
 
