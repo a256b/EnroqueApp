@@ -74,7 +74,7 @@ class DetallePartidaFragment : Fragment() {
         val p = partida ?: return
 
         binding.tvFase.text = p.fase?.name ?: "---"
-        binding.tvEstado.text = p.estado.name
+        binding.tvEstado.text = formatearEstadoPartida(p.estado.name)
 
         // Ganador
         if (!p.ganador.isNullOrEmpty()) {
@@ -122,6 +122,13 @@ class DetallePartidaFragment : Fragment() {
                 b.btnFinalizarPartida.visibility =
                     if (esAdmin && esEnCurso) View.VISIBLE else View.GONE
             }
+        }
+    }
+
+    private fun formatearEstadoPartida(estadoPartida: String): String {
+        return when (estadoPartida?.toString()?.uppercase()) {
+            "EN_CURSO" -> "EN CURSO"
+            else -> estadoPartida
         }
     }
 

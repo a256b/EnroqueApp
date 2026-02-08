@@ -173,7 +173,7 @@ class TorneoDetalleFragment : Fragment() {
 
     private fun actualizarVista(t: Torneo) {
         binding.nombreTorneo.text = t.nombre
-        binding.tvEstadoTorneo.text = t.estado.name
+        binding.tvEstadoTorneo.text = formatearEstadoTorneo(t.estado.name)
         binding.tvFechaInicio.text = "Inicio: ${t.fechaInicio}"
         binding.tvFechaFin.text = "Finalización: ${t.fechaFin}"
         binding.tvHoraInicio.text = "${t.horaInicio}hs."
@@ -187,6 +187,13 @@ class TorneoDetalleFragment : Fragment() {
                     colorFondoSegunEstado(t)
                 )
             )
+    }
+
+    private fun formatearEstadoTorneo(estadoTorneo: String): String {
+        return when (estadoTorneo?.toString()?.uppercase()) {
+            "PROXIMO" -> "PRÓXIMO"
+            else -> estadoTorneo
+        }
     }
 
     @ColorRes

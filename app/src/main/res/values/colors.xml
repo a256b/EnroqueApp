@@ -15,10 +15,10 @@
     <color name="rojo">#550000</color>
     <color name="rojo_claro">#FFEBEE</color>
 
-    <color name="estado_torneo_activo">#4CAF50</color>        <!-- Verde -->
-    <color name="estado_torneo_finalizado">#9E9E9E</color>    <!-- Gris -->
-    <color name="estado_torneo_suspendido">#F44336</color>    <!-- Rojo -->
-    <color name="estado_torneo_proximo">#00BCD4</color>       <!-- Celeste -->
+    <color name="estado_torneo_activo">#2B7A78</color>        <!-- Verde -->
+    <color name="estado_torneo_finalizado">#444B53</color>    <!-- Gris -->
+    <color name="estado_torneo_suspendido">#B3261E</color>    <!-- Rojo -->
+    <color name="estado_torneo_proximo">#A6E4DE</color>       <!-- Celeste -->
 
     <color name="primary">#123458</color>
     <color name="onPrimary">#FFFFFF</color>
@@ -30,7 +30,7 @@
     <color name="secondaryContainer">#D6E2F5</color>
     <color name="onSecondaryContainer">#1B2838</color>
 
-    <color name="tertiary">#2B7A78</color>
+    <color name="tertiary">#444B53</color>
     <color name="onTertiary">#FFFFFF</color>
     <color name="tertiaryContainer">#A6E4DE</color>
     <color name="onTertiaryContainer">#073E3B</color>
