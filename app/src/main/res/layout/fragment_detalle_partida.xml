@@ -185,13 +185,13 @@
             android:id="@+id/btn_finalizar_partida"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="40dp"
             android:text="Finalizar Partida"
             android:textAllCaps="false"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_iniciar_partida"
+            app:layout_constraintTop_toBottomOf="@id/tv_fecha"
             app:layout_constraintWidth_percent="0.75"
             tools:visibility="visible" />
 
@@ -199,14 +199,12 @@
             android:id="@+id/btn_ver_partida"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginTop="90dp"
             android:text="Ver partida"
             android:textAllCaps="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_finalizar_partida"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_fecha"
             app:layout_constraintWidth_percent="0.75" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
