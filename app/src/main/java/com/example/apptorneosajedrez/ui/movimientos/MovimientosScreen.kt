@@ -87,8 +87,8 @@ private data class MovimientosColors(
 @Composable
 private fun rememberMovimientosColors(): MovimientosColors = MovimientosColors(
     fondoRectangulo = MaterialTheme.colorScheme.surface,
-    filaClara = MaterialTheme.colorScheme.surface,
-    filaOscura = MaterialTheme.colorScheme.surfaceVariant,
+    filaClara = MaterialTheme.colorScheme.onPrimary,
+    filaOscura = MaterialTheme.colorScheme.onPrimaryContainer,
     titulo = MaterialTheme.colorScheme.primary,
     texto = MaterialTheme.colorScheme.onSurface
 )
@@ -266,14 +266,13 @@ private fun TurnIndicator(
     modifier: Modifier = Modifier
 ) {
     val (bg, content) =
-        if (!esTurnoBlancas) {
+        if (esTurnoBlancas) {
             MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
         } else {
             MaterialTheme.colorScheme.surface to MaterialTheme.colorScheme.onSurface
         }
 
     val texto = "Turno de " + if (esTurnoBlancas) "Blancas" else "Negras"
-    val ficha = if (esTurnoBlancas) "♙" else "♟︎"
 
     Surface(
         color = bg,
@@ -287,8 +286,7 @@ private fun TurnIndicator(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = ficha, style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.width(8.dp))
+
             Text(
                 text = texto,
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
@@ -432,9 +430,17 @@ private fun KeyboardRow(
 @Preview(showBackground = true, showSystemUi = true, name = "MovimientosScreen Preview")
 @Composable
 fun MovimientosScreenPreview() {
+    val demoMovs = listOf(
+        MovimientoFila("1",1, "e4", "c5"),
+        MovimientoFila("2",2, "Nf3", "d6"),
+        MovimientoFila("3",3, "d4", "cxd4"),
+        MovimientoFila("4",4, "Nxd4", "Nf6"),
+        MovimientoFila("5",5, "Nc3", "a6")
+    )
+
     AppTorneosTheme {
         MovimientosScreen(
-            uiState = MovimientosUiState(),
+            uiState = MovimientosUiState( filasMovimientos = demoMovs),
             onMovimientoChange = {},
             onBorrarTextoClick = {},
             onDeshacerMovimientoClick = {},
