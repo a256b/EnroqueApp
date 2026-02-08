@@ -19,6 +19,8 @@ class JugadoresFragment : Fragment() {
     private val repo = JugadorRepository()
     private var listenerRegistration: ListenerRegistration? = null
 
+    private lateinit var jugadoresAdapter: JugadorAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -29,23 +31,35 @@ class JugadoresFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 1) Crear adapter vacío con el callback de click
+        jugadoresAdapter = JugadorAdapter(
+            items = emptyList()
+        ) { jugador ->
+            val jugadorId = jugador.id
+
+            val bundle = Bundle().apply {
+                putString("jugadorId", jugadorId)
+            }
+
+            findNavController().navigate(
+                R.id.action_nav_jugadores_to_detalleJugadorFragment,
+                bundle
+            )
+        }
+
+        // 2) Conectar RecyclerView con layoutManager y adapter
+        binding.recyclerViewJugadores.apply {
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+            adapter = jugadoresAdapter
+        }
+
+        // 3) Escuchar jugadores y actualizar la lista del adapter
         listenerRegistration = repo.escucharJugadores { jugadores ->
             val items = jugadores.map { JugadorItem.JugadorData(it) }
-
-            binding.recyclerViewJugadores.adapter = JugadorAdapter(items) { jugador ->
-                val jugadorId = jugador.id
-
-                val bundle = Bundle().apply {
-                    putString("jugadorId", jugadorId)
-                }
-
-                findNavController().navigate(
-                    R.id.action_nav_jugadores_to_detalleJugadorFragment,
-                    bundle
-                )
-            }
+            jugadoresAdapter.updateItems(items)   // 👈 ahora solo actualizamos datos
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

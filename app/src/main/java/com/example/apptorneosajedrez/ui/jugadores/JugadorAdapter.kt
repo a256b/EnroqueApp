@@ -14,13 +14,19 @@ sealed class JugadorItem {
 }
 
 class JugadorAdapter(
-    private val items: List<JugadorItem>,
+    private var items: List<JugadorItem>,
     private val onJugadorClick: (Jugador) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val TYPE_HEADER = 0
         private const val TYPE_JUGADOR = 1
+    }
+
+    // 👇 NUEVO: método para actualizar la lista
+    fun updateItems(newItems: List<JugadorItem>) {
+        items = newItems
+        notifyDataSetChanged()
     }
 
     override fun getItemViewType(position: Int): Int {
