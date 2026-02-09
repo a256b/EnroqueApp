@@ -57,18 +57,18 @@
 
 ## Capturas de pantalla
 <p align="center">
-  <img width="180" height="380" alt="Login" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655682/login_fh0mx3.png" />
-  <img width="180" height="380" alt="Drawer" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655681/drawer_tpc7td.png" />
-  <img width="180" height="380" alt="Perfil" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655684/perfil_byfmwk.png" />
-  <img width="180" height="380" alt="Mapa interactivo" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655688/mapa_interactivo_pgv9p7.png" />
-  <img width="180" height="380" alt="Torneos" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655681/torneos_zfq8pr.png" />
+  <img width="150" height="320" alt="Login" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655682/login_fh0mx3.png" />
+  <img width="150" height="320" alt="Drawer" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655681/drawer_tpc7td.png" />
+  <img width="150" height="320" alt="Perfil" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655684/perfil_byfmwk.png" />
+  <img width="150" height="320" alt="Mapa interactivo" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655688/mapa_interactivo_pgv9p7.png" />
+  <img width="150" height="320" alt="Torneos" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655681/torneos_zfq8pr.png" />
 </p>
 <p align="center">
-  <img width="180" height="380" alt="Detalle torneo" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655684/detalle_torneo_bbu89c.png" />
-  <img width="180" height="380" alt="Fixture" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655681/fixture_rztvwf.png" />
-  <img width="180" height="380" alt="Detalle partida" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655682/detalle_partida_irqcgz.png" />
-  <img width="180" height="380" alt="Movimientos" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655683/movimientos_efgl8z.png" />
-  <img width="180" height="380" alt="Inscripciones" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655683/inscripciones_fk4aog.png" />
+  <img width="150" height="320" alt="Detalle torneo" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655684/detalle_torneo_bbu89c.png" />
+  <img width="150" height="320" alt="Fixture" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655681/fixture_rztvwf.png" />
+  <img width="150" height="320" alt="Detalle partida" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655682/detalle_partida_irqcgz.png" />
+  <img width="150" height="320" alt="Movimientos" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655683/movimientos_efgl8z.png" />
+  <img width="150" height="320" alt="Inscripciones" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655683/inscripciones_fk4aog.png" />
 </p>
 
 
