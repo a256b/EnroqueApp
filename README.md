@@ -1,7 +1,7 @@
 # ♟️ EnroqueApp - Gestión de Torneos de Ajedrez
 
 <p align="center">
-<img width="800" height="600" alt="EnroqueApp" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770594640/Enroque_App_c0xp7g.png" />
+<img width="800" height="600" alt="EnroqueApp" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770751045/Enroque_App_c0xp7g.png" />
 
 <p align="center">
   <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
