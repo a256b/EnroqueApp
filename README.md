@@ -1,7 +1,7 @@
 # ♟️ EnroqueApp - Gestión de Torneos de Ajedrez
 
 <p align="center">
-<img width="800" height="600" alt="EnroqueApp" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770594640/Enroque_App_c0xp7g.png" />
+<img width="800" height="600" alt="EnroqueApp" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770751045/Enroque_App_c0xp7g.png" />
 
 <p align="center">
   <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
@@ -58,7 +58,7 @@
 ## Capturas de pantalla
 <p align="center">
   <img width="150" height="320" alt="Login" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655682/login_fh0mx3.png" />
-  <img width="150" height="320" alt="Drawer" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655681/drawer_tpc7td.png" />
+  <img width="150" height="320" alt="Drawer" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770751131/drawer_tpc7td.png" />
   <img width="150" height="320" alt="Perfil" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655684/perfil_byfmwk.png" />
   <img width="150" height="320" alt="Mapa interactivo" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655688/mapa_interactivo_pgv9p7.png" />
   <img width="150" height="320" alt="Torneos" src="https://res.cloudinary.com/drnzeqcpu/image/upload/v1770655681/torneos_zfq8pr.png" />
